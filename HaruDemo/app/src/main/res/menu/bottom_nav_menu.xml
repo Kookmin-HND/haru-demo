@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_home"
+        android:title="sns"
+        android:icon="@drawable/ic_home_black_24"
+        />
+    <item
+        android:id="@+id/menu_calendar"
+        android:title="calendar"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        />
+    <item
+        android:id="@+id/menu_todo"
+        android:title="Todo"
+        android:icon="@drawable/ic_baseline_check_box_24"
+        />
+
+    <item
+        android:id="@+id/menu_statistic"
+        android:title="statistic"
+        android:icon="@drawable/ic_baseline_align_vertical_bottom_24"
+        />
+    <item
+        android:id="@+id/menu_etc"
+        android:title="프로필"
+        android:icon="@drawable/ic_baseline_dehaze_24"
+        />
+</menu>
