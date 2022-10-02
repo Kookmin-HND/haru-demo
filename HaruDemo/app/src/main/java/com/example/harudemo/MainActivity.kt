@@ -19,9 +19,9 @@ class MainActivity : AppCompatActivity(){
 
         bottom_nav.setOnNavigationItemSelectedListener(onBottomNavItemSelectedListener)
 
-        snsFragment = SnsFragment.newInstance()
-        //todoFragment를 맨 처음 실행함
-        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment).commit()
+        todoFragment = TodoFragment.newInstance()
+        // TodoFragment를 가장 먼저 실행함
+        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment).commit()
     }
 
     //바텀 네비게이션 아이템 클릭 리스너

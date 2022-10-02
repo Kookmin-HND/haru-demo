@@ -28,7 +28,8 @@ class TodoListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
-        val todoListAdapter = TodoListAdapter(TodoDummyData.getAllTodos())
+
+        val todoListAdapter = TodoListAdapter(TodoDummyData.getSectionsByFolder())
         binding.rvTodoSectionList.adapter = todoListAdapter
         binding.rvTodoSectionList.layoutManager = LinearLayoutManager(
             binding.root.context,

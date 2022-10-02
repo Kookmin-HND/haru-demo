@@ -1,6 +1,5 @@
 package com.example.harudemo
 
-import android.util.Log
 import com.example.harudemo.todo.Section
 import com.example.harudemo.todo.Todo
 import com.example.harudemo.todo.TodoInterface
@@ -58,4 +57,26 @@ object TodoDummyData {
             completed = false
         )
     )
+
+    fun getSectionsByFolder(): ArrayList<Section> {
+        val result = ArrayList<Section>()
+        val folders = HashMap<String, ArrayList<Todo>>()
+
+        for (todo in todoInterfaceTables) {
+            if (todo.folder !in folders) {
+                folders[todo.folder] = ArrayList<Todo>()
+            }
+
+            for (todoDate in todoDateInterfaceTables) {
+                if (todo.todoId == todoDate.todoId) {
+                    folders[todo.folder]?.add(Todo(todo.content, todoDate))
+                }
+            }
+        }
+
+        for (folder in folders) {
+            result.add(Section(folder.key, folder.value))
+        }
+        return result
+    }
 }

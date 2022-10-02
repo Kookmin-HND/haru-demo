@@ -1,6 +1,7 @@
 package com.example.harudemo.todo
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,25 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
                 LinearLayoutManager.VERTICAL,
                 false
             )
+
+            itemBinding.layoutSectionTitle.setOnClickListener {
+                setToggle()
+            }
+        }
+
+        private fun setToggle() {
+            if (itemBinding.rvTodoList.visibility == View.VISIBLE) {
+                itemBinding.rvTodoList.visibility = View.GONE
+                itemBinding.ivToggleUnselected.visibility = View.VISIBLE
+                itemBinding.ivToggleSelected.visibility = View.GONE
+            } else {
+                itemBinding.rvTodoList.visibility = View.VISIBLE
+                itemBinding.ivToggleUnselected.visibility = View.GONE
+                itemBinding.ivToggleSelected.visibility = View.VISIBLE
+            }
         }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListViewHolder {
         return TodoListViewHolder(
