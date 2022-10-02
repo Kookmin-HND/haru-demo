@@ -1,13 +1,10 @@
 package com.example.harudemo
 
-import android.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.example.harudemo.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity(){
     private lateinit var snsFragment: SnsFragment

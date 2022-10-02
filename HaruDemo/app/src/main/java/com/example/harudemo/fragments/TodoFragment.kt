@@ -6,28 +6,32 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.harudemo.R
+import com.example.harudemo.databinding.FragmentTodoBinding
+import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 
-class TodoFragment: Fragment() {
-    companion object{
-        const val TAG : String = "로그"
+class TodoFragment : Fragment() {
+    companion object {
+        const val TAG: String = "[TODO-LOG]"
 
-        fun newInstance() : TodoFragment {
+        fun newInstance(): TodoFragment {
             return TodoFragment()
         }
     }
 
+    private lateinit var todoListFragment: TodoListFragment
+    private lateinit var binding: FragmentTodoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Ranking - on Create() called" )
     }
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d(TAG, "Ranking - onAttach() called")
     }
 
     //뷰가 생성되었을 때
@@ -37,17 +41,41 @@ class TodoFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "Ranking - onCreateView() called")
-
-        val view = inflater.inflate(R.layout.fragment_todo, container, false)
-
-        return view
+        binding = FragmentTodoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        binding.btnCompleted.setOnClickListener { onBtnClicked(it) }
+        binding.btnToday.setOnClickListener { onBtnClicked(it) }
+        binding.btnWeek.setOnClickListener { onBtnClicked(it) }
+        binding.btnAll.setOnClickListener { onBtnClicked(it) }
+    }
+
+    private fun onBtnClicked(view: View) {
+        Log.d(TAG, "${(view as Button).text} 눌림")
+        when ((view as Button).text.toString()) {
+            "오늘" -> {
+
+            }
+            "일주일" -> {
+
+            }
+            "전체" -> {
+                todoListFragment = TodoListFragment.newInstance()
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, todoListFragment)?.commit()
+            }
+            "완료돤 항목" -> {
+
+            }
+            else -> {
+
+            }
+        }
     }
 
 }
