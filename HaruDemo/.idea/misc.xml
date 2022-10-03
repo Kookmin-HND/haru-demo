@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_tag_faces_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_home_black_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2485" />
+        <entry key="app/src/main/res/drawable/textlines.xml" value="0.1725" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_sns_test.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.346875" />
@@ -24,6 +25,7 @@
         <entry key="app/src/main/res/layout/fragment_sns.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.335" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
       </map>
