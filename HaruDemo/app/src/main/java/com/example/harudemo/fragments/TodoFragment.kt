@@ -2,16 +2,18 @@ package com.example.harudemo.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
+import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 
 class TodoFragment : Fragment() {
     companion object {
@@ -42,6 +44,17 @@ class TodoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
+
+        activity?.let {
+            val folderListAdapter = TodoFolderListAdapter(TodoDummyData.getFolderTitles(), it)
+            binding.rvFolderList.adapter = folderListAdapter
+            binding.rvFolderList.layoutManager = LinearLayoutManager(
+                binding.root.context,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
+        }
+
         return binding.root
     }
 
@@ -57,25 +70,28 @@ class TodoFragment : Fragment() {
     }
 
     private fun onBtnClicked(view: View) {
-        Log.d(TAG, "${(view as Button).text} 눌림")
+        val bundle = Bundle()
+        todoListFragment = TodoListFragment.newInstance()
+        todoListFragment.arguments = bundle
+
         when ((view as Button).text.toString()) {
             "오늘" -> {
-
+                bundle.putString("by", "today")
             }
             "일주일" -> {
-
+                bundle.putString("by", "week")
             }
             "전체" -> {
-                todoListFragment = TodoListFragment.newInstance()
-                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, todoListFragment)?.commit()
+                bundle.putString("by", "all")
             }
-            "완료돤 항목" -> {
-
+            "완료된 항목" -> {
+                bundle.putString("by", "completed")
             }
             else -> {
-
             }
         }
+
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, todoListFragment)?.commit()
     }
 
 }

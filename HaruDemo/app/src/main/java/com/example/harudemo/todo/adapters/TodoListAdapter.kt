@@ -1,4 +1,4 @@
-package com.example.harudemo.todo
+package com.example.harudemo.todo.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
+import com.example.harudemo.todo.types.Section
 
 class TodoListAdapter(private val sections: ArrayList<Section>) :
     RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {

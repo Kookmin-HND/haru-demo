@@ -1,4 +1,4 @@
-package com.example.harudemo.todo
+package com.example.harudemo.todo.types
 
 data class Todo(
     val content: String,

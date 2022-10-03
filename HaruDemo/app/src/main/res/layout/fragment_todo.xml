@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -12,29 +13,29 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
             <Button
                 android:id="@+id/btnToday"
-                android:fontFamily="@font/noto_sans_kr"
-                android:textColor="@color/white"
-                android:text="오늘"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr"
+                android:text="오늘"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnWeek"
-                android:fontFamily="@font/noto_sans_kr"
-                android:textColor="@color/white"
-                android:text="일주일"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr"
+                android:text="일주일"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
@@ -44,32 +45,37 @@
 
             <Button
                 android:id="@+id/btnAll"
-                android:fontFamily="@font/noto_sans_kr"
-                android:textColor="@color/white"
-                android:text="전체"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr"
+                android:text="전체"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnCompleted"
-                android:fontFamily="@font/noto_sans_kr"
-                android:textColor="@color/white"
-                android:text="완료된 항목"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr"
+                android:text="완료된 항목"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="?android:attr/listDivider" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_folder_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/fragment_todo_folder_item" />
 
 </LinearLayout>
