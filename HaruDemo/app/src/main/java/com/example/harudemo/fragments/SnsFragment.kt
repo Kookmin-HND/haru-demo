@@ -51,7 +51,6 @@ class SnsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title = "다른 하루"
         //버튼이 클릭되면 액비티비 호출
         val btnActivity: Button = view.findViewById(R.id.btn_newActivity)
         btnActivity.setOnClickListener{
