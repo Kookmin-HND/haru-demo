@@ -31,13 +31,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-
-    <Button
-        android:id="@+id/btn_newActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Activity 생성 버튼"
-        />
-
 </LinearLayout>
