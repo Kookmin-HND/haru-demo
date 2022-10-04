@@ -10,11 +10,13 @@ import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
 
 class SnsPostItemViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView) {
     private val snsPostWriterPhoto = itemView.sns_post_writer_photo
+    private val snsPostWriterName = itemView.sns_post_writer_name
     private val snsPostCreatedAt = itemView.sns_post_created_at
     private val snsPostContent = itemView.sns_post_content
 
-    fun bindWidthView(snsPostItem : SnsPost){
 
+    fun bindWidthView(snsPostItem : SnsPost){
+        snsPostWriterName.text = snsPostItem.writer
         snsPostCreatedAt.text = snsPostItem.createdAt
         snsPostContent.text = snsPostItem.content
 
