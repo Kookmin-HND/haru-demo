@@ -25,6 +25,5 @@ class SnsPostItemViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView) {
             .load(snsPostItem.writerPhoto)
             .placeholder(R.drawable.ic_baseline_account_circle_24)
             .into(snsPostWriterPhoto)
-
     }
 }
