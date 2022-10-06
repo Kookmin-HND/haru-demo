@@ -5,12 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.harudemo.App
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.SnsAddPostActivity
@@ -51,7 +50,6 @@ class SnsFragment : Fragment() {
         Log.d(TAG, "HomeFragment - onAttach() called")
     }
 
-    //뷰가 생성되었을 때
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,21 +64,20 @@ class SnsFragment : Fragment() {
         return view
     }
 
+    //레이아웃 연결 후
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.SnsPostList.add(SnsPost("유상록", "내일은 학교에 가자", "2022.10.04", "none"))
-        this.SnsPostList.add(SnsPost("오홍석", "로그인 만들기", "2022.10.04", "none"))
-        this.SnsPostList.add(SnsPost("LMJ", "SNS 만들기", "2022.10.04", "none"))
-        this.SnsPostList.add(SnsPost("LMJ", "SNS 만들기", "2022.10.04", "none"))
-        this.SnsPostList.add(SnsPost("LMJ", "SNS 만들기", "2022.10.04", "none"))
+        ApiCallTest()
         this.snsPostRecyclerViewAdapter = SnsPostRecyclerViewAdapter()
         this.snsPostRecyclerViewAdapter.submitList(this.SnsPostList)
 
-        my_sns_recycler_view.layoutManager =
+        sns_post_recycler_view.layoutManager =
             GridLayoutManager(this.context, 1, GridLayoutManager.VERTICAL, false)
-        my_sns_recycler_view.adapter = this.snsPostRecyclerViewAdapter
+        sns_post_recycler_view.adapter = this.snsPostRecyclerViewAdapter
 
+        //스크롤 이벤트 처리 함수
+        initScrollListener(this.snsPostRecyclerViewAdapter)
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         sns_top_app_bar.setOnMenuItemClickListener {
@@ -110,40 +107,72 @@ class SnsFragment : Fragment() {
                 else -> super.onOptionsItemSelected(it)
             }
         }
-
-
-//        //버튼이 클릭되면 액비티비 호출
-//        val btnActivity: Button = view.findViewById(R.id.btn_newActivity)
-//        btnActivity.setOnClickListener{
-//            activity?.let{
-//                val intent = Intent(it, SnsTestActivity::class.java)
-//                it.startActivity(intent)
-//            }
-//        }
     }
 
 
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle item selection
-//
-//        Log.d(SnsFragment.TAG, "SnsFragment - onOptionsItemSelected() called")
-//        return when (item.itemId) {
-//            R.id.sns_post_add -> {
-//                Toast.makeText(App.instance, "sns_post", Toast.LENGTH_SHORT).show()
-//                true
-//            }
-//            R.id.sns_friends -> {
-//                Toast.makeText(App.instance, "sns_friends", Toast.LENGTH_SHORT).show()
-//                true
-//            }
-//            R.id.sns_direct_message -> {
-//                Toast.makeText(App.instance, "sns_direct_message", Toast.LENGTH_SHORT).show()
-//                true
-//            }
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
+    //스크롤 이벤트 처리 함수
+    private fun initScrollListener(snsPostRecyclerViewAdapter: SnsPostRecyclerViewAdapter) {
+        sns_post_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = sns_post_recycler_view.layoutManager
+
+                //뷰 상에서 마지막으로 보인 아이템 찾기
+                val lastVisibleItem = (layoutManager as LinearLayoutManager)
+                    .findLastVisibleItemPosition()
+
+                //레이아웃 매니저가 지닌 전체 아이템 갯수와 현재 뷰에서 마지막 보이는 아이템 개수를 비교하여 API Call
+                if (layoutManager.itemCount <= lastVisibleItem + 2) {
+                    ApiCallTest()
+                    snsPostRecyclerViewAdapter.notifyItemInserted(SnsPostList.size)
+
+                }
+            }
+        })
+    }
 
 
+    fun ApiCallTest() {
+        this.SnsPostList.add(
+            SnsPost(
+                "유상록",
+                "게시물번호 " + (totalCount++).toString(),
+                "2022.10.04",
+                "none"
+            )
+        )
+        this.SnsPostList.add(
+            SnsPost(
+                "오홍석",
+                "게시물번호 " + (totalCount++).toString(),
+                "2022.10.04",
+                "none"
+            )
+        )
+        this.SnsPostList.add(
+            SnsPost(
+                "LMJ",
+                "게시물번호 " + (totalCount++).toString(),
+                "2022.10.04",
+                "none"
+            )
+        )
+        this.SnsPostList.add(
+            SnsPost(
+                "LMJ",
+                "게시물번호 " + (totalCount++).toString(),
+                "2022.10.04",
+                "none"
+            )
+        )
+        this.SnsPostList.add(
+            SnsPost(
+                "LMJ",
+                "게시물번호 " + (totalCount++).toString(),
+                "2022.10.04",
+                "none"
+            )
+        )
+    }
 }

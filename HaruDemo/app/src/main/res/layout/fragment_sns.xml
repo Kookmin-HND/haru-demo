@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:liftOnScroll="true"
-            app:liftOnScrollTargetViewId="@id/my_sns_recycler_view">
+            app:liftOnScrollTargetViewId="@id/sns_post_recycler_view">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/sns_top_app_bar"
@@ -29,7 +29,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_sns_recycler_view"
+            android:id="@+id/sns_post_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
