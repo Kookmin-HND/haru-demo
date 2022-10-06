@@ -10,4 +10,6 @@
     <color name="skyBlue">#a2d2ff</color>
     <color name="skyBlueLight">#bde0fe</color>
     <color name="gray">#B3B6B7</color>
+    <color name="todo_day_btn_clicked">#c7f9cc</color>
+    <color name="todo_day_btn">#80ed99</color>
 </resources>

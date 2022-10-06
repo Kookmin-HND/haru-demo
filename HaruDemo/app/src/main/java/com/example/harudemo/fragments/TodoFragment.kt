@@ -1,6 +1,7 @@
 package com.example.harudemo.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.example.harudemo.R
 import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 
 class TodoFragment : Fragment() {
@@ -53,6 +55,11 @@ class TodoFragment : Fragment() {
                 LinearLayoutManager.VERTICAL,
                 false,
             )
+        }
+
+        binding.btnAddTodo.setOnClickListener {
+            val intent = Intent(context, TodoInputActivity::class.java)
+            startActivity(intent)
         }
 
         return binding.root

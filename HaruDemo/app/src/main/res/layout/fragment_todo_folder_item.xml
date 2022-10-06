@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="#f0f0f0"
-    app:strokeColor="#e3e3e3"
+    app:cardBackgroundColor="#fefefe"
     app:cardCornerRadius="3dp"
-    app:strokeWidth="1dp">
+    app:strokeColor="#e3e3e3"
+    app:strokeWidth="0.5dp">
 
     <TextView
         android:id="@+id/tv_folder_title"
