@@ -80,6 +80,14 @@ object TodoDummyData {
         )
     )
 
+    var nextTodoId = 5
+    get() {
+        val res = field
+        field++
+        return res
+    }
+
+
     fun getFolderTitles(): ArrayList<String> {
         val result = ArrayList<String>()
         for (todo in todoInterfaceTables) {
@@ -268,5 +276,9 @@ object TodoDummyData {
             result.add(Section(date.key, date.value))
         }
         return result
+    }
+
+    fun addTodo(todo: Todo) {
+
     }
 }
