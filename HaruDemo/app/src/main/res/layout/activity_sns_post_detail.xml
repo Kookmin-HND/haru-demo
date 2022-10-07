@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:padding="0dp"
+
+        >
+
+        <Button
+            android:id="@+id/sns_post_detail_cancel_button"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="#00ff0000"
+            android:backgroundTint="@color/white"
+            android:gravity="bottom"
+            android:text="X"
+            android:textSize="25dp"
+            android:insetBottom="0dp"
+            android:insetTop="0dp"
+            >
+        </Button>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_margin="0dp"
+            android:gravity="bottom"
+            android:text="글 쓰기"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+        <Button
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_gravity="bottom"
+            android:insetBottom="0dp"
+            android:insetTop="0dp"
+            android:text="완료"
+            android:textColor="@color/white">
+        </Button>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/sns_post_detail_writer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="작성자"
+            android:textSize="20dp"
+            >
+        </TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"/>
+        <TextView
+            android:id="@+id/sns_post_detail_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="게시물 내용"
+            android:textSize="20dp"
+            >
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

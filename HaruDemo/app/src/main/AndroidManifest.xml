@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.harudemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,6 +17,18 @@
         android:theme="@style/Theme.HaruDemo"
         tools:targetApi="31">
         <activity
+            android:name=".sns.SnsPostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".sns.SnsAddPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".sns.SnsDirectMessageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".sns.SnsFriendsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -22,9 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".sns.SnsTestActivity"
-            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

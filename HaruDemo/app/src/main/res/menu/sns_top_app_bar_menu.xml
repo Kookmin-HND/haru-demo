@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sns_post_add"
+        android:title="글쓰기"
+        android:icon="@drawable/sns_post_add"
+        android:contentDescription="글쓰기 버튼"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sns_friends"
+        android:icon="@drawable/sns_friends"
+        android:title="친구목록"
+        android:contentDescription="친구 목록 보기"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sns_direct_message"
+        android:title="DM"
+        android:icon="@drawable/sns_direct_message"
+        android:contentDescription="Direct Message"
+        app:showAsAction="ifRoom" />
+</menu>
