@@ -28,7 +28,7 @@ object RetrofitClient {
         //okhttp 인스턴스 생성
         val client = OkHttpClient.Builder()
 
-        // 로그를 찍기 위해 로깅 인터셉터 추가
+        // 로그를 찍기 위해 로깅 인터셉터 추가 - 테스트 용도
         val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
             override fun log(message: String) {
 //                Log.d(TAG, "RetrofitClient - log() called / message: $message")

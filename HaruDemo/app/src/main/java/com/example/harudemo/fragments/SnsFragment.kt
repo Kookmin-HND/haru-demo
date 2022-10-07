@@ -21,18 +21,15 @@ import com.example.harudemo.sns.SnsFriendsActivity
 import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class SnsFragment : Fragment() {
-    private var totalCount = 0 // 전체 아이템 개수
-    private var isNext = true // 다음 페이지 유무
-    private var page = 0       // 현재 페이지
-    private var limit = 10     // 한 번에 가져올 아이템 수
+//    추후 API 만들고 사용할 변수들
+//    private var totalCount = 0 // 전체 아이템 개수
+//    private var isNext = true // 다음 페이지 유무
+//    private var page = 0       // 현재 페이지
+//    private var limit = 10     // 한 번에 가져올 아이템 수
 
-    // 데이터
+    // 게시물 데이터
     private var SnsPostList = ArrayList<SnsPost>()
 
     // 어답터
@@ -76,7 +73,8 @@ class SnsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ApiCallTest()
+        //최초로 API 호출하여 데이터 얻어오기
+        testApiCall()
         this.snsPostRecyclerViewAdapter = SnsPostRecyclerViewAdapter()
         this.snsPostRecyclerViewAdapter.submitList(this.SnsPostList)
 
@@ -95,7 +93,6 @@ class SnsFragment : Fragment() {
                         val intent = Intent(FragmentActivity, SnsAddPostActivity::class.java)
                         FragmentActivity.startActivity(intent)
                     }
-
                     true
                 }
                 R.id.sns_friends -> {
@@ -124,69 +121,21 @@ class SnsFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                val layoutManager = sns_post_recycler_view.layoutManager
-
-                Log.d(TAG, "SnsFragment - onScrolled() called ${layoutManager?.itemCount}")
-
-                //뷰 상에서 마지막으로 보인 아이템 찾기
-                val lastVisibleItem = (layoutManager as LinearLayoutManager)
-                    .findLastVisibleItemPosition()
-
-                // 스크롤이 끝에 도달했는지 확인
+                // 스크롤이 끝에 도달했는지 확인하고 API 호출하여 새로운 데이터 추가
                 if (!sns_post_recycler_view.canScrollVertically(1)) {
-                    ApiCallTest()
+                    testApiCall()
                 }
-                //레이아웃 매니저가 지닌 전체 아이템 갯수와 현재 뷰에서 마지막 보이는 아이템 개수를 비교하여 API Call
-//                if (layoutManager.itemCount <= lastVisibleItem + 2) {
-//
-//                }
             }
         })
     }
 
 
-    fun ApiCallTest() {
-//        this.SnsPostList.add(
-//            SnsPost(
-//                "유상록",
-//                "게시물번호 " + (totalCount++).toString(),
-//                "2022.10.04",
-//                "none"
-//            )
-//        )
-//        this.SnsPostList.add(
-//            SnsPost(
-//                "유상록",
-//                "게시물번호 " + (totalCount++).toString(),
-//                "2022.10.04",
-//                "none"
-//            )
-//        )
-//        this.SnsPostList.add(
-//            SnsPost(
-//                "유상록",
-//                "게시물번호 " + (totalCount++).toString(),
-//                "2022.10.04",
-//                "none"
-//            )
-//        )
-//        this.SnsPostList.add(
-//            SnsPost(
-//                "유상록",
-//                "게시물번호 " + (totalCount++).toString(),
-//                "2022.10.04",
-//                "none"
-//            )
-//        )
-//
-//        Log.d(TAG, "SnsFragment - ApiCallTest() called, 스크롤 리스너")
-
-
+    fun testApiCall() {
         RetrofitManager.instance.getPosts(completion = { responseStatus, responseDataArrayList ->
             Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
             when (responseStatus) {
-                //API 호출 성공
 
+                //API 호출 성공
                 RESPONSE_STATUS.OKAY -> {
                     responseDataArrayList!!.forEach {
                         this.SnsPostList.add(it)

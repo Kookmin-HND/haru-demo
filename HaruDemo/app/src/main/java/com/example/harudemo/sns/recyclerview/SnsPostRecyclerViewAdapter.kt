@@ -2,10 +2,13 @@ package com.example.harudemo.sns.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
 
+//SnsPost 리사이클러뷰 어댑터
 class SnsPostRecyclerViewAdapter : RecyclerView.Adapter<SnsPostItemViewHolder>() {
     private var snsPostList = ArrayList<SnsPost>()
 
@@ -24,6 +27,7 @@ class SnsPostRecyclerViewAdapter : RecyclerView.Adapter<SnsPostItemViewHolder>()
 
         holder.itemView.setOnClickListener{
             onItemClick?.invoke(this.snsPostList[position])
+            Toast.makeText(App.instance, "itemClick! ${this.snsPostList[position].writer}", Toast.LENGTH_SHORT).show()
         }
     }
 
