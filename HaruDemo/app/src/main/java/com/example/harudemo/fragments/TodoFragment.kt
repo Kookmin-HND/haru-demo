@@ -3,12 +3,14 @@ package com.example.harudemo.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
 import com.example.harudemo.TodoDummyData
@@ -20,14 +22,18 @@ import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 class TodoFragment : Fragment() {
     companion object {
         const val TAG: String = "[TODO-LOG]"
+        private var instance: TodoFragment? = null
 
-        fun newInstance(): TodoFragment {
-            return TodoFragment()
+        fun getInstance(): TodoFragment {
+            if (instance == null) {
+                instance = TodoFragment()
+            }
+            return instance!!
         }
     }
 
-    private lateinit var todoListFragment: TodoListFragment
-    private lateinit var binding: FragmentTodoBinding
+    private var todoListFragment: TodoListFragment? = null
+    private var binding: FragmentTodoBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +42,7 @@ class TodoFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        binding?.rvFolderList?.adapter?.notifyDataSetChanged()
     }
 
     //뷰가 생성되었을 때
@@ -49,20 +56,19 @@ class TodoFragment : Fragment() {
 
         activity?.let {
             val folderListAdapter = TodoFolderListAdapter(TodoDummyData.getFolderTitles(), it)
-            binding.rvFolderList.adapter = folderListAdapter
-            binding.rvFolderList.layoutManager = LinearLayoutManager(
-                binding.root.context,
+            binding?.rvFolderList?.adapter = folderListAdapter
+            binding?.rvFolderList?.layoutManager = LinearLayoutManager(
+                binding?.root?.context,
                 LinearLayoutManager.VERTICAL,
                 false,
             )
         }
 
-        binding.btnAddTodo.setOnClickListener {
+        binding?.btnAddTodo?.setOnClickListener {
             val intent = Intent(context, TodoInputActivity::class.java)
             startActivity(intent)
         }
-
-        return binding.root
+        return binding?.root
     }
 
 
@@ -70,16 +76,16 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
-        binding.btnCompleted.setOnClickListener { onBtnClicked(it) }
-        binding.btnToday.setOnClickListener { onBtnClicked(it) }
-        binding.btnWeek.setOnClickListener { onBtnClicked(it) }
-        binding.btnAll.setOnClickListener { onBtnClicked(it) }
+        binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
     }
 
     private fun onBtnClicked(view: View) {
         val bundle = Bundle()
         todoListFragment = TodoListFragment.newInstance()
-        todoListFragment.arguments = bundle
+        todoListFragment?.arguments = bundle
 
         when ((view as Button).text.toString()) {
             "오늘" -> {
@@ -98,7 +104,8 @@ class TodoFragment : Fragment() {
             }
         }
 
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, todoListFragment)?.commit()
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.fragments_frame, todoListFragment!!)?.commit()
     }
 
 }

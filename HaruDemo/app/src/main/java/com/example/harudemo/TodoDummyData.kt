@@ -1,5 +1,6 @@
 package com.example.harudemo
 
+import android.util.Log
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoInterface
@@ -7,7 +8,7 @@ import com.example.harudemo.todo.types.TodoDateInterface
 import java.time.LocalDate
 
 object TodoDummyData {
-    val todoInterfaceTables = arrayListOf<TodoInterface>(
+    val todoInterfaces = arrayListOf<TodoInterface>(
         TodoInterface(
             todoId = 1,
             writer = "tester@example.com",
@@ -47,7 +48,7 @@ object TodoDummyData {
 
     )
 
-    val todoDateInterfaceTables = arrayListOf<TodoDateInterface>(
+    val todoDateInterfaces = arrayListOf<TodoDateInterface>(
         TodoDateInterface(
             todoId = 1,
             date = "2022-9-30",
@@ -80,17 +81,11 @@ object TodoDummyData {
         )
     )
 
-    var nextTodoId = 5
-    get() {
-        val res = field
-        field++
-        return res
-    }
-
+    private var nextTodoId = 5
 
     fun getFolderTitles(): ArrayList<String> {
         val result = ArrayList<String>()
-        for (todo in todoInterfaceTables) {
+        for (todo in todoInterfaces) {
             if (todo.folder !in result) {
                 result.add(todo.folder)
             }
@@ -101,14 +96,14 @@ object TodoDummyData {
     fun getFolderByFolderTitle(folderTitle: String): ArrayList<Section> {
         val result = ArrayList<Section>()
         result.add(Section(folderTitle, ArrayList()))
-        for (todo in todoInterfaceTables) {
+        for (todo in todoInterfaces) {
             if (todo.folder == folderTitle) {
-                for (todoDate in todoDateInterfaceTables) {
+                for (todoDate in todoDateInterfaces) {
                     if (todoDate.completed) {
                         continue
                     }
                     if (todoDate.todoId == todo.todoId) {
-                        result[0].todoList.add(Todo(todo.content, todoDate))
+                        result[0].todoList.add(Todo(todo, todoDate))
                     }
                 }
             }
@@ -120,17 +115,17 @@ object TodoDummyData {
         val result = ArrayList<Section>()
         val folders = HashMap<String, ArrayList<Todo>>()
 
-        for (todo in todoInterfaceTables) {
+        for (todo in todoInterfaces) {
             if (todo.folder !in folders) {
                 folders[todo.folder] = ArrayList<Todo>()
             }
 
-            for (todoDate in todoDateInterfaceTables) {
+            for (todoDate in todoDateInterfaces) {
                 if (todoDate.completed) {
                     continue
                 }
                 if (todo.todoId == todoDate.todoId) {
-                    folders[todo.folder]?.add(Todo(todo.content, todoDate))
+                    folders[todo.folder]?.add(Todo(todo, todoDate))
                 }
             }
         }
@@ -161,8 +156,8 @@ object TodoDummyData {
             dates[date.joinToString("-")] = ArrayList()
         }
 
-        for (todo in todoInterfaceTables) {
-            for (todoDate in todoDateInterfaceTables) {
+        for (todo in todoInterfaces) {
+            for (todoDate in todoDateInterfaces) {
                 if (!todoDate.completed) {
                     continue
                 }
@@ -174,7 +169,7 @@ object TodoDummyData {
                             splitDate[1].toInt() == date[1] &&
                             splitDate[2].toInt() == date[2]
                         ) {
-                            dates[date.joinToString("-")]?.add(Todo(todo.content, todoDate))
+                            dates[date.joinToString("-")]?.add(Todo(todo, todoDate))
                             break
                         }
                     }
@@ -197,12 +192,12 @@ object TodoDummyData {
         val result = ArrayList<Section>()
         val folders = HashMap<String, ArrayList<Todo>>()
 
-        for (todo in todoInterfaceTables) {
+        for (todo in todoInterfaces) {
             if (todo.folder !in folders) {
                 folders[todo.folder] = ArrayList<Todo>()
             }
 
-            for (todoDate in todoDateInterfaceTables) {
+            for (todoDate in todoDateInterfaces) {
                 if (todoDate.completed) {
                     continue
                 }
@@ -217,7 +212,7 @@ object TodoDummyData {
                     ) {
                         continue
                     }
-                    folders[todo.folder]?.add(Todo(todo.content, todoDate))
+                    folders[todo.folder]?.add(Todo(todo, todoDate))
                 }
             }
         }
@@ -248,8 +243,8 @@ object TodoDummyData {
             dates[date.joinToString("-")] = ArrayList()
         }
 
-        for (todo in todoInterfaceTables) {
-            for (todoDate in todoDateInterfaceTables) {
+        for (todo in todoInterfaces) {
+            for (todoDate in todoDateInterfaces) {
                 if (todoDate.completed) {
                     continue
                 }
@@ -261,7 +256,7 @@ object TodoDummyData {
                             splitDate[1].toInt() == date[1] &&
                             splitDate[2].toInt() == date[2]
                         ) {
-                            dates[date.joinToString("-")]?.add(Todo(todo.content, todoDate))
+                            dates[date.joinToString("-")]?.add(Todo(todo, todoDate))
                             break
                         }
                     }
@@ -278,7 +273,62 @@ object TodoDummyData {
         return result
     }
 
-    fun addTodo(todo: Todo) {
+    fun addTodo(folder: String, content: String, date: String) {
+        val tdInterface = TodoInterface(
+            todoId = nextTodoId,
+            writer = "tester@example.com",
+            folder = folder,
+            content = content,
+            createdAt = LocalDate.now().toString(),
+            begin = date,
+            end = date,
+        )
 
+        val tdDateInterface = TodoDateInterface(
+            nextTodoId,
+            date = date,
+            completed = false,
+        )
+
+        todoInterfaces.add(tdInterface)
+        todoDateInterfaces.add(tdDateInterface)
+        nextTodoId++
+    }
+
+
+    fun addTodo(folder: String, content: String, dates: ArrayList<String>) {
+        dates.sortWith(Comparator { v1, v2 ->
+            val date1 = v1.split('-').map { it.toInt() }
+            val date2 = v2.split('-').map { it.toInt() }
+            if (date1[0] == date2[0]) {
+                if (date1[1] == date2[1]) {
+                    return@Comparator date1[2].compareTo(date2[2])
+                }
+                return@Comparator date1[1].compareTo(date2[1])
+            }
+            return@Comparator date1[0].compareTo(date2[0])
+        })
+
+        val tdInterface = TodoInterface(
+            todoId = nextTodoId,
+            writer = "tester@example.com",
+            folder = folder,
+            content = content,
+            createdAt = LocalDate.now().toString(),
+            begin = dates[0],
+            end = dates[dates.size - 1],
+        )
+
+        for (date in dates) {
+            val tdDateInterface = TodoDateInterface(
+                nextTodoId,
+                date = date,
+                completed = false,
+            )
+            todoDateInterfaces.add(tdDateInterface)
+        }
+
+        todoInterfaces.add(tdInterface)
+        nextTodoId++
     }
 }

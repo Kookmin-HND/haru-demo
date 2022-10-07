@@ -15,7 +15,7 @@ class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private
     inner class TodoFolderListViewHolder(private val itembinding: FragmentTodoFolderItemBinding, private val activity: FragmentActivity) :
         RecyclerView.ViewHolder(itembinding.root) {
 
-        private lateinit var todoListFragment: TodoListFragment
+        private var todoListFragment: TodoListFragment? = null
 
         fun bindItem(folderTitle: String) {
             itembinding.tvFolderTitle.text = folderTitle
@@ -25,8 +25,8 @@ class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private
                 bundle.putString("folder-title", folderTitle)
 
                 todoListFragment = TodoListFragment.newInstance()
-                todoListFragment.arguments = bundle
-                activity.supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, todoListFragment).commit()
+                todoListFragment?.arguments = bundle
+                activity.supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, todoListFragment!!).commit()
             }
         }
     }

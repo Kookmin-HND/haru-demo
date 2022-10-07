@@ -12,8 +12,8 @@ class TodoListSectionAdapter(private val section: Section) :
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(todoItem: Todo) {
-            itemBinding.tvTodoContent.text = todoItem.content
-            itemBinding.tvTodoDate.text = todoItem.todo.date
+            itemBinding.tvTodoContent.text = todoItem.todo.content
+            itemBinding.tvTodoDate.text = todoItem.todoDate.date
         }
     }
 
@@ -28,6 +28,17 @@ class TodoListSectionAdapter(private val section: Section) :
     }
 
     override fun onBindViewHolder(holder: TodoListSectionViewHolder, position: Int) {
+        section.todoList.sortWith(Comparator { v1, v2 ->
+            val date1 = v1.todoDate.date.split('-').map { it.toInt() }
+            val date2 = v2.todoDate.date.split('-').map {it. toInt()}
+            if (date1[0] == date2[0]) {
+                if (date1[1] == date2[1]) {
+                    return@Comparator date1[2].compareTo(date2[2])
+                }
+                return@Comparator date1[1].compareTo(date2[1])
+            }
+            return@Comparator date1[0].compareTo(date2[0])
+        })
         holder.bindItem(section.todoList[position])
     }
 
