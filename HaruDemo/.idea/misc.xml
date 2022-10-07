@@ -28,6 +28,7 @@
         <entry key="app/src/main/res/layout/activity_sns_add_post2.xml" value="0.4276041666666667" />
         <entry key="app/src/main/res/layout/activity_sns_direct_message.xml" value="0.4276041666666667" />
         <entry key="app/src/main/res/layout/activity_sns_friends.xml" value="0.4276041666666667" />
+        <entry key="app/src/main/res/layout/activity_sns_post_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sns_test.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_etc.xml" value="0.346875" />
