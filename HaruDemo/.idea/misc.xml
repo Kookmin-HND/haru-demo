@@ -17,7 +17,6 @@
         <entry key="app/src/main/res/drawable/ic_baseline_tag_faces_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_home_black_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2485" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.3848958333333333" />
         <entry key="app/src/main/res/drawable/sns_direct_message.xml" value="0.1965" />
         <entry key="app/src/main/res/drawable/sns_friends.xml" value="0.3075" />
         <entry key="app/src/main/res/drawable/sns_post_add.xml" value="0.3075" />
@@ -39,9 +38,6 @@
         <entry key="app/src/main/res/layout/fragment_sns.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/login_activity.xml" value="0.3854166666666667" />
-        <entry key="app/src/main/res/layout/login_layout.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/signup_layout.xml" value="0.384375" />
         <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_sns_post_item.xml" value="0.23489583333333333" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />

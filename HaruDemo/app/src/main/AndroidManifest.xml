@@ -37,9 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".sns.SnsTestActivity"
-            android:screenOrientation="portrait" />
 
         <!--  로그인 ,회원가입 Activity 추가 -->
         <activity android:name=".auth.LoginActivity"/>
