@@ -148,11 +148,11 @@ class TodoInputActivity : AppCompatActivity() {
         val trimText = text.trim()
         val res: ArrayList<String> = ArrayList()
         val splitted = trimText.split(" ")
-        res.add(splitted[0].slice(1 until splitted[0].length)) // #폴더
-        res.add(splitted.slice(1 until splitted.size).joinToString(" "))
-        if (res.size < 2) {
+        if (splitted.size < 2) {
             return null
         }
+        res.add(splitted[0].slice(1 until splitted[0].length)) // #폴더
+        res.add(splitted.slice(1 until splitted.size).joinToString(" "))
         return res
     }
 
