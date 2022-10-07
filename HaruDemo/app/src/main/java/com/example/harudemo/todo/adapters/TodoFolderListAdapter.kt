@@ -18,12 +18,14 @@ class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private
         private var todoListFragment: TodoListFragment? = null
 
         fun bindItem(folderTitle: String) {
+            // TodoFragment내 Folder RecyclerView에 폴더 이름을 기준으로 폴더 클릭 할 수 있는 아이템 생성
             itembinding.tvFolderTitle.text = folderTitle
             itembinding.tvFolderTitle.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("by", "folder")
                 bundle.putString("folder-title", folderTitle)
 
+                // Folder 클릭시에 TodoList에 폴더로부터 클릭 됬음을 알리면서 Fragment 전환
                 todoListFragment = TodoListFragment.newInstance()
                 todoListFragment?.arguments = bundle
                 activity.supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, todoListFragment!!).commit()

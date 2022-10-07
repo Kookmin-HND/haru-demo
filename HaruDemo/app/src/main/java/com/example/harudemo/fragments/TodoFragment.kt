@@ -24,6 +24,7 @@ class TodoFragment : Fragment() {
         const val TAG: String = "[TODO-LOG]"
         private var instance: TodoFragment? = null
 
+        // TodoFragment를 Singleton 방식으로 접근
         fun getInstance(): TodoFragment {
             if (instance == null) {
                 instance = TodoFragment()
@@ -42,7 +43,6 @@ class TodoFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        binding?.rvFolderList?.adapter?.notifyDataSetChanged()
     }
 
     //뷰가 생성되었을 때
@@ -54,6 +54,7 @@ class TodoFragment : Fragment() {
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
 
+        // Folder Item을 Recycler View에 추가
         activity?.let {
             val folderListAdapter = TodoFolderListAdapter(TodoDummyData.getFolderTitles(), it)
             binding?.rvFolderList?.adapter = folderListAdapter
@@ -64,6 +65,7 @@ class TodoFragment : Fragment() {
             )
         }
 
+        // todo 추가 버튼 클릭시에 새로운 액티비티로 이동
         binding?.btnAddTodo?.setOnClickListener {
             val intent = Intent(context, TodoInputActivity::class.java)
             startActivity(intent)
@@ -76,12 +78,15 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        // 여러 정렬 방법 버튼들 이벤트 리스너 설정 해당 함수는 아래에 있음
         binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
         binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
         binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
         binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
     }
 
+    // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록
+    // 데이터를 Bundle에 추가해서 넣고 TodoList Fragment로 연결한다.
     private fun onBtnClicked(view: View) {
         val bundle = Bundle()
         todoListFragment = TodoListFragment.newInstance()

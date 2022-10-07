@@ -7,6 +7,7 @@ import com.example.harudemo.todo.types.TodoInterface
 import com.example.harudemo.todo.types.TodoDateInterface
 import java.time.LocalDate
 
+// 테스트하기 위한 임시 데이터 및 임시 유사 API 구현
 object TodoDummyData {
     val todoInterfaces = arrayListOf<TodoInterface>(
         TodoInterface(

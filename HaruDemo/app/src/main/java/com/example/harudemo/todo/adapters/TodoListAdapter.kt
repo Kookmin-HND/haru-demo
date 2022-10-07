@@ -14,6 +14,7 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
         fun bindItem(section: Section) {
+            // Section 이름, 하위 Recycler View에 Adapter, LayoutManager 설정
             val sectionAdapter = TodoListSectionAdapter(section)
             itemBinding.tvSectionName.text = section.sectionTitle
             itemBinding.rvTodoList.adapter = sectionAdapter
@@ -23,11 +24,13 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
                 false
             )
 
+            // Section 클릭시에 표시 전환
             itemBinding.layoutSectionTitle.setOnClickListener {
                 setToggle()
             }
         }
 
+        // 표시 전환하는 함수
         private fun setToggle() {
             if (itemBinding.rvTodoList.visibility == View.VISIBLE) {
                 itemBinding.rvTodoList.visibility = View.GONE
