@@ -25,7 +25,9 @@
         <entry key="app/src/main/res/layout/fragment_sns.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/login_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/login_activity.xml" value="0.3854166666666667" />
+        <entry key="app/src/main/res/layout/login_layout.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/signup_layout.xml" value="0.384375" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
       </map>

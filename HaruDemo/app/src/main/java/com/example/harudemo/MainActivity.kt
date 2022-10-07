@@ -1,13 +1,13 @@
 package com.example.harudemo
 
-import android.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.harudemo.auth.LoginActivity
 import com.example.harudemo.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity(){
     private lateinit var snsFragment: SnsFragment
@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity(){
         snsFragment = SnsFragment.newInstance()
         //todoFragment를 맨 처음 실행함
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment).commit()
+
+        button.setOnClickListener{
+            val intent = Intent(this, LoginActivity::class.java)
+            Toast.makeText(this, "로그인 페이지로 이동", Toast.LENGTH_SHORT).show()
+            startActivity(intent)
+        }
     }
 
     //바텀 네비게이션 아이템 클릭 리스너
