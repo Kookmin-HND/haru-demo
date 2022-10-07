@@ -1,12 +1,16 @@
 package com.example.harudemo
 
 import android.os.Bundle
+import android.service.voice.VoiceInteractionSession.ActivityId
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private var binding: ActivityMainBinding? = null
     private var snsFragment: SnsFragment? = null
     private var calendarFragment: CalendarFragment? = null
     private var todoFragment: TodoFragment? = null
@@ -15,13 +19,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         bottom_nav.setOnNavigationItemSelectedListener(onBottomNavItemSelectedListener)
+        bottom_nav.menu.getItem(2).isChecked = true
+        // TodoFragment를 가장 먼저 실행함
         snsFragment = SnsFragment.newInstance()
-        //todoFragment를 맨 처음 실행함
-        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment!!).commit()
-
+        todoFragment = TodoFragment.getInstance()
+        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
     }
 
     //바텀 네비게이션 아이템 클릭 리스너
@@ -29,99 +35,46 @@ class MainActivity : AppCompatActivity() {
         BottomNavigationView.OnNavigationItemSelectedListener {
             /*
             데이터를 유지하기 위해
-            최초 선택 시에만 프래그먼트를 만들고 이후에는 생성된 프래그먼트를 재사용한다
-            현재 선택된 프래그먼트를 show하고, 나머지 프래그먼트를 hide한다.
+            snsFragment를 관리하는 FrameLayout이 따로 있고 해당 레이아웃만 보여지는 상태를 토글로 관리하여
+            데이터를 유지시키고 다른 것들은 기존 방법을 유지하여 화면 전환을 한다.
             */
             when (it.itemId) {
-                R.id.menu_home -> { //sns 메뉴 선택 시
-                    if (snsFragment == null) {
-                        snsFragment = SnsFragment.newInstance()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragments_frame, snsFragment!!).commit()
-                    }
-                    if (snsFragment != null) supportFragmentManager.beginTransaction()
-                        .show(snsFragment!!).commit()
-                    if (calendarFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(calendarFragment!!).commit()
-                    if (todoFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(todoFragment!!).commit()
-                    if (statisticsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(statisticsFragment!!).commit()
-                    if (etcFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(etcFragment!!).commit()
+                R.id.menu_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_sns, snsFragment!!).commit()
+                    binding?.fragmentSns?.visibility = View.VISIBLE
+                    binding?.fragmentsFrame?.visibility = View.GONE
                 }
-                R.id.menu_calendar -> { //calendar 메뉴 선택 시
-                    if (calendarFragment == null) {
-                        calendarFragment = CalendarFragment.newInstance()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragments_frame, calendarFragment!!).commit()
-                    }
-                    if (calendarFragment != null) supportFragmentManager.beginTransaction()
-                        .show(calendarFragment!!).commit()
-                    if (snsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(snsFragment!!).commit()
-                    if (todoFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(todoFragment!!).commit()
-                    if (statisticsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(statisticsFragment!!).commit()
-                    if (etcFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(etcFragment!!).commit()
+                R.id.menu_calendar -> {
+                    calendarFragment = CalendarFragment.newInstance()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, calendarFragment!!).commit()
+                    binding?.fragmentSns?.visibility = View.GONE
+                    binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
-                R.id.menu_todo -> { // 투두 메뉴 선택시
-                    if (todoFragment == null) {
-                        todoFragment = TodoFragment.newInstance()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragments_frame, todoFragment!!).commit()
-                    }
-                    if (todoFragment != null) supportFragmentManager.beginTransaction()
-                        .show(todoFragment!!).commit()
-                    if (snsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(snsFragment!!).commit()
-                    if (calendarFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(calendarFragment!!).commit()
-                    if (statisticsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(statisticsFragment!!).commit()
-                    if (etcFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(etcFragment!!).commit()
-
+                R.id.menu_todo -> {
+                    todoFragment = TodoFragment.getInstance()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, todoFragment!!).commit()
+                    binding?.fragmentSns?.visibility = View.GONE
+                    binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
-                R.id.menu_statistic -> { // 기록 메뉴 선택 시
-                    if (statisticsFragment == null) {
-                        statisticsFragment = StatisticsFragment.newInstance()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragments_frame, statisticsFragment!!).commit()
-                    }
-                    if (statisticsFragment != null) supportFragmentManager.beginTransaction()
-                        .show(statisticsFragment!!).commit()
-                    if (snsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(snsFragment!!).commit()
-                    if (calendarFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(calendarFragment!!).commit()
-                    if (todoFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(todoFragment!!).commit()
-                    if (etcFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(etcFragment!!).commit()
+                R.id.menu_statistic -> {
+                    statisticsFragment = StatisticsFragment.newInstance()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, statisticsFragment!!).commit()
+                    binding?.fragmentSns?.visibility = View.GONE
+                    binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
-                R.id.menu_etc -> { // 더보기 메뉴 선택 시
-                    if (etcFragment == null) {
-                        etcFragment = EtcFragment.newInstance()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragments_frame, etcFragment!!).commit()
-                    }
-                    if (etcFragment != null) supportFragmentManager.beginTransaction()
-                        .show(etcFragment!!).commit()
-                    if (snsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(snsFragment!!).commit()
-                    if (calendarFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(calendarFragment!!).commit()
-                    if (todoFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(todoFragment!!).commit()
-                    if (statisticsFragment != null) supportFragmentManager.beginTransaction()
-                        .hide(statisticsFragment!!).commit()
+                R.id.menu_etc -> {
+                    etcFragment = EtcFragment.newInstance()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, etcFragment!!).commit()
+                    binding?.fragmentSns?.visibility = View.GONE
+                    binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
             }
+
             true
         }
-
-
 }

@@ -14,9 +14,17 @@
         android:layout_above="@id/bottom_nav"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/white">
+        android:background="@color/white" />
 
-    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/fragment_sns"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_nav"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/white"
+        android:visibility="gone" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HaruDemo"
         tools:targetApi="31">
+
         <activity
             android:name=".sns.SnsPostDetailActivity"
             android:exported="false" />
@@ -37,6 +38,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".todo.TodoInputActivity"
+            android:screenOrientation="portrait" />
 
         <!--  로그인 ,회원가입 Activity 추가 -->
         <activity android:name=".auth.LoginActivity"/>

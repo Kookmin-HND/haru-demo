@@ -1,33 +1,48 @@
 package com.example.harudemo.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
+import com.example.harudemo.TodoDummyData
+import com.example.harudemo.databinding.FragmentTodoBinding
+import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.TodoInputActivity
+import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 
-class TodoFragment: Fragment() {
-    companion object{
-        const val TAG : String = "로그"
+class TodoFragment : Fragment() {
+    companion object {
+        const val TAG: String = "[TODO-LOG]"
+        private var instance: TodoFragment? = null
 
-        fun newInstance() : TodoFragment {
-            return TodoFragment()
+        // TodoFragment를 Singleton 방식으로 접근
+        fun getInstance(): TodoFragment {
+            if (instance == null) {
+                instance = TodoFragment()
+            }
+            return instance!!
         }
     }
 
+    private var todoListFragment: TodoListFragment? = null
+    private var binding: FragmentTodoBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Ranking - on Create() called" )
     }
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d(TAG, "Ranking - onAttach() called")
     }
 
     //뷰가 생성되었을 때
@@ -37,17 +52,65 @@ class TodoFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "Ranking - onCreateView() called")
+        binding = FragmentTodoBinding.inflate(inflater, container, false)
 
-        val view = inflater.inflate(R.layout.fragment_todo, container, false)
+        // Folder Item을 Recycler View에 추가
+        activity?.let {
+            val folderListAdapter = TodoFolderListAdapter(TodoDummyData.getFolderTitles(), it)
+            binding?.rvFolderList?.adapter = folderListAdapter
+            binding?.rvFolderList?.layoutManager = LinearLayoutManager(
+                binding?.root?.context,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
+        }
 
-        return view
+        // todo 추가 버튼 클릭시에 새로운 액티비티로 이동
+        binding?.btnAddTodo?.setOnClickListener {
+            val intent = Intent(context, TodoInputActivity::class.java)
+            startActivity(intent)
+        }
+        return binding?.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        // 여러 정렬 방법 버튼들 이벤트 리스너 설정 해당 함수는 아래에 있음
+        binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
+    }
+
+    // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록
+    // 데이터를 Bundle에 추가해서 넣고 TodoList Fragment로 연결한다.
+    private fun onBtnClicked(view: View) {
+        val bundle = Bundle()
+        todoListFragment = TodoListFragment.newInstance()
+        todoListFragment?.arguments = bundle
+
+        when ((view as Button).text.toString()) {
+            "오늘" -> {
+                bundle.putString("by", "today")
+            }
+            "일주일" -> {
+                bundle.putString("by", "week")
+            }
+            "전체" -> {
+                bundle.putString("by", "all")
+            }
+            "완료된 항목" -> {
+                bundle.putString("by", "completed")
+            }
+            else -> {
+            }
+        }
+
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.fragments_frame, todoListFragment!!)?.commit()
     }
 
 }
