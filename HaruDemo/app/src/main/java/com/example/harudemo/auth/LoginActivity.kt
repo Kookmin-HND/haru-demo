@@ -13,25 +13,30 @@ import kotlinx.android.synthetic.main.login_layout.*
 //로그인 액티비티
 class LoginActivity : AppCompatActivity() {
 
+    // FirebaseAuth 객체
     private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        auth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()  // auth에 instance가져오기
 
+        // 회원가입 버튼 클릭 기능
         signUpBtn.setOnClickListener{
             Log.d("MainActivity : ", "sign up btn click")
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
 
+        // 로그인 버튼 클릭
         loginBtn.setOnClickListener{
-            val email = userEmailEdit.text.toString()
-            val pw = userPwEdit.text.toString()
+            val email = userEmailEdit.text.toString()  // 변수에 입력한 e-mail 저장
+            val pw = userPwEdit.text.toString()        // 변수에 입력한 pw 저장
+
+            // 입력한 email, pw로 로그인 시도
             auth.signInWithEmailAndPassword(email, pw).addOnCompleteListener{
-                    task -> if(task.isSuccessful){
+                    task -> if(task.isSuccessful){ // firebase에 있을시 동작
                 Log.d("MainActivity : ", "Login success")
                 Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
             } else {

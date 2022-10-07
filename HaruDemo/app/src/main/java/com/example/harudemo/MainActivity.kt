@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(){
         //todoFragment를 맨 처음 실행함
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment).commit()
 
+        // 로그인 화면 전환을 위한 button
         button.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
             Toast.makeText(this, "로그인 페이지로 이동", Toast.LENGTH_SHORT).show()
