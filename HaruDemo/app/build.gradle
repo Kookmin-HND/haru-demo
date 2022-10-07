@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android-extensions'
+    // firebase 사용 플러그인
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -44,6 +46,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
+
+    // firebase 의존성 추가
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.8'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
     implementation 'androidx.annotation:annotation:1.5.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'

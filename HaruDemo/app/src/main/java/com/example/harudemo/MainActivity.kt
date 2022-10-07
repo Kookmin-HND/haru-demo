@@ -1,16 +1,10 @@
 package com.example.harudemo
 
-import android.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.fragments.*
-import com.example.harudemo.fragments.SnsFragment.Companion.TAG
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var snsFragment: SnsFragment? = null
@@ -27,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         snsFragment = SnsFragment.newInstance()
         //todoFragment를 맨 처음 실행함
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment!!).commit()
+
     }
 
     //바텀 네비게이션 아이템 클릭 리스너

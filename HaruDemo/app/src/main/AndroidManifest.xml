@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.harudemo">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".App"
@@ -37,6 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--  로그인 ,회원가입 Activity 추가 -->
+        <activity android:name=".auth.LoginActivity"/>
+        <activity android:name=".auth.SignUpActivity"/>
     </application>
 
 </manifest>
