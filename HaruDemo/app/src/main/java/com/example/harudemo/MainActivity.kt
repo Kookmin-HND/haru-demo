@@ -22,9 +22,14 @@ class MainActivity : AppCompatActivity(){
 
         bottom_nav.setOnNavigationItemSelectedListener(onBottomNavItemSelectedListener)
 
-        snsFragment = SnsFragment.newInstance()
+        /*snsFragment = SnsFragment.newInstance()
         //todoFragment를 맨 처음 실행함
-        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment).commit()
+        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, snsFragment).commit()*/
+
+        snsFragment = SnsFragment.newInstance()
+        calendarFragment = CalendarFragment.newInstance()
+        //todoFragment를 맨 처음 실행함
+        supportFragmentManager.beginTransaction().add(R.id.fragments_frame, calendarFragment).commit()
     }
 
     //바텀 네비게이션 아이템 클릭 리스너
