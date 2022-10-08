@@ -7,7 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue">#0000FF</color>
     <color name="skyBlue">#a2d2ff</color>
     <color name="skyBlueLight">#bde0fe</color>
     <color name="gray">#B3B6B7</color>
+    <color name="todo_day_btn_clicked">#c7f9cc</color>
+    <color name="todo_day_btn">#80ed99</color>
+    <color name="orange">#ff9500</color>
 </resources>
