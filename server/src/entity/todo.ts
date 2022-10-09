@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 //필요한 데이터베이스 스키마 entity에 생성
 
@@ -8,18 +14,28 @@ export class Todo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   writer: string;
 
-  @Column()
+  @Column({ nullable: false })
   todoId: number;
 
-  @Column()
+  @Column({ nullable: false })
   folder: string;
 
-  @Column()
+  @Column({ nullable: false })
   content: string;
 
-  @Column({ type: Date })
-  createdAt: string;
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
+  updatedAt: Date;
 }
