@@ -13,4 +13,7 @@ export class User {
 
   @Column()
   nickName: string;
+
+  @Column()
+  todoId: number;
 }
