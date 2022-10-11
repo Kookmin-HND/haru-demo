@@ -15,11 +15,49 @@ interface TodoInputInterface {
   dates: string[];
 }
 
+interface TodoResponseBody {
+  todos: Todo[];
+  todoDates: TodoDate[][];
+}
+
 export const path = "/todos";
 export const router = Router();
 
 //http://localhost:8000/api/todos
-router.get("/", async function (req: Request, res: Response) {});
+router.get(
+  "/:email",
+  async function (
+    req: Request<TodoParamsInterface>,
+    res: Response<TodoResponseBody>
+  ) {
+    const result: TodoResponseBody = { todos: [], todoDates: [] };
+
+    // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
+    const writer = req.params.email;
+
+    // 이 사용자가 작성한 모든 todo를 가져온다.
+    const todos = await myDataSource.getRepository(Todo).findBy({
+      writer: Equal(writer),
+    });
+
+    // 위에서 가져온 데이터를 결과값에 추가한다.
+    result.todos = todos;
+
+    for (let i = 0; i < todos.length; i++) {
+      // 이 사용자가 작성한 모든 todo에 해당하는 todoDate를 가져온다.
+      const todoDates = await myDataSource.getRepository(TodoDate).findBy({
+        writer: Equal(writer),
+        todoId: Equal(todos[i].todoId),
+      });
+
+      // 위에서 가져온 데이터를 결과값에 추가한다.
+      result.todoDates.push(todoDates);
+    }
+
+    // 이 사용자가 가지고 있는 모든 todo를 반환한다.
+    return res.send(result);
+  }
+);
 
 router.post(
   "/:email",
@@ -30,7 +68,7 @@ router.post(
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
 
-    // email를 통한 user 데이터 접근 후 todoId 데이터를 가져온다
+    // todoId 값을 가져오기 위해 user 데이터에 접근한다.
     const user = await myDataSource.getRepository(User).findOneBy({
       email: Equal(writer),
     });
@@ -63,17 +101,20 @@ router.post(
       content,
     });
 
-    // todo-date table에 접근하여 모든 일자에 따른 데이터를 생성 및 저장한다.
     dates.forEach(async (date) => {
+      // todo-date table에 접근하여 모든 일자에 따른 데이터를 생성 및 저장한다.
       const todoDate = await myDataSource.getRepository(TodoDate).create({
+        writer,
         todoId,
         date,
         completed: false,
       });
 
+      // 위에서 생성한 todoDate 데이터를 table에 저장한다.
       await myDataSource.getRepository(TodoDate).save(todoDate);
     });
 
+    // 위에서 생성한 todo 데이터를 table에 저장한다.
     const results = await myDataSource.getRepository(Todo).save(todo);
     return res.send(results);
   }

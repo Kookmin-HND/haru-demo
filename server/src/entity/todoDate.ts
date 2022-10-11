@@ -15,6 +15,9 @@ export class TodoDate {
   id: number;
 
   @Column({ nullable: false })
+  writer: string;
+
+  @Column({ nullable: false })
   todoId: number;
 
   @Column({ nullable: false })
