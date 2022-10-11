@@ -44,7 +44,7 @@ router.post(
     const { folder, content, dates } = req.body;
 
     // 혹시 입력으로부터 빠져있는 값이 있는지 확인한다.
-    if (!folder || !content || !dates.length) {
+    if (!folder || !content || !dates || (dates && !dates.length)) {
       return res
         .status(400)
         .send("folder, content, dates 중 하나의 값이 없습니다.");
