@@ -3,6 +3,7 @@ package com.example.harudemo.todo.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
@@ -23,6 +24,25 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
                 LinearLayoutManager.VERTICAL,
                 false
             )
+
+//            //swipe
+////            val swipeAdapter = TodoListAdapter()
+//
+            val swipeHelperCallback = SwipeHelperCallback().apply {
+                setClamp(200f)
+            }
+            val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
+            itemTouchHelper.attachToRecyclerView(itemBinding.rvTodoList)
+
+            itemBinding.rvTodoList.apply{
+                layoutManager = LinearLayoutManager(itemBinding.root.context)
+                adapter = sectionAdapter
+
+                setOnTouchListener { _, _ ->
+                    swipeHelperCallback.removePreviousClamp(this)
+                    false
+                }
+            }
 
             // Section 클릭시에 표시 전환
             itemBinding.layoutSectionTitle.setOnClickListener {
@@ -62,6 +82,5 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
     override fun getItemCount(): Int {
         return sections.size
     }
-
 
 }

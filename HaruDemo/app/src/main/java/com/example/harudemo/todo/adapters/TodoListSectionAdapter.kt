@@ -18,6 +18,7 @@ class TodoListSectionAdapter(private val section: Section) :
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListSectionViewHolder {
         return TodoListSectionViewHolder(
             FragmentTodoListItemBinding.inflate(

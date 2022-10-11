@@ -38,8 +38,13 @@
         <entry key="app/src/main/res/layout/fragment_sns.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_todo_folder_item.xml" value="0.2993662516276042" />
+        <entry key="app/src/main/res/layout/fragment_todo_list.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_todo_list_item.xml" value="0.11013319227430546" />
+        <entry key="app/src/main/res/layout/fragment_todo_list_section.xml" value="0.22" />
         <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_sns_post_item.xml" value="0.23489583333333333" />
+        <entry key="app/src/main/res/layout/login_layout.xml" value="0.11822916666666666" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
         <entry key="app/src/main/res/menu/sns_top_app_bar.xml" value="0.4276041666666667" />
