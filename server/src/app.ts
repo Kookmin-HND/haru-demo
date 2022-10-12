@@ -1,3 +1,4 @@
+import "./env.ts";
 import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "./app-data-source";
 import router from "./routes";
