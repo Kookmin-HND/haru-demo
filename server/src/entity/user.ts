@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from "typeorm";
 
 // user 스키마 생성
 
@@ -14,6 +19,6 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ type: Date })
-  createAt: string;
+  @CreateDateColumn()
+  createAt: Date;
 }
