@@ -42,7 +42,7 @@ router.get(
   }
 );
 
-// 사용자로부터 folder, content, dates를 받아서 todo, todo_date table에 데이터를 저장한다.
+// 사용자로부터 folder, content, dates를 받아서 todo table에 데이터를 저장한다.
 router.post(
   "/:email",
   async (req: Request<TodoParams, {}, TodoRequestBody>, res: Response) => {
@@ -77,20 +77,37 @@ router.post(
   }
 );
 
-// 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todoDate를 id값을 기준으로 찾아 변경한다.
+// 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
 router.patch(
-  "/:email",
-  async (req: Request<TodoParams, {}, TodoRequestBody>, res: Response) => {
-    // 모든 사용자는 로그인 상태이므로 항상 있다고 가정한다.
-    const writer = req.params.email;
-
-    // todoDate data의 id값을 가져온다. todoId값이 아님.
+  "/",
+  async (req: Request<{}, {}, TodoRequestBody>, res: Response) => {
+    // todo data의 id값을 가져온다.
     const id = req.body.id;
     if (!id) {
       return res.status(400).send("id를 입력 받지 못했습니다.");
     }
 
+    // request body로부터 데이터를 가져온다.
     const { folder, content, dates } = req.body;
+
+    if ((folder && !folder.trim()) || (content && !content.trim())) {
+      return res.status(400).send("folder 또는 content가 비어있습니다.");
+    }
+
+    if (!dates || (dates && dates.length != 1)) {
+      return res
+        .status(400)
+        .send("dates의 입력이 없거나, 두 개 이상의 날짜가 선택되었습니다.");
+    }
     const date = dates[0];
+
+    // todo 데이터를 업데이트 한다.
+    const updated = await myDataSource.getRepository(Todo).update(id, {
+      folder,
+      content,
+      date,
+    });
+
+    return res.send(updated);
   }
 );
