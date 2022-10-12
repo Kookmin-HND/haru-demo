@@ -2,33 +2,21 @@ import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "../app-data-source";
 import { User } from "../entity/user";
-import { initializeApp, applicationDefault } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
-// import { Equal } from "typeorm";
+import { Equal } from "typeorm";
+import crypto from "crypto"; // hashing 처리를 위한 라이브러리
 
 export const path = "/users";
 export const router = Router();
 
-// firebase 설정
-// const firebase = require("firebase-admin");
-// const config = {
-//   apiKey: "AIzaSyDO93PKlhA08OqG16A5uQz9t8rZJs-cKFI",
-//   authDomain: "haru-e2a10.firebaseapp.com",
-//   projectId: "haru-e2a10",
-//   storageBucket: "haru-e2a10.appspot.com",
-//   messagingSenderId: "32689857481",
-//   appId: "1:32689857481:web:510f5250cad3ff4055be18",
-//   measurementId: "G-0ZH177LVGZ",
-// };
-const app = initializeApp({
-  credential: applicationDefault(),
-  projectId: "haru-e2a10",
-});
-
-const auth = getAuth(app);
-
 interface UserParams {
   email: string;
+}
+
+interface UserRequestBody {
+  id: Number | null;
+  email: string;
+  password: string;
+  name: string;
 }
 
 //http://localhost:8000/api/users/ ~~
@@ -48,32 +36,58 @@ router.get("/:email", async function (req: Request<UserParams>, res: Response) {
   }
 });
 
-// user 로그인 기능
-router.post("/login", async function (req: Request, res: Response) {
-  const { email, password } = req.body;
-  auth
-    .getUserByEmail(email)
-    .then((user: any) => {
-      console.log("Successfully login");
-    })
-    .catch((error) => {
-      console.log("error login in with Email and PassWord", error);
+// user 회원가입
+router.post(
+  "/signup",
+  async function (req: Request<{}, {}, UserRequestBody>, res: Response) {
+    const { email, password, name } = req.body;
+
+    // email, password, name 중 입력되지 않은 것을 확인
+    if (!email || !password || !name) {
+      console.log("emailm password, name 하나가 비었다.");
+      return res.status(400).send("email, password, name을 다시 확인해주세요.");
+    }
+
+    // email 중복 확인을 위한 변수
+    const overlap_check = await myDataSource
+      .getRepository(User)
+      .findBy({ email: Equal(email) });
+
+    if (overlap_check.length) {
+      // 길이가 0보다 크면 중복이므로 제외
+      console.log("email 중복");
+      return res.status(400).send("중복된 email 입니다.");
+    }
+
+    // password hashing 처리
+    const salt = crypto.randomBytes(64).toString("base64");
+    const hashedPW = crypto
+      .createHash("sha512")
+      .update(password + salt)
+      .digest("base64");
+
+    // 데이터 생성 후 저장
+    const result = await myDataSource.getRepository(User).create({
+      email: email,
+      password: hashedPW,
+      name: name,
+      user_salt: salt,
     });
 
-  // .auth()
-  // .signInWithEmailAndPassWord(email, password)
-  // .then((user: any) => {
-  //   console.log("Successfully login");
-  //   return res.send(user);
-  // })
-  // .catch((error: any) => {
-  //   console.log("error login in with Email and PassWord", error);
-  //   return res.send(error);
-  // });
+    await myDataSource.getRepository(User).save(result);
+    console.log("signup success");
+    return res.send(result);
+  }
+);
+
+// user 정보 전체 출력 (test용)
+router.get("/", async function (req: Request, res: Response) {
+  const users = await myDataSource.getRepository(User).find();
+  return res.json(users);
 });
 
-// user 회원가입
-router.post("/", async function (req: Request, res: Response) {});
+// user 로그인 기능
+router.post("/login", async function (req: Request, res: Response) {});
 
 // user 정보수정
 router.patch("/", async function (req: Request, res: Response) {});
