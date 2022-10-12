@@ -84,7 +84,7 @@ router.patch(
     // todo data의 id값을 가져온다.
     const id = req.body.id;
     if (!id) {
-      return res.status(400).send("id를 입력 받지 못했습니다.");
+      return res.status(400).send("id가 존재하지 않습니다.");
     }
 
     // request body로부터 데이터를 가져온다.
@@ -102,12 +102,24 @@ router.patch(
     const date = dates[0];
 
     // todo 데이터를 업데이트 한다.
-    const updated = await myDataSource.getRepository(Todo).update(id, {
+    const result = await myDataSource.getRepository(Todo).update(id, {
       folder,
       content,
       date,
     });
 
-    return res.send(updated);
+    return res.send(result);
   }
 );
+
+// 사용자로부터 todo id값을 입력받아 해당 데이터를 삭제한다.
+router.delete("/", async (req: Request, res: Response) => {
+  const id = req.body.id;
+
+  if (!id) {
+    return res.status(400).send("id가 존재하지 않습니다");
+  }
+
+  const result = await myDataSource.getRepository(Todo).delete(id);
+  return res.send(result);
+});
