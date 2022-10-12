@@ -21,7 +21,11 @@ router.get("/recent/:postId", async function (req: Request, res: Response) {
 
 //게시물 하나의 정보 조회
 router.get("/:postId", async function (req: Request, res: Response) {
-  res.json("");
+  const readedPostId = Number(req.params.postId);
+  const results = await myDataSource.getRepository(Post).findOne({
+    where: { id: readedPostId },
+  });
+  res.json(results);
 });
 
 //게시물 입력
@@ -33,10 +37,17 @@ router.post("/", async function (req: Request, res: Response) {
 
 //게시물 삭제요청
 router.delete("/:postId", async function (req: Request, res: Response) {
-  res.json("");
+  const postId = Number(req.params.postId);
+  const results = await myDataSource.getRepository(Post).delete(postId);
+  //affected : 0 실패, affected : 1 성공
+  res.json(results);
 });
 
 //게시물 수정
 router.patch("/:postId", async function (req: Request, res: Response) {
-  res.json("");
+  const postId = Number(req.params.postId);
+
+  // executes UPDATE user SET firstName = Rizzrak WHERE id = 1
+  const results = await myDataSource.getRepository(Post).update(postId, {});
+  res.json(results);
 });

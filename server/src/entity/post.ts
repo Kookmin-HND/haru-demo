@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Generated,
+  UpdateDateColumn,
 } from "typeorm";
 
 //필요한 데이터베이스 스키마 entity에 생성
@@ -22,4 +23,7 @@ export class Post {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
