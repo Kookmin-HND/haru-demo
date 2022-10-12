@@ -25,9 +25,7 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
                 false
             )
 
-//            //swipe
-////            val swipeAdapter = TodoListAdapter()
-//
+            //스와이프 함수 호출
             val swipeHelperCallback = SwipeHelperCallback().apply {
                 setClamp(200f)
             }

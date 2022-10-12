@@ -3,8 +3,7 @@ package com.example.harudemo.todo.adapters
 import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
-import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_todo_list_item.view.*
 import kotlin.math.max
@@ -20,7 +19,7 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return makeMovementFlags(0, LEFT)
+        return makeMovementFlags(0, LEFT or RIGHT)
     }
 
     override fun onMove(
