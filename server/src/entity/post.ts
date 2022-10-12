@@ -15,15 +15,15 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   writer: string;
 
-  @Column()
+  @Column({ nullable: false })
   content: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

@@ -16,6 +16,7 @@ router.get("/recent/:postId", async function (req: Request, res: Response) {
     take: 50,
     order: { id: "DESC" },
   });
+
   res.json(results);
 });
 
@@ -25,6 +26,7 @@ router.get("/:postId", async function (req: Request, res: Response) {
   const results = await myDataSource.getRepository(Post).findOne({
     where: { id: readedPostId },
   });
+
   res.json(results);
 });
 
@@ -32,6 +34,7 @@ router.get("/:postId", async function (req: Request, res: Response) {
 router.post("/", async function (req: Request, res: Response) {
   const post = myDataSource.getRepository(Post).create(req.body);
   const results = await myDataSource.getRepository(Post).save(post);
+
   res.json(results);
 });
 
@@ -39,6 +42,7 @@ router.post("/", async function (req: Request, res: Response) {
 router.delete("/:postId", async function (req: Request, res: Response) {
   const postId = Number(req.params.postId);
   const results = await myDataSource.getRepository(Post).delete(postId);
+
   //affected : 0 실패, affected : 1 성공
   res.json(results);
 });
@@ -46,8 +50,12 @@ router.delete("/:postId", async function (req: Request, res: Response) {
 //게시물 수정
 router.patch("/:postId", async function (req: Request, res: Response) {
   const postId = Number(req.params.postId);
+  const content: string = req.body.content;
 
-  // executes UPDATE user SET firstName = Rizzrak WHERE id = 1
-  const results = await myDataSource.getRepository(Post).update(postId, {});
+  // id가 postId에 해당하는 게시글의 content 수정
+  const results = await myDataSource
+    .getRepository(Post)
+    .update({ id: postId }, { content });
+  //affected : 0 실패, affected : 1 성공
   res.json(results);
 });
