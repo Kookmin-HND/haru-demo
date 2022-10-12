@@ -18,13 +18,16 @@ export class Todo {
   writer: string;
 
   @Column({ nullable: false })
-  todoId: number;
-
-  @Column({ nullable: false })
   folder: string;
 
   @Column({ nullable: false })
   content: string;
+
+  @Column({ nullable: false })
+  date: string;
+
+  @Column({ nullable: false })
+  completed: boolean;
 
   @CreateDateColumn({
     type: "timestamp",

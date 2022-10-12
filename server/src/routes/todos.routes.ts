@@ -2,35 +2,29 @@ import { Request, Response, Router } from "express";
 import { Equal } from "typeorm";
 import myDataSource from "../app-data-source";
 import { Todo } from "../entity/todo";
-import { TodoDate } from "../entity/todoDate";
 import { User } from "../entity/user";
 
-interface TodoParamsInterface {
+interface TodoParams {
   email: string;
 }
 
-interface TodoInputInterface {
+interface TodoRequestBody {
+  id: number | null;
   folder: string;
   content: string;
   dates: string[];
 }
 
-interface TodoResponseBody {
-  todos: Todo[];
-  todoDates: TodoDate[][];
-}
+type TodoResponseBody = Todo[];
 
 export const path = "/todos";
 export const router = Router();
 
-//http://localhost:8000/api/todos
+// 사용자의 모든 todo를 반환한다.
 router.get(
   "/:email",
-  async function (
-    req: Request<TodoParamsInterface>,
-    res: Response<TodoResponseBody>
-  ) {
-    const result: TodoResponseBody = { todos: [], todoDates: [] };
+  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
+    const result: TodoResponseBody = [];
 
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
@@ -41,43 +35,19 @@ router.get(
     });
 
     // 위에서 가져온 데이터를 결과값에 추가한다.
-    result.todos = todos;
-
-    for (let i = 0; i < todos.length; i++) {
-      // 이 사용자가 작성한 모든 todo에 해당하는 todoDate를 가져온다.
-      const todoDates = await myDataSource.getRepository(TodoDate).findBy({
-        writer: Equal(writer),
-        todoId: Equal(todos[i].todoId),
-      });
-
-      // 위에서 가져온 데이터를 결과값에 추가한다.
-      result.todoDates.push(todoDates);
-    }
+    result.push(...todos);
 
     // 이 사용자가 가지고 있는 모든 todo를 반환한다.
     return res.send(result);
   }
 );
 
+// 사용자로부터 folder, content, dates를 받아서 todo, todo_date table에 데이터를 저장한다.
 router.post(
   "/:email",
-  async function (
-    req: Request<TodoParamsInterface, {}, TodoInputInterface>,
-    res: Response
-  ) {
+  async (req: Request<TodoParams, {}, TodoRequestBody>, res: Response) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
-
-    // todoId 값을 가져오기 위해 user 데이터에 접근한다.
-    const user = await myDataSource.getRepository(User).findOneBy({
-      email: Equal(writer),
-    });
-
-    if (!user) {
-      return res.status(400).send("등록되지 않은 사용자입니다.");
-    }
-
-    const todoId = user.todoId;
 
     const { folder, content, dates } = req.body;
 
@@ -88,34 +58,39 @@ router.post(
         .send("folder, content, dates 중 하나의 값이 없습니다.");
     }
 
-    // todo를 추가한 유저의 todoId 값을 증가한다.
-    await myDataSource.getRepository(User).update(user.id, {
-      todoId: todoId + 1,
-    });
-
-    // todo table에 접근하여 입력 값에 따른 데이터를 생성한다.
-    const todo = await myDataSource.getRepository(Todo).create({
-      writer,
-      todoId,
-      folder,
-      content,
-    });
-
-    dates.forEach(async (date) => {
-      // todo-date table에 접근하여 모든 일자에 따른 데이터를 생성 및 저장한다.
-      const todoDate = await myDataSource.getRepository(TodoDate).create({
+    const result: Todo[] = [];
+    for (const date of dates) {
+      // 입력 값에 따른 데이터를 생성한다.
+      const todo = await myDataSource.getRepository(Todo).create({
         writer,
-        todoId,
+        folder,
+        content,
         date,
         completed: false,
       });
 
-      // 위에서 생성한 todoDate 데이터를 table에 저장한다.
-      await myDataSource.getRepository(TodoDate).save(todoDate);
-    });
+      // 위에서 생성한 todo 데이터를 table에 저장한다.
+      await myDataSource.getRepository(Todo).save(todo);
+      result.push(todo);
+    }
+    return res.send(result);
+  }
+);
 
-    // 위에서 생성한 todo 데이터를 table에 저장한다.
-    const results = await myDataSource.getRepository(Todo).save(todo);
-    return res.send(results);
+// 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todoDate를 id값을 기준으로 찾아 변경한다.
+router.patch(
+  "/:email",
+  async (req: Request<TodoParams, {}, TodoRequestBody>, res: Response) => {
+    // 모든 사용자는 로그인 상태이므로 항상 있다고 가정한다.
+    const writer = req.params.email;
+
+    // todoDate data의 id값을 가져온다. todoId값이 아님.
+    const id = req.body.id;
+    if (!id) {
+      return res.status(400).send("id를 입력 받지 못했습니다.");
+    }
+
+    const { folder, content, dates } = req.body;
+    const date = dates[0];
   }
 );
