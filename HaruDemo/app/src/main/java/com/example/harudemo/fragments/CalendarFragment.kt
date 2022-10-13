@@ -1,6 +1,7 @@
 package com.example.harudemo.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.harudemo.R
 import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.calendar.AdapterWeek
+import com.example.harudemo.todo.TodoInputActivity
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import okhttp3.internal.notify
 import okhttp3.internal.notifyAll
@@ -134,6 +136,11 @@ class CalendarFragment: Fragment() {
                 calendar.adapter = monthListAdapter
                 //calendar.scrollToPosition(Int.MAX_VALUE/2)
             }
+        }
+
+        btn_add_todo_for_calendar.setOnClickListener {
+            val intent = Intent(context, TodoInputActivity::class.java)
+            startActivity(intent)
         }
     }
 }
