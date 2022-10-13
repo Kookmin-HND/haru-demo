@@ -7,14 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.harudemo.R
 import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.calendar.AdapterWeek
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import okhttp3.internal.notify
+import okhttp3.internal.notifyAll
 import java.util.*
 
 
@@ -82,7 +84,6 @@ class CalendarFragment: Fragment() {
 
         calendar.adapter = monthListAdapter
 
-
         /*calendar.scrollToPosition(Int.MAX_VALUE/2)
 
         val snap = PagerSnapHelper()
@@ -101,6 +102,16 @@ class CalendarFragment: Fragment() {
                 //주간 달력으로 바꿈
                 //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 val monthListAdapter = AdapterWeek()
+
+                val callback: OnPageChangeCallback = object : OnPageChangeCallback() {
+                    override fun onPageSelected(pos: Int) {
+                        super.onPageSelected(pos)
+                        //println("pos:"+pos)
+                        monthListAdapter.notifyDataSetChanged()
+                    }
+                }
+
+                calendar.registerOnPageChangeCallback(callback)
 
                 //calendar.layoutManager = layoutmanager
                 calendar.adapter = monthListAdapter

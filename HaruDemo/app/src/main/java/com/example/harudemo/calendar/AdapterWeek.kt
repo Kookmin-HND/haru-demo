@@ -31,6 +31,7 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekView {
+        calendar.time = Date()
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.list_item_week,
             parent,
@@ -80,10 +81,10 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
     }
 
     override fun onBindViewHolder(holder: WeekView, position: Int) {
-        println(1)
-
+        //println("position:"+position)
         calendar.time = Date()
         calendar.set(Calendar.DAY_OF_WEEK, 1)
+        calendar.add(Calendar.DATE, position*7)
 
         val tempMonth = calendar.get(Calendar.MONTH)
         holder.week_text.text = (tempMonth+1).toString()+"월 할 일"
@@ -92,12 +93,17 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
                             holder.wednesday, holder.thursday, holder.friday,
                             holder.saturday)
 
+        for(i in 0..6) {
+            daylist[i].setBackgroundColor(Color.parseColor("#F0F0F0"))
+        }
+
         //각 요일마다 클릭하면 클릭한 위치 색깔 변환 후 그 날의 데이터 넘겨주기
         var start = getWeekDate()
         for(i in 0..6) {
             if(start+i < 31 && start+i > 0) {
-                if(daylist[i].text in setOf("일","월","화","수","목","금","토","일"))
+                if(daylist[i].text in setOf("일","월","화","수","목","금","토","일")) {
                     daylist[i].text = (start + i).toString() + "\n" + daylist[i].text
+                }
 
                 daylist[i].setOnClickListener {
                     daylist[maindata.week_content].setBackgroundColor(Color.parseColor("#F0F0F0"))
