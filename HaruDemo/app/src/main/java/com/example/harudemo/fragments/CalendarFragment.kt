@@ -6,17 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_calendar.*
-import androidx.recyclerview.widget.PagerSnapHelper
-import com.example.harudemo.calendar.AdapterMonth
+import androidx.viewpager2.widget.ViewPager2
 import com.example.harudemo.R
+import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.calendar.AdapterWeek
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.util.*
+
 
 //상록
 class CalendarFragment: Fragment() {
@@ -66,18 +66,27 @@ class CalendarFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "일정"
 
+        calendar.layoutParams = (
+            LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ))
+
         //월간 달력을 나타내게 하기 위한 레이아웃과 adapter 코드를 가져온다
-        val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+        //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         val monthListAdapter = AdapterMonth()
 
         //캘린더 즉 리사이클러뷰 레이아웃의 레이아웃 매니저와 adapter를 연결시킨 후에 scrolltoposition을 이용하여
         //터치로 넘겼을 때 다음 레이아웃의 위치를 고정시킨다.
-        calendar.layoutManager = layoutmanager
+        //calendar.layoutManager = layoutmanager
+
         calendar.adapter = monthListAdapter
-        calendar.scrollToPosition(Int.MAX_VALUE/2)
+
+
+        /*calendar.scrollToPosition(Int.MAX_VALUE/2)
 
         val snap = PagerSnapHelper()
-        snap.attachToRecyclerView(calendar)
+        snap.attachToRecyclerView(calendar)*/
 
         //주간버튼을 눌렀을 때
         weekbtn.setOnClickListener{
@@ -90,12 +99,12 @@ class CalendarFragment: Fragment() {
                 monthbtn.setBackgroundResource(R.drawable.month_offxml)
 
                 //주간 달력으로 바꿈
-                val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 val monthListAdapter = AdapterWeek()
 
-                calendar.layoutManager = layoutmanager
+                //calendar.layoutManager = layoutmanager
                 calendar.adapter = monthListAdapter
-                calendar.scrollToPosition(Int.MAX_VALUE/2)
+                //calendar.scrollToPosition(Int.MAX_VALUE/2)
             }
         }
 
@@ -107,12 +116,12 @@ class CalendarFragment: Fragment() {
                 monthbtn.setBackgroundResource(R.drawable.month_onxml)
 
                 //월간 달력으로 바꿈
-                val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 val monthListAdapter = AdapterMonth()
 
-                calendar.layoutManager = layoutmanager
+                //calendar.layoutManager = layoutmanager
                 calendar.adapter = monthListAdapter
-                calendar.scrollToPosition(Int.MAX_VALUE/2)
+                //calendar.scrollToPosition(Int.MAX_VALUE/2)
             }
         }
     }

@@ -122,11 +122,10 @@
             android:text="토"
             android:textSize="9sp" />
     </LinearLayout>-->
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F0F0F0"
-        android:orientation="horizontal"
-        app:reverseLayout="false" />
+        android:orientation="horizontal"/>
 </LinearLayout>
