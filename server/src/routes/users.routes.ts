@@ -153,7 +153,23 @@ router.patch(
 );
 
 // user 회원탈퇴
-router.delete("/", async function (req: Request, res: Response) {});
+router.delete(
+  "/:email",
+  async function (req: Request<UserParams>, res: Response) {
+    const email = req.params.email;
+
+    const check = await myDataSource
+      .getRepository(User)
+      .findOneBy({ email: Equal(email) });
+    if (!check) return res.status(400).send("사용자 정보가 없습니다.");
+
+    const result = await myDataSource
+      .getRepository(User)
+      .delete({ email: email });
+    console.log("Successfully deleted");
+    return res.send(result);
+  }
+);
 
 // user 정보 전체 출력 (test용)
 router.get("/", async function (req: Request, res: Response) {
