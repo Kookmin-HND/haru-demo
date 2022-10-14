@@ -12,7 +12,7 @@ interface UserParams {
   email: string;
 }
 
-interface UserRequestBody {
+interface UserSignBody {
   id: Number | null;
   email: string;
   password: string;
@@ -39,7 +39,7 @@ router.get("/:email", async function (req: Request<UserParams>, res: Response) {
 // user 회원가입
 router.post(
   "/signup",
-  async function (req: Request<{}, {}, UserRequestBody>, res: Response) {
+  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
     const { email, password, name } = req.body;
 
     // email, password, name 중 입력되지 않은 것을 확인
@@ -83,7 +83,7 @@ router.post(
 // user 로그인 기능
 router.post(
   "/login",
-  async function (req: Request<{}, {}, UserRequestBody>, res: Response) {
+  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
     const email = req.body.email;
     const password = req.body.password;
     const user = await myDataSource
@@ -112,7 +112,45 @@ router.post(
 );
 
 // user 정보수정
-router.patch("/", async function (req: Request, res: Response) {});
+router.patch(
+  "/changeInfo",
+  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
+    const user = await myDataSource
+      .getRepository(User)
+      .findOneBy({ email: Equal(req.body.email) });
+    if (!user) {
+      return res.status(400).send("없는 사용자입니다.");
+    }
+    const changePW = req.body.password;
+    const changeName = req.body.name;
+
+    if (!changePW || !changeName) {
+      console.log("변경할 비밀번호와 이름을 확인해주세요.");
+      return res
+        .status(400)
+        .send("변경할 비밀번호와 이름을 다시 확인해주세요.");
+    }
+
+    const salt = crypto.randomBytes(64).toString("base64");
+    const changeHashedPW = crypto
+      .createHash("sha512")
+      .update(changePW + salt)
+      .digest("base64");
+
+    const result = await myDataSource.getRepository(User).update(user.id, {
+      password: changeHashedPW,
+      name: changeName,
+      user_salt: salt,
+    });
+
+    return res.send({
+      ...user,
+      password: changeHashedPW,
+      name: changeName,
+      user_salt: salt,
+    });
+  }
+);
 
 // user 회원탈퇴
 router.delete("/", async function (req: Request, res: Response) {});
