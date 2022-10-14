@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
+import java.time.LocalDate
 
 class TodoListSectionAdapter(private val section: Section) :
         RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
@@ -14,11 +15,13 @@ class TodoListSectionAdapter(private val section: Section) :
             RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(todoItem: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
+            val days = arrayListOf<String>("일", "월", "화", "수", "목", "금", "토")
+
             itemBinding.tvTodoContent.text = todoItem.todo.content
-            itemBinding.tvTodoDate.text = todoItem.todoDate.date
-            itemBinding.swipeBtn.setOnClickListener {
-                Toast.makeText(itemBinding.root.context, "click", Toast.LENGTH_SHORT).show()
-            }
+
+            val dateToken = todoItem.todoDate.date.split('-').map { it.toInt() }
+            val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
+            itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value]})"
         }
     }
 
