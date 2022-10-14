@@ -1,13 +1,21 @@
 package com.example.harudemo
 
 import android.os.Bundle
-import android.service.voice.VoiceInteractionSession.ActivityId
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
+import com.example.harudemo.todo.adapters.SwipeHelperCallback
+import com.example.harudemo.todo.adapters.TodoListAdapter
+import com.example.harudemo.todo.adapters.TodoListSectionAdapter
+import com.example.harudemo.todo.types.Section
+import com.example.harudemo.todo.types.Todo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_todo_list_section.*
+import kotlin.text.Typography.section
 
 class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null
@@ -28,6 +36,10 @@ class MainActivity : AppCompatActivity() {
         snsFragment = SnsFragment.newInstance()
         todoFragment = TodoFragment.getInstance()
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
+
+
+
+
     }
 
     //바텀 네비게이션 아이템 클릭 리스너
