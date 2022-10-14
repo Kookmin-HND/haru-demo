@@ -16,7 +16,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column() // hashing된 비밀번호
   password: string;
 
   @Column()
