@@ -19,6 +19,8 @@ const myDataSource = new DataSource({
   entities: ["src/entity/*.*"],
   logging: true,
   synchronize: true,
+  timezone: "z",
+  charset: "utf8mb4",
 });
 
 export default myDataSource;
