@@ -2,30 +2,34 @@ package com.example.harudemo.todo.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 
 class TodoListSectionAdapter(private val section: Section) :
-    RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
+        RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
-        RecyclerView.ViewHolder(itemBinding.root) {
+            RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(todoItem: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             itemBinding.tvTodoContent.text = todoItem.todo.content
             itemBinding.tvTodoDate.text = todoItem.todoDate.date
+            itemBinding.swipeBtn.setOnClickListener {
+                Toast.makeText(itemBinding.root.context, "click", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListSectionViewHolder {
         return TodoListSectionViewHolder(
-            FragmentTodoListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+                FragmentTodoListItemBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                )
         )
     }
 
