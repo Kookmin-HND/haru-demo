@@ -80,17 +80,45 @@ router.post(
   }
 );
 
-// user 정보 전체 출력 (test용)
-router.get("/", async function (req: Request, res: Response) {
-  const users = await myDataSource.getRepository(User).find();
-  return res.json(users);
-});
-
 // user 로그인 기능
-router.post("/login", async function (req: Request, res: Response) {});
+router.post(
+  "/login",
+  async function (req: Request<{}, {}, UserRequestBody>, res: Response) {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await myDataSource
+      .getRepository(User)
+      .findBy({ email: Equal(email) });
+
+    if (user.length == 0) {
+      console.log("해당 user 없음!");
+      return res.status(400).send("사용자 정보가 없습니다.");
+    }
+
+    const salt = user[0].user_salt;
+    const hashedPW = crypto
+      .createHash("sha512")
+      .update(password + salt)
+      .digest("base64");
+
+    if (hashedPW != user[0].password) {
+      console.log("비밀번호 틀림");
+      return res.status(400).send("비밀번호 틀림");
+    } else {
+      console.log("로그인 성공");
+      return res.send(user[0]);
+    }
+  }
+);
 
 // user 정보수정
 router.patch("/", async function (req: Request, res: Response) {});
 
 // user 회원탈퇴
 router.delete("/", async function (req: Request, res: Response) {});
+
+// user 정보 전체 출력 (test용)
+router.get("/", async function (req: Request, res: Response) {
+  const all_users = await myDataSource.getRepository(User).find();
+  return res.json(all_users);
+});
