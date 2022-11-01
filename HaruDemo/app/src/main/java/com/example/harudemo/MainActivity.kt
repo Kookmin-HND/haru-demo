@@ -36,10 +36,6 @@ class MainActivity : AppCompatActivity() {
         snsFragment = SnsFragment.newInstance()
         todoFragment = TodoFragment.getInstance()
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
-
-
-
-
     }
 
     //바텀 네비게이션 아이템 클릭 리스너
