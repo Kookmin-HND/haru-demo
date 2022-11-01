@@ -1,6 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from "typeorm";
 
-//필요한 데이터베이스 스키마 entity에 생성
+// user 스키마 생성
 
 @Entity()
 export class User {
@@ -9,8 +14,17 @@ export class User {
   id: number;
 
   @Column()
-  lastName: string;
+  email: string;
+
+  @Column() // hashing된 비밀번호
+  password: string;
 
   @Column()
-  nickName: string;
+  name: string;
+
+  @Column() // hashing을 하기 위해 password에 더해지는 값
+  user_salt: string;
+
+  @CreateDateColumn()
+  createAt: Date;
 }

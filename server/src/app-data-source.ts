@@ -14,11 +14,13 @@ const myDataSource = new DataSource({
   host: "127.0.0.1",
   port: 3306,
   username: "root",
-  password: "gpt271100",
+  password: process.env.DB_PASSWORD,
   database: "haru",
   entities: ["src/entity/*.*"],
   logging: true,
   synchronize: true,
+  timezone: "z",
+  charset: "utf8mb4",
 });
 
 export default myDataSource;
