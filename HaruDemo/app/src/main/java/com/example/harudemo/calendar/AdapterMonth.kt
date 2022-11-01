@@ -1,8 +1,10 @@
 package com.example.harudemo.calendar
 
+import android.text.style.TtsSpan.TextBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
@@ -12,13 +14,19 @@ import java.util.*
 
 //월간 달력 어뎁터
 class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
-    val center = Int.MAX_VALUE / 2
     private var calendar = Calendar.getInstance()
 
-    inner class MonthView(val layout: View): RecyclerView.ViewHolder(layout)
+    inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val month_text: TextView = itemView.findViewById(R.id.item_month_text)
+        val day_list: RecyclerView = itemView.findViewById(R.id.item_month_day_list)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthView {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_month, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.list_item_month,
+            parent,
+            false
+        )
         return MonthView(view)
     }
 
@@ -26,10 +34,9 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         //캘린더를 월간 단위로 설정
         calendar.time = Date()
         calendar.set(Calendar.DAY_OF_MONTH, 1)
-        calendar.add(Calendar.MONTH, position - center)
+        calendar.add(Calendar.MONTH, position)
 
-        //달력 위의 텍스트뷰 글씨를 바꾼다
-        holder.layout.item_month_text.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
+        holder.month_text.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
         //현재 달력이 몇 월인지 가져오고
         val tempMonth = calendar.get(Calendar.MONTH)
 
@@ -52,10 +59,10 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
             calendar.add(Calendar.WEEK_OF_MONTH, 1)
         }
 
-        val dayListManager = GridLayoutManager(holder.layout.context, 7)
+        val dayListManager = GridLayoutManager(holder.itemView.context, 7)
         val dayListAdapter = AdapterDay(tempMonth, dayList, contentlist)
 
-        holder.layout.item_month_day_list.apply {
+        holder.day_list.item_month_day_list.apply {
             layoutManager = dayListManager
             adapter = dayListAdapter
         }

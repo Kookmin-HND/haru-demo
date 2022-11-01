@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/week_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         android:gravity="center"
         android:text="10월 계획"
@@ -17,11 +17,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="60dp">
         <TextView
             android:id="@+id/sundaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="일"
             android:textColor="#ff0000"
@@ -29,8 +29,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/mondaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="월"
             android:textColor="@color/black"
@@ -38,8 +38,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/tuesdaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="화"
             android:textColor="@color/black"
@@ -47,8 +47,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/wednesdaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="수"
             android:textColor="@color/black"
@@ -56,8 +56,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/thurstv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="목"
             android:textColor="@color/black"
@@ -65,8 +65,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/fridaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="금"
             android:textColor="@color/black"
@@ -74,8 +74,8 @@
             android:textSize="18sp"/>
         <TextView
             android:id="@+id/saturdaytv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="토"
             android:textColor="#0000ff"
@@ -93,6 +93,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_month_week_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
