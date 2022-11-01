@@ -1,15 +1,19 @@
 package com.example.harudemo.fragments.todo_fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.harudemo.R
 import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoListBinding
+import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
 
@@ -23,6 +27,21 @@ class TodoListFragment: Fragment() {
     }
 
     private var binding: FragmentTodoListBinding? = null
+    private var callback: OnBackPressedCallback? = null
+    private var todoFragment: TodoFragment? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // 뒤로가기 키 핸들링위한 함수, 뒤로가기 눌리면 todoFragment로 돌아간다.
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                todoFragment = TodoFragment.getInstance()
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragments_frame, todoFragment!!)?.commit()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback!!)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,5 +90,11 @@ class TodoListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        // 뒤로가기 키 이벤트 삭제
+        callback?.remove()
     }
 }
