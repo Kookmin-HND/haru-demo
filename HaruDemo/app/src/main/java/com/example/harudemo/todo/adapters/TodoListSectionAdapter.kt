@@ -10,29 +10,29 @@ import com.example.harudemo.todo.types.Todo
 import java.time.LocalDate
 
 class TodoListSectionAdapter(private val section: Section) :
-        RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
+    RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
-            RecyclerView.ViewHolder(itemBinding.root) {
+        RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(todoItem: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
-            val days = arrayListOf<String>("일", "월", "화", "수", "목", "금", "토")
+            val days = arrayListOf<String>("월", "화", "수", "목", "금", "토", "일")
 
             itemBinding.tvTodoContent.text = todoItem.content
 
             val dateToken = todoItem.date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
-            itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value]})"
+            itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListSectionViewHolder {
         return TodoListSectionViewHolder(
-                FragmentTodoListItemBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                )
+            FragmentTodoListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
     }
 

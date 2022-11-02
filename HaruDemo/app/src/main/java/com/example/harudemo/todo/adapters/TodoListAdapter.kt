@@ -10,9 +10,9 @@ import com.example.harudemo.databinding.FragmentTodoListSectionBinding
 import com.example.harudemo.todo.types.Section
 
 class TodoListAdapter(private val sections: ArrayList<Section>) :
-        RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
+    RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
     inner class TodoListViewHolder(private val itemBinding: FragmentTodoListSectionBinding) :
-            RecyclerView.ViewHolder(itemBinding.root) {
+        RecyclerView.ViewHolder(itemBinding.root) {
 
         fun bindItem(section: Section) {
             // Section 이름, 하위 Recycler View에 Adapter, LayoutManager 설정
@@ -20,9 +20,9 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
             itemBinding.tvSectionName.text = section.sectionTitle
             itemBinding.rvTodoList.adapter = sectionAdapter
             itemBinding.rvTodoList.layoutManager = LinearLayoutManager(
-                    itemBinding.root.context,
-                    LinearLayoutManager.VERTICAL,
-                    false
+                itemBinding.root.context,
+                LinearLayoutManager.VERTICAL,
+                false
             )
 
             //스와이프 함수 호출
@@ -65,11 +65,11 @@ class TodoListAdapter(private val sections: ArrayList<Section>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListViewHolder {
         return TodoListViewHolder(
-                FragmentTodoListSectionBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                )
+            FragmentTodoListSectionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
     }
 
