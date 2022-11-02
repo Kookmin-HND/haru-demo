@@ -59,6 +59,7 @@ object TodoData {
             }
         }
 
+        todos.values.removeIf { it.isEmpty() }
         return todos.map {
             Section(it.key, it.value)
         }
@@ -78,6 +79,7 @@ object TodoData {
             }
         }
 
+        todos.values.removeIf { it.isEmpty() }
         return todos.map {
             Section(it.key, it.value)
         }

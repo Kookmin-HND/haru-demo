@@ -79,18 +79,25 @@ class TodoListFragment : Fragment() {
                 val folderTitle = arguments?.getString("folder-title") as String
                 sections = TodoData.getTodosByFolder(folderTitle)
             }
-            else -> {
-
-            }
+            else -> {}
         }
 
-        val todoListAdapter = TodoListAdapter(sections)
-        binding?.rvTodoSectionList?.adapter = todoListAdapter
-        binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
-            binding?.root?.context,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
+        if (sections.isEmpty()) {
+            binding?.rvTodoSectionList?.visibility = View.GONE
+            binding?.tvEmpty?.visibility = View.VISIBLE
+        } else {
+            binding?.rvTodoSectionList?.visibility = View.VISIBLE
+            binding?.tvEmpty?.visibility = View.GONE
+
+            val todoListAdapter = TodoListAdapter(sections)
+            binding?.rvTodoSectionList?.adapter = todoListAdapter
+            binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
+                binding?.root?.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+        }
+
         return binding?.root
     }
 
