@@ -31,10 +31,12 @@ export class Comment {
   @Column({ nullable: false })
   content: string;
 
-  @Column()
+  //대댓글 기능을 위한 부모의 comment id 추가
+  @Column({ default: -1 })
   parentCommentId: number;
 
-  @Column()
+  //삭제된 댓글인지 표기하기 위한 컬럼
+  @Column({ default: false })
   deleted: boolean;
 
   @CreateDateColumn()
