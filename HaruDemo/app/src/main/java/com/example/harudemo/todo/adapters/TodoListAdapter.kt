@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
 import com.example.harudemo.todo.types.Section
 
-class TodoListAdapter(private val sections: ArrayList<Section>) :
+class TodoListAdapter(private val sections: List<Section>) :
     RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
     inner class TodoListViewHolder(private val itemBinding: FragmentTodoListSectionBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {

@@ -52,7 +52,7 @@ class TodoListFragment : Fragment() {
 
         // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
         // Recycler View에 전달
-        var sections = ArrayList<Section>()
+        var sections = listOf<Section>()
         val by = arguments?.getString("by") as String
         Log.d(TAG, by)
         when (by) {
@@ -63,15 +63,14 @@ class TodoListFragment : Fragment() {
 //                sections = TodoDummyData.getWeekTodoByDate()
             }
             "all" -> {
-//                sections = TodoDummyData.getAllSectionsByFolder()
+                sections = TodoData.getTodos()
             }
             "completed" -> {
-//                sections = TodoDummyData.getAllCompletedTodoByDate()
+                sections = TodoData.getTodos(true)
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-                val todos = TodoData.getTodosByFolderName(folderTitle)
-                sections = arrayListOf(Section(sectionTitle = folderTitle, todos))
+                sections = TodoData.getTodosByFolder(folderTitle)
             }
             else -> {
 
