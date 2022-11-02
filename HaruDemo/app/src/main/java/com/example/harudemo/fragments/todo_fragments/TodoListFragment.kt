@@ -16,6 +16,7 @@ import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
+import java.time.LocalDate
 
 class TodoListFragment : Fragment() {
     companion object {
@@ -57,10 +58,16 @@ class TodoListFragment : Fragment() {
         Log.d(TAG, by)
         when (by) {
             "today" -> {
-//                sections = TodoDummyData.getTodayTodoByFolder()
+                sections = TodoData.getTodosByDates(arrayListOf(LocalDate.now().toString()))
             }
             "week" -> {
-//                sections = TodoDummyData.getWeekTodoByDate()
+                val dates = ArrayList<String>()
+                var today = LocalDate.now()
+                for (i in 1..7) {
+                    dates.add(today.toString())
+                    today = today.plusDays(1)
+                }
+                sections = TodoData.getTodosByDates(dates)
             }
             "all" -> {
                 sections = TodoData.getTodos()

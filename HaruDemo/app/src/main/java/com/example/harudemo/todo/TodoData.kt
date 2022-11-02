@@ -64,4 +64,22 @@ object TodoData {
         }
     }
 
+    fun getTodosByDates(dates: List<String>): List<Section> {
+        val todos = mutableMapOf<String, ArrayList<Todo>>()
+        for (date in dates) {
+            todos[date] = arrayListOf()
+        }
+
+        Log.d("[debug]", dates.toString())
+        Log.d("[debug]", todos.toString())
+        for (todo in this.todos) {
+            if (todo.date in todos) {
+                todos[todo.date]?.add(todo)
+            }
+        }
+
+        return todos.map {
+            Section(it.key, it.value)
+        }
+    }
 }
