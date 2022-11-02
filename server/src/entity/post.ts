@@ -6,6 +6,7 @@ import {
   Generated,
   UpdateDateColumn,
   OneToMany,
+  JoinTable,
 } from "typeorm";
 import { Comment } from "./comment";
 
@@ -23,7 +24,7 @@ export class Post {
   @Column({ nullable: false })
   content: string;
 
-  @OneToMany((type) => Comment, (comment) => comment.id)
+  @JoinTable()
   comments: Comment[];
 
   @CreateDateColumn()
