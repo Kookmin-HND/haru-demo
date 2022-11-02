@@ -33,8 +33,6 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 //게시물 입력
 router.post("/", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-
-  console.log(req.body);
   const post = myDataSource
     .getRepository(Comment)
     .create({ ...req.body, post: req.body.postId });
@@ -46,7 +44,12 @@ router.post("/", async (req: Request, res: Response) => {
 //게시물 삭제요청
 router.delete("/:commentId", async (req: Request, res: Response) => {
   const commentId = Number(req.params.commentId);
-  const result = await myDataSource.getRepository(Post).delete(commentId);
+  const result = await myDataSource.getRepository(Comment).update(
+    {
+      id: commentId,
+    },
+    { deleted: true }
+  );
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected)
@@ -55,19 +58,19 @@ router.delete("/:commentId", async (req: Request, res: Response) => {
   return res.json(result);
 });
 
-//게시물 수정
-router.patch("/:commentId", async (req: Request, res: Response) => {
-  const commentId = Number(req.params.commentId);
-  const content: string = req.body.content;
+// //댓글 수정 -> 필요 없음
+// router.patch("/:commentId", async (req: Request, res: Response) => {
+//   const commentId = Number(req.params.commentId);
+//   const content: string = req.body.content;
 
-  // id가 commentId에 해당하는 게시글의 content 수정
-  const result = await myDataSource
-    .getRepository(Post)
-    .update({ id: commentId }, { content });
+//   // id가 commentId에 해당하는 게시글의 content 수정
+//   const result = await myDataSource
+//     .getRepository(Post)
+//     .update({ id: commentId }, { content });
 
-  //affected : 0 실패, affected : 1 성공
-  if (!result.affected)
-    return res.status(400).send("게시물 수정에 실패했습니다.");
+//   //affected : 0 실패, affected : 1 성공
+//   if (!result.affected)
+//     return res.status(400).send("댓글 수정에 실패했습니다.");
 
-  return res.json(result);
-});
+//   return res.json(result);
+// });

@@ -24,6 +24,10 @@ export class Post {
   @Column({ nullable: false })
   content: string;
 
+  //댓글과 일대다 연결, 게시물이 삭제되면 댓글도 삭제되도록 cascade
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    cascade: true,
+  })
   @JoinTable()
   comments: Comment[];
 

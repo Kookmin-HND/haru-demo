@@ -17,7 +17,8 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post, {
+  //게시물이 삭제되면 댓글도 삭제되도록 cascade
+  @ManyToOne(() => Post, (post) => post.comments, {
     onDelete: "CASCADE",
     nullable: false,
   })
@@ -29,6 +30,12 @@ export class Comment {
 
   @Column({ nullable: false })
   content: string;
+
+  @Column()
+  parentCommentId: number;
+
+  @Column()
+  deleted: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
