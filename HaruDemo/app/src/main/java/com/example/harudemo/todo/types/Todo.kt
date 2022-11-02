@@ -1,7 +1,11 @@
 package com.example.harudemo.todo.types
 
-// 단순히 DB에 있는 두 데이터를 합친 데이터
+// Todo Interface
 data class Todo(
-    val todo: TodoInterface,
-    val todoDate: TodoDateInterface,
+    val id: Number,
+    val writer: String,
+    val folder: String,
+    val content: String,
+    val date: String,
+    val completed: Boolean,
 )

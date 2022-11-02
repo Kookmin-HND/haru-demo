@@ -2,6 +2,7 @@ package com.example.harudemo.retrofit
 
 import android.util.Log
 import com.example.harudemo.model.SnsPost
+import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
@@ -71,32 +72,21 @@ class RetrofitManager {
     }
 
     // DB에서 Todo Data를 불러온다.
-    fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<SnsPost>?) -> Unit) {
+    fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit) {
         val call = todoService?.getTodos(writer) ?: return
 
-        call.enqueue(object : retrofit2.Callback<JsonElement> {
-            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+        call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
+            override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
 
-            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+            override fun onResponse(
+                call: Call<ArrayList<Todo>>, response: Response<ArrayList<Todo>>
+            ) {
                 when (response.code()) {
-                    // STATUS 200
                     200 -> {
-                        val responseBody = response.body() ?: return
-                        val todos = responseBody.asJsonArray
-
-                        todos.forEach { todoJson ->
-                            val todo = todoJson.asJsonObject
-                            val writer = todo.get("writer").asString
-                            val folder = todo.get("folder").asString
-                            val content = todo.get("content").asString
-                            val date = todo.get("date").asString
-                            val completed = todo.get("completed").asBoolean
-                            val createdAt = todo.get("createdAt").asJsonObject
-                            val updatedAt = todo.get("updatedAt").asJsonObject
-
-                        }
+                        val todos = response.body() ?: return
+                        completion(RESPONSE_STATUS.OKAY, todos)
                     }
                 }
             }

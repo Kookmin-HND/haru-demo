@@ -8,16 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
-import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.retrofit.RetrofitManager
+import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
+import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.utils.Constants
+import com.example.harudemo.utils.RESPONSE_STATUS
 
 class TodoFragment : Fragment() {
     companion object {
@@ -48,15 +52,13 @@ class TodoFragment : Fragment() {
     //뷰가 생성되었을 때
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
 
         // Folder Item을 Recycler View에 추가
         activity?.let {
-            val folderListAdapter = TodoFolderListAdapter(TodoDummyData.getFolderTitles(), it)
+            val folderListAdapter = TodoFolderListAdapter(it)
             binding?.rvFolderList?.adapter = folderListAdapter
             binding?.rvFolderList?.layoutManager = LinearLayoutManager(
                 binding?.root?.context,
@@ -64,6 +66,23 @@ class TodoFragment : Fragment() {
                 false,
             )
         }
+
+        TodoData.fetchTodos({
+            if (TodoData.todos.isEmpty()) {
+                TodoData.todos.addAll(it)
+                for (todo in it) {
+                    TodoData.folderNames.add(todo.folder)
+                }
+            }
+            Log.d("[debug]", TodoData.folderNames.size.toString())
+            binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.folderNames.size)
+        }, {
+            Toast.makeText(
+                this.context,
+                "todo 목록을 불러오는데 실패하였습니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }, {})
 
         // todo 추가 버튼 클릭시에 새로운 액티비티로 이동
         binding?.btnAddTodo?.setOnClickListener {

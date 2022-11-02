@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
-import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.types.Section
@@ -57,20 +56,20 @@ class TodoListFragment: Fragment() {
         Log.d(TAG, by)
         when (by) {
             "today" -> {
-                sections = TodoDummyData.getTodayTodoByFolder()
+//                sections = TodoDummyData.getTodayTodoByFolder()
             }
             "week" -> {
-                sections = TodoDummyData.getWeekTodoByDate()
+//                sections = TodoDummyData.getWeekTodoByDate()
             }
             "all" -> {
-                sections = TodoDummyData.getAllSectionsByFolder()
+//                sections = TodoDummyData.getAllSectionsByFolder()
             }
             "completed" -> {
-                sections = TodoDummyData.getAllCompletedTodoByDate()
+//                sections = TodoDummyData.getAllCompletedTodoByDate()
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-                sections = TodoDummyData.getFolderByFolderTitle(folderTitle)
+//                sections = TodoDummyData.getFolderByFolderTitle(folderTitle)
             }
             else -> {
 

@@ -8,7 +8,6 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.widget.addTextChangedListener
 import com.example.harudemo.R
-import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.ActivityTodoInputBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.types.ViewMode
@@ -99,7 +98,7 @@ class TodoInputActivity : AppCompatActivity() {
                     datesList.add("${date.year}-${date.month + 1}-${date.day}")
                 }
                 // DB에 Todo 추가
-                TodoDummyData.addTodo(splitted[0], splitted[1], datesList)
+//                TodoDummyData.addTodo(splitted[0], splitted[1], datesList)
             } else {
                 // 현재 입력 방식이 기간인 경우.
                 // 시작 날짜와 끝 날짜를 가져와서 문자열로 변환한다.
@@ -130,11 +129,11 @@ class TodoInputActivity : AppCompatActivity() {
                     startDate = startDate.plusDays(1)
                 }
                 // DB에 Todo 추가
-                TodoDummyData.addTodo(
-                    splitted[0],
-                    splitted[1],
-                    datesList
-                )
+//                TodoDummyData.addTodo(
+//                    splitted[0],
+//                    splitted[1],
+//                    datesList
+//                )
             }
 
             // 입력이 정상적으로 되었다고 판단. Activity 종료

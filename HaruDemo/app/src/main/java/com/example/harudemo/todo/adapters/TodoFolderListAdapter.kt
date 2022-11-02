@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoFolderItemBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.TodoData
 
-class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private val activity: FragmentActivity) :
+class TodoFolderListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<TodoFolderListAdapter.TodoFolderListViewHolder>() {
 
-    inner class TodoFolderListViewHolder(private val itembinding: FragmentTodoFolderItemBinding, private val activity: FragmentActivity) :
-        RecyclerView.ViewHolder(itembinding.root) {
+    inner class TodoFolderListViewHolder(
+        private val itembinding: FragmentTodoFolderItemBinding,
+        private val activity: FragmentActivity
+    ) : RecyclerView.ViewHolder(itembinding.root) {
 
         private var todoListFragment: TodoListFragment? = null
 
@@ -28,7 +31,8 @@ class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private
                 // Folder 클릭시에 TodoList에 폴더로부터 클릭 됬음을 알리면서 Fragment 전환
                 todoListFragment = TodoListFragment.newInstance()
                 todoListFragment?.arguments = bundle
-                activity.supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, todoListFragment!!).commit()
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragments_frame, todoListFragment!!).commit()
             }
         }
     }
@@ -36,19 +40,16 @@ class TodoFolderListAdapter(private val folderTitles: ArrayList<String>, private
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoFolderListViewHolder {
         return TodoFolderListViewHolder(
             FragmentTodoFolderItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            activity
+                LayoutInflater.from(parent.context), parent, false
+            ), activity
         )
     }
 
     override fun onBindViewHolder(holder: TodoFolderListViewHolder, position: Int) {
-        holder.bindItem(folderTitles[position])
+        holder.bindItem(ArrayList(TodoData.folderNames)[position])
     }
 
     override fun getItemCount(): Int {
-        return folderTitles.size
+        return TodoData.folderNames.size
     }
 }

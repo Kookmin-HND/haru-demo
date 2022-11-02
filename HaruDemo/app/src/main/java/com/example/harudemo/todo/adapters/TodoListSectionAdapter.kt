@@ -17,9 +17,9 @@ class TodoListSectionAdapter(private val section: Section) :
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             val days = arrayListOf<String>("일", "월", "화", "수", "목", "금", "토")
 
-            itemBinding.tvTodoContent.text = todoItem.todo.content
+            itemBinding.tvTodoContent.text = todoItem.content
 
-            val dateToken = todoItem.todoDate.date.split('-').map { it.toInt() }
+            val dateToken = todoItem.date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value]})"
         }
@@ -40,8 +40,8 @@ class TodoListSectionAdapter(private val section: Section) :
         // 새로 받은 TodoList내에서 같은 id끼리는 정렬되어 있지만 다른 id에서는 정렬되지 않아 보이는데 혼선이 있어
         // 새롭게 다시 정렬.
         section.todoList.sortWith(Comparator { v1, v2 ->
-            val date1 = v1.todoDate.date.split('-').map { it.toInt() }
-            val date2 = v2.todoDate.date.split('-').map { it.toInt() }
+            val date1 = v1.date.split('-').map { it.toInt() }
+            val date2 = v2.date.split('-').map { it.toInt() }
             if (date1[0] == date2[0]) {
                 if (date1[1] == date2[1]) {
                     return@Comparator date1[2].compareTo(date2[2])
