@@ -2,7 +2,7 @@ import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "../app-data-source";
 import { Post } from "../entity/post";
-import { MoreThan } from "typeorm";
+import { LessThan, MoreThan } from "typeorm";
 
 export const path = "/posts";
 export const router = Router();
@@ -18,7 +18,7 @@ router.get(
     //마지막으로 읽은 postId를 바탕으로 이후 게시물 50개를 가져온다
     const readedPostId = Number(req.params.postId);
     const result = await myDataSource.getRepository(Post).find({
-      where: { id: MoreThan(readedPostId) },
+      where: { id: LessThan(readedPostId) },
       take: 50,
       order: { id: "DESC" },
     });
