@@ -32,10 +32,6 @@ class SnsFragment : Fragment() {
     // 게시물 데이터
     private var SnsPostList = ArrayList<SnsPost>()
 
-    // 어답터
-    private lateinit var snsPostRecyclerViewAdapter: SnsPostRecyclerViewAdapter
-
-
     companion object {
         const val TAG: String = "로그"
 
@@ -74,16 +70,17 @@ class SnsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //최초로 API 호출하여 데이터 얻어오기
+        sns_post_recycler_view.adapter = SnsPostRecyclerViewAdapter()
+        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.SnsPostList)
         testApiCall()
-        this.snsPostRecyclerViewAdapter = SnsPostRecyclerViewAdapter()
-        this.snsPostRecyclerViewAdapter.submitList(this.SnsPostList)
+        Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
+
 
         sns_post_recycler_view.layoutManager =
             GridLayoutManager(this.context, 1, GridLayoutManager.VERTICAL, false)
-        sns_post_recycler_view.adapter = this.snsPostRecyclerViewAdapter
 
         //스크롤 이벤트 처리 함수
-        initScrollListener(this.snsPostRecyclerViewAdapter)
+        initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         sns_top_app_bar.setOnMenuItemClickListener {
@@ -140,8 +137,8 @@ class SnsFragment : Fragment() {
                     responseDataArrayList!!.forEach {
                         this.SnsPostList.add(it)
                     }
-
-                    snsPostRecyclerViewAdapter.notifyItemInserted(SnsPostList.size)
+                    Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
+                    sns_post_recycler_view.adapter?.notifyItemInserted(SnsPostList.size)
                 }
                 RESPONSE_STATUS.FAIL -> {
                     Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
