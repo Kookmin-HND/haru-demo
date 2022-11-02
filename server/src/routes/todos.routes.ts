@@ -38,7 +38,7 @@ router.get(
     result.push(...todos);
 
     // 이 사용자가 가지고 있는 모든 todo를 반환한다.
-    return res.send(result);
+    return res.json(result);
   }
 );
 
@@ -73,7 +73,7 @@ router.post(
       await myDataSource.getRepository(Todo).save(todo);
       result.push(todo);
     }
-    return res.send(result);
+    return res.json(result);
   }
 );
 
@@ -108,7 +108,7 @@ router.patch(
       date,
     });
 
-    return res.send(result);
+    return res.json(result);
   }
 );
 
@@ -121,5 +121,5 @@ router.delete("/", async (req: Request, res: Response) => {
   }
 
   const result = await myDataSource.getRepository(Todo).delete(id);
-  return res.send(result);
+  return res.json(result);
 });
