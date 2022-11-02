@@ -69,5 +69,8 @@ class StatisticsFragment: Fragment() {
             layoutManager = dayListManager
             adapter = dayListAdapter
         }
+
+        //프로그래스 바
+
     }
 }

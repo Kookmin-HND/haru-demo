@@ -11,4 +11,108 @@
         android:id="@+id/statistic_vp"
         android:layout_width="294dp"
         android:layout_height="294dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오늘"
+                android:textSize="30dp"
+                android:layout_marginHorizontal="30dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이번 주"
+                android:textSize="30dp"
+                android:layout_marginHorizontal="40dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이번 달"
+                android:textSize="30dp"
+                android:layout_marginHorizontal="10dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:background="@drawable/circular_progress_background"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:backgroundTint="#00000000"
+                android:layout_gravity="center"
+                android:indeterminate="false"
+                android:max="100"/>
+
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:text="70%"
+                android:textSize="40dp"
+                android:gravity="center"/>
+        </FrameLayout>
+
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp">
+
+            <ProgressBar
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:background="@drawable/circular_progress_background"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:backgroundTint="#00000000"
+                android:layout_gravity="center"
+                android:indeterminate="false"
+                android:max="100"/>
+
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:text="70%"
+                android:textSize="40dp"
+                android:gravity="center"/>
+        </FrameLayout>
+
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:background="@drawable/circular_progress_background"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:backgroundTint="#00000000"
+                android:layout_gravity="center"
+                android:indeterminate="false"
+                android:max="100"/>
+
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:text="70%"
+                android:textSize="40dp"
+                android:gravity="center"/>
+        </FrameLayout>
+
+
+    </LinearLayout>
 </LinearLayout>
