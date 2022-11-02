@@ -11,8 +11,8 @@ enum class RESPONSE_STATUS {
 
 //테스트용 API
 object API {
-    const val BASE_URL: String = "https://jsonplaceholder.typicode.com/"
+    const val BASE_URL: String = "http://10.0.2.2:8000/api/"
     const val API_KEY: String = ""
-    const val POSTS: String = "posts"
+    const val RECENT_POSTS: String = "posts/recent/{postId}"
     const val TODOS: String = "todos"
 }

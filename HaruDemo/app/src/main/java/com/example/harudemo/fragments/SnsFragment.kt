@@ -15,6 +15,7 @@ import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.RetrofitManager
+import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity
 import com.example.harudemo.sns.SnsFriendsActivity
@@ -23,14 +24,11 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
 
 class SnsFragment : Fragment() {
-//    추후 API 만들고 사용할 변수들
-//    private var totalCount = 0 // 전체 아이템 개수
-//    private var isNext = true // 다음 페이지 유무
-//    private var page = 0       // 현재 페이지
-//    private var limit = 10     // 한 번에 가져올 아이템 수
+    //API에 post 데이터를 요청하기 위한 기준 id
+    private var lastPostId = Int.MAX_VALUE
 
     // 게시물 데이터
-    private var SnsPostList = ArrayList<SnsPost>()
+    private var snsPostList = ArrayList<SnsPost>()
 
     companion object {
         const val TAG: String = "로그"
@@ -44,7 +42,6 @@ class SnsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "HomeFragment - on Create() called")
     }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -71,8 +68,8 @@ class SnsFragment : Fragment() {
 
         //최초로 API 호출하여 데이터 얻어오기
         sns_post_recycler_view.adapter = SnsPostRecyclerViewAdapter()
-        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.SnsPostList)
-        testApiCall()
+        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
+        infiniteScrollPostApiCall()
         Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
 
 
@@ -120,25 +117,26 @@ class SnsFragment : Fragment() {
 
                 // 스크롤이 끝에 도달했는지 확인하고 API 호출하여 새로운 데이터 추가
                 if (!sns_post_recycler_view.canScrollVertically(1)) {
-                    testApiCall()
+                    infiniteScrollPostApiCall()
                 }
             }
         })
     }
 
-
-    fun testApiCall() {
-        RetrofitManager.instance.getPosts(completion = { responseStatus, responseDataArrayList ->
+    fun infiniteScrollPostApiCall() {
+        RetrofitManager.instance.getPosts(lastPostId, completion = { responseStatus, responseDataArrayList ->
             Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
             when (responseStatus) {
 
                 //API 호출 성공
                 RESPONSE_STATUS.OKAY -> {
                     responseDataArrayList!!.forEach {
-                        this.SnsPostList.add(it)
+                        //마지막에 보인 게시물의 번호 초기화
+                        lastPostId = it.id
+                        this.snsPostList.add(it)
                     }
                     Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
-                    sns_post_recycler_view.adapter?.notifyItemInserted(SnsPostList.size)
+                    sns_post_recycler_view.adapter?.notifyItemInserted(snsPostList.size)
                 }
                 RESPONSE_STATUS.FAIL -> {
                     Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()

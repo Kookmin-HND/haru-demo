@@ -4,11 +4,15 @@ import com.example.harudemo.utils.API
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SnsService {
-    @GET(API.POSTS)
-    fun getPosts() : Call<JsonElement>
+    //url:    http://10.0.2.2/api/posts/recent/{postId}
+    @GET(API.RECENT_POSTS)
+    fun getPosts(
+        @Path("postId") id:Int
+    ) : Call<JsonElement>
 
 
 

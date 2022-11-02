@@ -77,7 +77,7 @@ object RetrofitClient {
 
                 val response = chain.proceed(originalRequest)
                 Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
-
+                Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
                 if(response.code != 200){
                     Handler(Looper.getMainLooper()).post {
                         Toast.makeText(App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT)
