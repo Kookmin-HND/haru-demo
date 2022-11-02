@@ -5,6 +5,8 @@
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.20413669064748202" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/circular_progress_background.xml" value="0.198" />
+        <entry key="app/src/main/res/drawable/circular_progress_bar.xml" value="0.198" />
         <entry key="app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_align_vertical_bottom_24.xml" value="0.221" />
         <entry key="app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.221" />
@@ -47,11 +49,13 @@
         <entry key="app/src/main/res/layout/fragment_todo_list.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/fragment_todo_list_item.xml" value="0.11013319227430546" />
         <entry key="app/src/main/res/layout/fragment_todo_list_section.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/grass_item.xml" value="0.19114583333333332" />
         <entry key="app/src/main/res/layout/item_week.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_sns_post_item.xml" value="0.23489583333333333" />
         <entry key="app/src/main/res/layout/list_item_day.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/login_layout.xml" value="0.11822916666666666" />
+        <entry key="app/src/main/res/layout/progress_bar.xml" value="0.19114583333333332" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
         <entry key="app/src/main/res/menu/sns_top_app_bar.xml" value="0.4276041666666667" />
