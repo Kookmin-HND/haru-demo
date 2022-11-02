@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.harudemo.R
+import com.example.harudemo.databinding.FragmentStatisticsBinding
+import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.grass.grassAdapter
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
@@ -23,6 +25,8 @@ class StatisticsFragment: Fragment() {
             return StatisticsFragment()
         }
     }
+
+    private var binding: FragmentStatisticsBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,6 @@ class StatisticsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "Ranking - onCreateView() called")
-
         val view = inflater.inflate(R.layout.fragment_statistics, container, false)
 
         return view
@@ -53,7 +56,6 @@ class StatisticsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "기록"
-
         maindata.successrate[10][15] = 1
         maindata.successrate[10][19] = 1
         maindata.successrate[10][23] = 1
@@ -65,12 +67,21 @@ class StatisticsFragment: Fragment() {
         val dayListManager = GridLayoutManager(this.context, 7)
         val dayListAdapter = grassAdapter(tempMonth)
 
+        //프로그래스바 값 수정
+        binding?.todayBar?.progress = 70 //오늘 프로그래스 바 퍼센트
+        binding?.todayText?.text = "70%" //오늘 퍼센트 텍스트
+        binding?.weekBar?.progress = 60 //이번주 프로그래스 바 퍼센트
+        binding?.weekText?.text = "60%" //이번주 퍼센트 텍스트
+        binding?.monthBar?.progress = 45 //이번달 프로그래스 바 퍼센트
+        binding?.monthText?.text = "45%" //이번달 퍼센트 텍스트
+        //프로그래스바 값 수정
+
         statistic_vp.apply {
             layoutManager = dayListManager
             adapter = dayListAdapter
+
         }
 
-        //프로그래스 바
 
     }
 }

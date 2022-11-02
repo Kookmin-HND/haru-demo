@@ -49,16 +49,21 @@
             android:layout_height="wrap_content">
 
             <ProgressBar
+                android:id="@+id/today_bar"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:background="@drawable/circular_progress_background"
                 android:progressDrawable="@drawable/circular_progress_bar"
                 android:backgroundTint="#00000000"
                 android:layout_gravity="center"
                 android:indeterminate="false"
-                android:max="100"/>
+                android:max="100"
+                android:progress="70"
+                />
 
             <TextView
+                android:id="@+id/today_text"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:text="70%"
@@ -73,19 +78,23 @@
             android:layout_marginHorizontal="10dp">
 
             <ProgressBar
+                android:id="@+id/week_bar"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:background="@drawable/circular_progress_background"
                 android:progressDrawable="@drawable/circular_progress_bar"
                 android:backgroundTint="#00000000"
                 android:layout_gravity="center"
                 android:indeterminate="false"
-                android:max="100"/>
+                android:max="100"
+                android:progress="30"/>
 
             <TextView
+                android:id="@+id/week_text"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
-                android:text="70%"
+                android:text="30%"
                 android:textSize="40dp"
                 android:gravity="center"/>
         </FrameLayout>
@@ -96,19 +105,23 @@
             android:layout_height="wrap_content">
 
             <ProgressBar
+                android:id="@+id/month_bar"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:background="@drawable/circular_progress_background"
                 android:progressDrawable="@drawable/circular_progress_bar"
                 android:backgroundTint="#00000000"
                 android:layout_gravity="center"
                 android:indeterminate="false"
-                android:max="100"/>
+                android:max="100"
+                android:progress="45"/>
 
             <TextView
+                android:id="@+id/month_text"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
-                android:text="70%"
+                android:text="45%"
                 android:textSize="40dp"
                 android:gravity="center"/>
         </FrameLayout>
