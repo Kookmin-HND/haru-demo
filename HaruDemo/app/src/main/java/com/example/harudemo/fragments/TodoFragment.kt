@@ -67,6 +67,7 @@ class TodoFragment : Fragment() {
             )
         }
 
+        // DB에서 Todo Data를 불러온다
         TodoData.fetchTodos({
             if (TodoData.todos.isEmpty()) {
                 TodoData.todos.addAll(it)
@@ -74,7 +75,6 @@ class TodoFragment : Fragment() {
                     TodoData.folderNames.add(todo.folder)
                 }
             }
-            Log.d("[debug]", TodoData.folderNames.size.toString())
             binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.folderNames.size)
         }, {
             Toast.makeText(

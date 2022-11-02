@@ -7,9 +7,8 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.widget.addTextChangedListener
-import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivityTodoInputBinding
-import com.example.harudemo.fragments.TodoFragment
+import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.todo.types.ViewMode
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.time.LocalDate

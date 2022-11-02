@@ -1,7 +1,6 @@
 package com.example.harudemo.todo
 
 import android.util.Log
-import android.widget.Toast
 import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.RESPONSE_STATUS
@@ -33,5 +32,15 @@ object TodoData {
                     }
                 }
             })
+    }
+
+    fun getTodosByFolderName(folderName: String): ArrayList<Todo> {
+        val todos = arrayListOf<Todo>()
+        for (todo in this.todos) {
+            if (todo.folder == folderName) {
+                todos.add(todo)
+            }
+        }
+        return todos
     }
 }

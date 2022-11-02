@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
+import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
 
-class TodoListFragment: Fragment() {
+class TodoListFragment : Fragment() {
     companion object {
         const val TAG: String = "[TODO_LIST-LOG]"
 
@@ -69,7 +70,8 @@ class TodoListFragment: Fragment() {
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-//                sections = TodoDummyData.getFolderByFolderTitle(folderTitle)
+                val todos = TodoData.getTodosByFolderName(folderTitle)
+                sections = arrayListOf(Section(sectionTitle = folderTitle, todos))
             }
             else -> {
 
