@@ -5,14 +5,14 @@ import {
   CreateDateColumn,
   Generated,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
 } from "typeorm";
-import { Comment } from "./comment";
+import { Post } from "./post";
 
 //필요한 데이터베이스 스키마 entity에 생성
 
 @Entity()
-export class Post {
+export class Comment {
   //id : auto Increment
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,8 +23,8 @@ export class Post {
   @Column({ nullable: false })
   content: string;
 
-  @OneToMany((type) => Comment, (comment) => comment.id)
-  comments: Comment[];
+  @ManyToOne((type) => Post, (post) => post.id)
+  post: Post;
 
   @CreateDateColumn()
   createdAt: Date;
