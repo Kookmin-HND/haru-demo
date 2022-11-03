@@ -150,7 +150,8 @@ class TodoInputActivity : AppCompatActivity() {
                         TodoData.folderNames.add(todo.folder)
                     }
 
-                    TodoFragment.getAdapter().notifyItemInserted(TodoData.folderNames.size)
+                    // Recycler View를 새로고침한다.
+                    TodoFragment.folderListAdapter.notifyItemInserted(TodoData.folderNames.size)
                 }
             )
             // 입력이 정상적으로 되었다고 판단. Activity 종료

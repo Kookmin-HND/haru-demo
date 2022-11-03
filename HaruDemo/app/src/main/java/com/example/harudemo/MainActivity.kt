@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.menu.getItem(2).isChecked = true
         // TodoFragment를 가장 먼저 실행함
         snsFragment = SnsFragment.newInstance()
-        todoFragment = TodoFragment.getInstance()
+        todoFragment = TodoFragment.instance
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
     }
 
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                     binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
                 R.id.menu_todo -> {
-                    todoFragment = TodoFragment.getInstance()
+                    todoFragment = TodoFragment.instance
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, todoFragment!!).commit()
                     binding?.fragmentSns?.visibility = View.GONE

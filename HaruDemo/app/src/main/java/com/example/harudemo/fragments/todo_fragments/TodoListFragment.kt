@@ -36,7 +36,7 @@ class TodoListFragment : Fragment() {
         // 뒤로가기 키 핸들링위한 함수, 뒤로가기 눌리면 todoFragment로 돌아간다.
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                todoFragment = TodoFragment.getInstance()
+                todoFragment = TodoFragment.instance
                 activity?.supportFragmentManager?.beginTransaction()
                     ?.replace(R.id.fragments_frame, todoFragment!!)?.commit()
             }

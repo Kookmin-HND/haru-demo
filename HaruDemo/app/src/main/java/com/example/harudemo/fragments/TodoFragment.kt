@@ -1,9 +1,7 @@
 package com.example.harudemo.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,38 +10,32 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.harudemo.MainActivity
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
-import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
-import com.example.harudemo.todo.types.Todo
-import com.example.harudemo.utils.Constants
-import com.example.harudemo.utils.RESPONSE_STATUS
 
 class TodoFragment : Fragment() {
     companion object {
-        const val TAG: String = "[TODO-LOG]"
-        private var instance: TodoFragment? = null
-        private var folderListAdapter: TodoFolderListAdapter? = null
-
-        // TodoFragment를 Singleton 방식으로 접근
-        fun getInstance(): TodoFragment {
-            if (instance == null) {
-                instance = TodoFragment()
+        private var _instance: TodoFragment? = null
+        val instance: TodoFragment
+            get() {
+                if (_instance == null) {
+                    _instance = TodoFragment()
+                }
+                return _instance!!
             }
-            return instance!!
-        }
 
-        fun getAdapter(): TodoFolderListAdapter {
-            if (folderListAdapter == null) {
-                folderListAdapter = getInstance()?.activity?.let { TodoFolderListAdapter(it) }
+        private var _folderListAdapter: TodoFolderListAdapter? = null
+        val folderListAdapter: TodoFolderListAdapter
+            get() {
+                if (_folderListAdapter == null) {
+                    _folderListAdapter = instance?.activity?.let { TodoFolderListAdapter(it) }
+                }
+                return _folderListAdapter!!
             }
-            return folderListAdapter!!
-        }
     }
 
     private var todoListFragment: TodoListFragment? = null
@@ -66,7 +58,7 @@ class TodoFragment : Fragment() {
                         TodoData.folderNames.add(todo.folder)
                     }
                 }
-                getAdapter().notifyItemInserted(TodoData.folderNames.size)
+                binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.folderNames.size)
             }, {
                 // 데이터를 불러오는데 실패하였을 때
                 Toast.makeText(
@@ -76,7 +68,7 @@ class TodoFragment : Fragment() {
         }
 
         // Folder Item을 Recycler View에 추가
-        binding?.rvFolderList?.adapter = getAdapter()
+        binding?.rvFolderList?.adapter = folderListAdapter
         binding?.rvFolderList?.layoutManager = LinearLayoutManager(
             binding?.root?.context,
             LinearLayoutManager.VERTICAL,
