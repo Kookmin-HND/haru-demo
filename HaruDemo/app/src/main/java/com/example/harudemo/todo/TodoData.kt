@@ -10,29 +10,65 @@ object TodoData {
     val todos: ArrayList<Todo> = ArrayList()
     val folderNames: MutableSet<String> = mutableSetOf()
 
-    fun fetchTodos(
-        okayCallback: (todos: ArrayList<Todo>) -> Unit,
-        failCallback: () -> Unit,
-        noContentCallback: () -> Unit
+    fun addTodo(
+        writer: String,
+        folder: String,
+        content: String,
+        dates: List<String>,
+        okayCallback: (todos: List<Todo>) -> Unit = {},
+        failCallback: () -> Unit = {},
+        noContentCallback: () -> Unit = {}
     ) {
-        // 만약 유저가 유저의 todo data를 가지고 있지 않으면 불러온다.
-        RetrofitManager.instance.getTodos(
-            "cjeongmin27@gmail.com",
+        RetrofitManager.instance.addTodo(writer,
+            folder,
+            content,
+            dates,
             completion = { responseStatus, todos ->
                 when (responseStatus) {
                     RESPONSE_STATUS.OKAY -> {
+                        val _todos = arrayListOf<Todo>()
                         if (todos != null) {
-                            okayCallback(todos)
+                            for (i in 0 until todos.size()) {
+                                val todo = todos[i].asJsonObject
+                                _todos.add(
+                                    Todo(
+                                        todo.get("id").asInt,
+                                        todo.get("writer").asString,
+                                        todo.get("folder").asString,
+                                        todo.get("content").asString,
+                                        todo.get("date").asString,
+                                        todo.get("completed").asBoolean,
+                                    )
+                                )
+                            }
                         }
+                        okayCallback(_todos)
                     }
-                    RESPONSE_STATUS.FAIL -> {
-                        failCallback()
-                    }
-                    RESPONSE_STATUS.NO_CONTENT -> {
-                        noContentCallback()
-                    }
+                    RESPONSE_STATUS.FAIL -> failCallback()
+                    RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                 }
             })
+    }
+
+    // DB에서 writer가 일치하는 Todo Data를 불러온다.
+    fun fetchTodos(
+        writer: String,
+        okayCallback: (todos: List<Todo>) -> Unit = {},
+        failCallback: () -> Unit = {},
+        noContentCallback: () -> Unit = {}
+    ) {
+        // 만약 유저가 유저의 todo data를 가지고 있지 않으면 불러온다.
+        RetrofitManager.instance.getTodos(writer, completion = { responseStatus, todos ->
+            when (responseStatus) {
+                RESPONSE_STATUS.OKAY -> {
+                    if (todos != null) {
+                        okayCallback(todos)
+                    }
+                }
+                RESPONSE_STATUS.FAIL -> failCallback()
+                RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+            }
+        })
     }
 
     fun getTodosByFolder(folderName: String): List<Section> {

@@ -1,16 +1,24 @@
 package com.example.harudemo.todo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.widget.addTextChangedListener
+import com.example.harudemo.MainActivity
+import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivityTodoInputBinding
+import com.example.harudemo.databinding.FragmentTodoBinding
+import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
+import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.ViewMode
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import kotlinx.android.synthetic.main.activity_sns_add_post.*
 import java.time.LocalDate
 
 class TodoInputActivity : AppCompatActivity() {
@@ -22,7 +30,6 @@ class TodoInputActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityTodoInputBinding.inflate(layoutInflater)
         binding?.calendar?.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
         setContentView(binding?.root)
@@ -87,17 +94,17 @@ class TodoInputActivity : AppCompatActivity() {
             val text = binding?.todoInput?.text.toString()
             // 만약, 그 텍스트를 토큰화를 했을때 배열 사이즈가 2보다 작으면 종료.
             val splitted = splitText(text) ?: return@setOnClickListener
+            val folder = splitted[0]
+            val content = splitted[1]
+            val datesList = arrayListOf<String>()
 
             if (viewMode == ViewMode.Calendar) {
                 // 현재 입력 방식이 캘린더인 경우.
                 val dates = binding?.calendar?.selectedDates
-                val datesList = arrayListOf<String>()
                 // 모든 날짜를 datesList에 추가한다.
                 for (date in dates!!) {
                     datesList.add("${date.year}-${date.month + 1}-${date.day}")
                 }
-                // DB에 Todo 추가
-//                TodoDummyData.addTodo(splitted[0], splitted[1], datesList)
             } else {
                 // 현재 입력 방식이 기간인 경우.
                 // 시작 날짜와 끝 날짜를 가져와서 문자열로 변환한다.
@@ -118,7 +125,6 @@ class TodoInputActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                val datesList = ArrayList<String>();
                 // 시작 날짜가 끝 날짜를 넘어설 때까지 모든 날짜와 선택한 요일을 1:1로 확인하여 저장.
                 while (!startDate.isAfter(endDate)) {
                     val day = startDate.dayOfWeek.value - 1
@@ -127,16 +133,28 @@ class TodoInputActivity : AppCompatActivity() {
                     }
                     startDate = startDate.plusDays(1)
                 }
-                // DB에 Todo 추가
-//                TodoDummyData.addTodo(
-//                    splitted[0],
-//                    splitted[1],
-//                    datesList
-//                )
+
             }
 
+            // DB에 Todo 추가
+            TodoData.addTodo(
+                "cjeongmin27@gmail.com",
+                folder,
+                content,
+                datesList,
+                {
+                    // DB에는 추가되었고,
+                    // 전역적으로 관리하는 데이터에도 추가해준다.
+                    TodoData.todos.addAll(it)
+                    for (todo in it) {
+                        TodoData.folderNames.add(todo.folder)
+                    }
+
+                    TodoFragment.getAdapter().notifyItemInserted(TodoData.folderNames.size)
+                }
+            )
             // 입력이 정상적으로 되었다고 판단. Activity 종료
-            this.finish()
+            finish()
         }
     }
 

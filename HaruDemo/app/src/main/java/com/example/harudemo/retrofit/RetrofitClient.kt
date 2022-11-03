@@ -74,8 +74,9 @@ object RetrofitClient {
 //                    .build()
 //
 //                val response = chain.proceed(finalRequest)
-
+                Log.d("[debug]", originalRequest.toString())
                 val response = chain.proceed(originalRequest)
+                Log.d("[debug]", response.toString())
                 Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
 
                 if (response.code != 200) {

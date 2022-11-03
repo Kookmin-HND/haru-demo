@@ -6,6 +6,7 @@ import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Response
@@ -87,6 +88,35 @@ class RetrofitManager {
                     200 -> {
                         val todos = response.body() ?: return
                         completion(RESPONSE_STATUS.OKAY, todos)
+                    }
+                }
+            }
+        })
+    }
+
+    // DB에 Todo를 추가한다.
+    fun addTodo(
+        writer: String,
+        folder: String,
+        content: String,
+        dates: List<String>,
+        completion: (RESPONSE_STATUS, JsonArray?) -> Unit
+    ) {
+        val call =
+            todoService?.addTodos(writer, RequestBodyParams(folder, content, dates)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.NO_CONTENT, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body()?.asJsonArray)
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
                     }
                 }
             }

@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.harudemo.MainActivity
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
@@ -27,6 +28,7 @@ class TodoFragment : Fragment() {
     companion object {
         const val TAG: String = "[TODO-LOG]"
         private var instance: TodoFragment? = null
+        private var folderListAdapter: TodoFolderListAdapter? = null
 
         // TodoFragment를 Singleton 방식으로 접근
         fun getInstance(): TodoFragment {
@@ -35,19 +37,17 @@ class TodoFragment : Fragment() {
             }
             return instance!!
         }
+
+        fun getAdapter(): TodoFolderListAdapter {
+            if (folderListAdapter == null) {
+                folderListAdapter = getInstance()?.activity?.let { TodoFolderListAdapter(it) }
+            }
+            return folderListAdapter!!
+        }
     }
 
     private var todoListFragment: TodoListFragment? = null
     private var binding: FragmentTodoBinding? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
 
     //뷰가 생성되었을 때
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
@@ -56,33 +56,32 @@ class TodoFragment : Fragment() {
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
 
-        // Folder Item을 Recycler View에 추가
-        activity?.let {
-            val folderListAdapter = TodoFolderListAdapter(it)
-            binding?.rvFolderList?.adapter = folderListAdapter
-            binding?.rvFolderList?.layoutManager = LinearLayoutManager(
-                binding?.root?.context,
-                LinearLayoutManager.VERTICAL,
-                false,
-            )
+        // DB에서 Todo Data를 불러온다
+        if (TodoData.todos.isEmpty()) {
+            TodoData.fetchTodos("cjeongmin27@gmail.com", {
+                // 데이터를 불러오는데 성공하였을 때
+                if (TodoData.todos.isEmpty()) {
+                    TodoData.todos.addAll(it)
+                    for (todo in it) {
+                        TodoData.folderNames.add(todo.folder)
+                    }
+                }
+                getAdapter().notifyItemInserted(TodoData.folderNames.size)
+            }, {
+                // 데이터를 불러오는데 실패하였을 때
+                Toast.makeText(
+                    this.context, "todo 목록을 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT
+                ).show()
+            })
         }
 
-        // DB에서 Todo Data를 불러온다
-        TodoData.fetchTodos({
-            if (TodoData.todos.isEmpty()) {
-                TodoData.todos.addAll(it)
-                for (todo in it) {
-                    TodoData.folderNames.add(todo.folder)
-                }
-            }
-            binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.folderNames.size)
-        }, {
-            Toast.makeText(
-                this.context,
-                "todo 목록을 불러오는데 실패하였습니다.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }, {})
+        // Folder Item을 Recycler View에 추가
+        binding?.rvFolderList?.adapter = getAdapter()
+        binding?.rvFolderList?.layoutManager = LinearLayoutManager(
+            binding?.root?.context,
+            LinearLayoutManager.VERTICAL,
+            false,
+        )
 
         // todo 추가 버튼 클릭시에 새로운 액티비티로 이동
         binding?.btnAddTodo?.setOnClickListener {
@@ -91,7 +90,6 @@ class TodoFragment : Fragment() {
         }
         return binding?.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

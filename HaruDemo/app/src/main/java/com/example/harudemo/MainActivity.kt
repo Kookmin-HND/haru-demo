@@ -1,6 +1,8 @@
 package com.example.harudemo
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,7 +16,6 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_todo_list_section.*
 import kotlin.text.Typography.section
 
 class MainActivity : AppCompatActivity() {
