@@ -66,7 +66,6 @@ class StatisticsFragment: Fragment() {
         val tempMonth = calendar.get(Calendar.MONTH)
         val dayListManager = GridLayoutManager(this.context, 7)
         val dayListAdapter = grassAdapter(tempMonth)
-
         //프로그래스바 값 수정
         binding?.todayBar?.progress = 70 //오늘 프로그래스 바 퍼센트
         binding?.todayText?.text = "70%" //오늘 퍼센트 텍스트
