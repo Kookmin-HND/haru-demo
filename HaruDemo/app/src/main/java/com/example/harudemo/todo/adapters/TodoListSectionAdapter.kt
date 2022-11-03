@@ -1,10 +1,12 @@
 package com.example.harudemo.todo.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
+import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import java.time.LocalDate
@@ -22,6 +24,13 @@ class TodoListSectionAdapter(private val section: Section) :
             val dateToken = todoItem.date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
+
+            itemBinding.btnDelete.setOnClickListener {
+                // Delete 버튼 클릭시, 삭제하고 todos 배열에서도 삭제한다. 만약, 폴더가 비어있게 되면 이도 삭제한다.
+                TodoData.deleteTodo(todoItem.id, {
+                    TodoData.todos.removeIf { it.id == todoItem.id }
+                })
+            }
         }
     }
 

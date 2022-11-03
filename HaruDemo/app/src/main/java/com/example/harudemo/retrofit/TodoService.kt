@@ -5,21 +5,20 @@ import com.example.harudemo.utils.API
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
-data class RequestBodyParams(
+data class PostRequestBodyParams(
     @SerializedName("folder")
     val folder: String,
     @SerializedName("content")
     val content: String,
     @SerializedName("dates")
     val dates: List<String>
+)
+
+data class DeleteRequestBodyParams(
+    @SerializedName("id")
+    val id: Number
 )
 
 interface TodoService {
@@ -29,6 +28,9 @@ interface TodoService {
     @POST("${API.TODOS}/{email}")
     fun addTodos(
         @Path("email") writer: String,
-        @Body requestBodyParams: RequestBodyParams
+        @Body requestBodyParams: PostRequestBodyParams
     ): Call<JsonElement>
+
+    @HTTP(method = "DELETE", path = API.TODOS, hasBody = true)
+    fun deleteTodo(@Body id: DeleteRequestBodyParams): Call<JsonElement>
 }

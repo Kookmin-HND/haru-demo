@@ -19,14 +19,6 @@ import com.example.harudemo.todo.adapters.TodoListAdapter
 import java.time.LocalDate
 
 class TodoListFragment : Fragment() {
-    companion object {
-        const val TAG: String = "[TODO_LIST-LOG]"
-
-        fun newInstance(): TodoListFragment {
-            return TodoListFragment()
-        }
-    }
-
     private var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment? = null
@@ -55,7 +47,6 @@ class TodoListFragment : Fragment() {
         // Recycler View에 전달
         var sections = listOf<Section>()
         val by = arguments?.getString("by") as String
-        Log.d(TAG, by)
         when (by) {
             "today" -> {
                 sections = TodoData.getTodosByDates(arrayListOf(LocalDate.now().toString()))

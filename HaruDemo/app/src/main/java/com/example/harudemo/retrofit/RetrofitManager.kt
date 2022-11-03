@@ -103,11 +103,11 @@ class RetrofitManager {
         completion: (RESPONSE_STATUS, JsonArray?) -> Unit
     ) {
         val call =
-            todoService?.addTodos(writer, RequestBodyParams(folder, content, dates)) ?: return
+            todoService?.addTodos(writer, PostRequestBodyParams(folder, content, dates)) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                completion(RESPONSE_STATUS.NO_CONTENT, null)
+                completion(RESPONSE_STATUS.FAIL, null)
             }
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
@@ -117,6 +117,28 @@ class RetrofitManager {
                     }
                     400 -> {
                         Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+    // DB에서 Todo를 삭제한다.
+    fun deleteTodo(
+        id: Number,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+        val call = todoService?.deleteTodo(DeleteRequestBodyParams(id)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
                     }
                 }
             }

@@ -5,11 +5,13 @@ import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.google.gson.JsonElement
 
 object TodoData {
     val todos: ArrayList<Todo> = ArrayList()
-    val folderNames: MutableSet<String> = mutableSetOf()
+    val todosByFolder: HashMap<String, ArrayList<Todo>> = HashMap()
 
+    // DB에 todo를 추가한다.
     fun addTodo(
         writer: String,
         folder: String,
@@ -26,6 +28,7 @@ object TodoData {
             completion = { responseStatus, todos ->
                 when (responseStatus) {
                     RESPONSE_STATUS.OKAY -> {
+                        // DB에 todo를 넣는 것에 성공하면 해당 응답을 받아서, 이를 다시 Todo[]로 만들어 반환한다.
                         val _todos = arrayListOf<Todo>()
                         if (todos != null) {
                             for (i in 0 until todos.size()) {
@@ -67,6 +70,22 @@ object TodoData {
                 }
                 RESPONSE_STATUS.FAIL -> failCallback()
                 RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+            }
+        })
+    }
+
+    // DB에서 일치하는 todo를 제거한다.
+    fun deleteTodo(
+        id: Number,
+        okayCallback: (response: JsonElement) -> Unit = {},
+        failCallback: (response: JsonElement) -> Unit = {},
+        noContentCallback: (response: JsonElement) -> Unit = {},
+    ) {
+        RetrofitManager.instance.deleteTodo(id, completion = { responseStatus, jsonElement ->
+            when (responseStatus) {
+                RESPONSE_STATUS.OKAY -> jsonElement?.let { okayCallback(it) }
+                RESPONSE_STATUS.FAIL -> jsonElement?.let { failCallback(it) }
+                RESPONSE_STATUS.NO_CONTENT -> jsonElement?.let { noContentCallback(it) }
             }
         })
     }

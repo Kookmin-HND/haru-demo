@@ -147,11 +147,15 @@ class TodoInputActivity : AppCompatActivity() {
                     // 전역적으로 관리하는 데이터에도 추가해준다.
                     TodoData.todos.addAll(it)
                     for (todo in it) {
-                        TodoData.folderNames.add(todo.folder)
+                        if (todo.folder in TodoData.todosByFolder) {
+                            TodoData.todosByFolder[todo.folder]?.add(todo)
+                        } else {
+                            TodoData.todosByFolder[todo.folder] = arrayListOf(todo)
+                        }
                     }
 
                     // Recycler View를 새로고침한다.
-                    TodoFragment.folderListAdapter.notifyItemInserted(TodoData.folderNames.size)
+                    TodoFragment.folderListAdapter.notifyItemInserted(TodoData.todosByFolder.keys.size)
                 }
             )
             // 입력이 정상적으로 되었다고 판단. Activity 종료

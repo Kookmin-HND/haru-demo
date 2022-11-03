@@ -9,6 +9,7 @@ import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoFolderItemBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.types.Todo
 
 class TodoFolderListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<TodoFolderListAdapter.TodoFolderListViewHolder>() {
@@ -29,7 +30,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
                 bundle.putString("folder-title", folderTitle)
 
                 // Folder 클릭시에 TodoList에 폴더로부터 클릭 됬음을 알리면서 Fragment 전환
-                todoListFragment = TodoListFragment.newInstance()
+                todoListFragment = TodoListFragment()
                 todoListFragment?.arguments = bundle
                 activity.supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, todoListFragment!!).commit()
@@ -46,10 +47,12 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
     }
 
     override fun onBindViewHolder(holder: TodoFolderListViewHolder, position: Int) {
-        holder.bindItem(ArrayList(TodoData.folderNames)[position])
+        val folderNames = ArrayList(TodoData.todosByFolder.keys)
+        folderNames.sort()
+        holder.bindItem(folderNames[position])
     }
 
     override fun getItemCount(): Int {
-        return TodoData.folderNames.size
+        return TodoData.todosByFolder.keys.size
     }
 }

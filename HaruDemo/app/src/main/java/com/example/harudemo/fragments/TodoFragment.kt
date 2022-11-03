@@ -55,10 +55,14 @@ class TodoFragment : Fragment() {
                 if (TodoData.todos.isEmpty()) {
                     TodoData.todos.addAll(it)
                     for (todo in it) {
-                        TodoData.folderNames.add(todo.folder)
+                        if (todo.folder in TodoData.todosByFolder) {
+                            TodoData.todosByFolder[todo.folder]?.add(todo)
+                        } else {
+                            TodoData.todosByFolder[todo.folder] = arrayListOf(todo)
+                        }
                     }
                 }
-                binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.folderNames.size)
+                binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.todosByFolder.keys.size)
             }, {
                 // 데이터를 불러오는데 실패하였을 때
                 Toast.makeText(
@@ -98,7 +102,7 @@ class TodoFragment : Fragment() {
     // 데이터를 Bundle에 추가해서 넣고 TodoList Fragment로 연결한다.
     private fun onBtnClicked(view: View) {
         val bundle = Bundle()
-        todoListFragment = TodoListFragment.newInstance()
+        todoListFragment = TodoListFragment()
         todoListFragment?.arguments = bundle
 
         when ((view as Button).text.toString()) {

@@ -13,7 +13,7 @@ import kotlin.math.min
 class SwipeHelperCallback : ItemTouchHelper.Callback() {
     private var currentPosition: Int? = null
     private var previousPosition: Int? = null
-    private var swipeBtn: TextView? = null
+    private var btnDelete: TextView? = null
     private var currentDx = 0f
     private var clamp = 0f
 
@@ -70,7 +70,7 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     ) {
         if (actionState == ACTION_STATE_SWIPE) {
             val view = getView(viewHolder)
-            swipeBtn = (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.swipe_btn
+            btnDelete = (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.btn_delete
             val isClamped = getTag(viewHolder)
             val x = clampViewPositionHorizontal(view, dX, isClamped, isCurrentlyActive)
             currentDx = x
@@ -108,7 +108,7 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
             dX
         }
 
-        swipeBtn?.isEnabled = isClamped
+        btnDelete?.isEnabled = isClamped
         return min(max(min, x), max)
     }
 
