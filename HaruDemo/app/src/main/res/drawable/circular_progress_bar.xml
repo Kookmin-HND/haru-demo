@@ -13,9 +13,9 @@
         <solid android:color="@color/gray"/>
     <gradient
         android:angle="0"
-        android:endColor="@color/todo_day_btn"
-        android:centerColor="@color/todo_day_btn"
-        android:startColor="@color/todo_day_btn"
+        android:endColor="#ACE7AE"
+        android:centerColor="#ACE7AE"
+        android:startColor="#ACE7AE"
         android:type="sweep"
         android:useLevel="false"/>
     </shape>
