@@ -15,17 +15,21 @@ class SnsAddPostActivity : AppCompatActivity() {
         binding = ActivitySnsAddPostBinding.inflate(layoutInflater);
         setContentView(binding.root)
 
-        binding.addCancel.setOnClickListener{
+        binding.addCancel.setOnClickListener {
             Toast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        binding.addApply.setOnClickListener{
+        binding.addApply.setOnClickListener {
             Toast.makeText(applicationContext, "작성작성", Toast.LENGTH_SHORT).show();
         }
 
-        binding.addPolicy.setOnClickListener{
+        binding.addPolicy.setOnClickListener {
             Toast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
         }
+
+        binding.addimage.setOnClickListener {
+            Toast.makeText(applicationContext, "찰칵찰칵", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
