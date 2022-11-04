@@ -20,29 +20,36 @@ class TodoListSectionAdapter(private val section: Section) :
     RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindItem(todoItem: Todo) {
+        fun bindItem(todo: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             val days = arrayListOf<String>("월", "화", "수", "목", "금", "토", "일")
 
-            itemBinding.tvTodoContent.text = todoItem.content
+            itemBinding.tvTodoContent.text = todo.content
 
-            val dateToken = todoItem.date.split('-').map { it.toInt() }
+            val dateToken = todo.date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
 
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시, 삭제하고 todos 배열에서도 삭제한다. 만약, 폴더가 비어있게 되면 이도 삭제한다.
-                TodoData.deleteTodo(todoItem.id, {
-                    TodoData.todos.removeIf { it.id == todoItem.id }
-                    TodoData.todosByFolder[todoItem.folder]?.removeIf { it.id == todoItem.id }
-                    if (TodoData.todosByFolder[todoItem.folder]?.isEmpty() == true) {
-                        TodoData.todosByFolder.remove(todoItem.folder)
+                TodoData.deleteTodo(todo.id, {
+                    TodoData.todos.removeIf { it.id == todo.id }
+                    TodoData.todosByFolder[todo.folder]?.removeIf { it.id == todo.id }
+                    if (TodoData.todosByFolder[todo.folder]?.isEmpty() == true) {
+                        TodoData.todosByFolder.remove(todo.folder)
                         TodoFragment.folderListAdapter.notifyItemRemoved(TodoData.todosByFolder.keys.size)
                     }
 
-                    section.todoList.removeIf { it.id == todoItem.id }
+                    section.todoList.removeIf { it.id == todo.id }
                     this@TodoListSectionAdapter.notifyDataSetChanged()
                 })
+            }
+
+            itemBinding.root.setOnClickListener {
+                val intent = Intent(it.context, TodoInputActivity::class.java)
+                intent.putExtra("update", true)
+                intent.putExtra("todo", todo)
+                it.context.startActivity(intent)
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.example.harudemo.todo.types
 
+import java.io.Serializable
+
 // TodoData Interface
 data class Todo(
     val id: Number,
@@ -8,4 +10,4 @@ data class Todo(
     val content: String,
     val date: String,
     val completed: Boolean,
-)
+) : Serializable
