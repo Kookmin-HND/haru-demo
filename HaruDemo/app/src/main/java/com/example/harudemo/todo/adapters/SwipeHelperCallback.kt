@@ -87,7 +87,7 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     }
 
     private fun getView(viewHolder: RecyclerView.ViewHolder): View {
-        return (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.cl_todo_contents
+        return (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.cl_todo_content
     }
 
     private fun clampViewPositionHorizontal(

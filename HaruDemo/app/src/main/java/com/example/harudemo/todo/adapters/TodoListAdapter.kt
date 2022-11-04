@@ -33,9 +33,6 @@ class TodoListAdapter(private val sections: List<Section>) :
             itemTouchHelper.attachToRecyclerView(itemBinding.rvTodoList)
 
             itemBinding.rvTodoList.apply {
-                layoutManager = LinearLayoutManager(itemBinding.root.context)
-                adapter = sectionAdapter
-
                 setOnTouchListener { _, _ ->
                     swipeHelperCallback.removePreviousClamp(this)
                     false

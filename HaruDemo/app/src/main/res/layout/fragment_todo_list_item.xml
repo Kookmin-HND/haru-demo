@@ -8,14 +8,14 @@
     android:layout_marginBottom="5dp">
 
     <FrameLayout
-        android:id="@+id/fl_todo_contents"
+        android:id="@+id/fl_todo_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/holo_red_dark"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_todo_contents"
+            android:id="@+id/cl_todo_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/background_light"
@@ -61,7 +61,7 @@
         android:layout_marginTop="5dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_todo_contents" />
+        app:layout_constraintTop_toBottomOf="@id/fl_todo_content" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

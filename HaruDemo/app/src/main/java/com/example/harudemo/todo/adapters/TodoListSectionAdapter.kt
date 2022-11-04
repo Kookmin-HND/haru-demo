@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
+import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
@@ -29,6 +30,15 @@ class TodoListSectionAdapter(private val section: Section) :
                 // Delete 버튼 클릭시, 삭제하고 todos 배열에서도 삭제한다. 만약, 폴더가 비어있게 되면 이도 삭제한다.
                 TodoData.deleteTodo(todoItem.id, {
                     TodoData.todos.removeIf { it.id == todoItem.id }
+                    TodoData.todosByFolder[todoItem.folder]?.removeIf { it.id == todoItem.id }
+                    if (TodoData.todosByFolder[todoItem.folder]?.isEmpty() == true) {
+                        TodoData.todosByFolder.remove(todoItem.folder)
+                        TodoFragment.folderListAdapter.notifyItemRemoved(TodoData.todosByFolder.keys.size)
+                    }
+
+                    // TODO: Delete 성공시 Todo Item 사라지고, TodoList Recycler View가 새로고침이 되어야 함.
+                    section.todoList.removeIf { it.id == todoItem.id }
+                    this@TodoListSectionAdapter.notifyItemRemoved(section.todoList.size)
                 })
             }
         }
@@ -38,9 +48,7 @@ class TodoListSectionAdapter(private val section: Section) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListSectionViewHolder {
         return TodoListSectionViewHolder(
             FragmentTodoListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
