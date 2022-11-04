@@ -37,7 +37,6 @@ class TodoListSectionAdapter(private val section: Section) :
                         TodoFragment.folderListAdapter.notifyItemRemoved(TodoData.todosByFolder.keys.size)
                     }
 
-                    // TODO: Delete 성공시 Todo Item 사라지고, TodoList Recycler View가 새로고침이 되어야 함.
                     section.todoList.removeIf { it.id == todoItem.id }
                     this@TodoListSectionAdapter.notifyDataSetChanged()
                 })

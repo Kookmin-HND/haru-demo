@@ -1,6 +1,6 @@
 package com.example.harudemo.todo.types
 
-// Todo Interface
+// TodoData Interface
 data class Todo(
     val id: Number,
     val writer: String,

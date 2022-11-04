@@ -72,7 +72,7 @@ class RetrofitManager {
         })
     }
 
-    // DB에서 Todo Data를 불러온다.
+    // DB에서 데이터를 불러온다.
     fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit) {
         val call = todoService?.getTodos(writer) ?: return
 

@@ -46,12 +46,18 @@ class TodoInputActivity : AppCompatActivity() {
         binding?.tvDurationStart?.text = "${LocalDate.now()}"
         binding?.tvDurationEnd?.text = "${LocalDate.now()}"
 
-        // Todo 입력시에 #이 없으면 #을 붙여주고 커서 위치를 옮김
+        binding?.todoInput?.setOnFocusChangeListener { view, b ->
+            if (binding?.todoInput?.text?.length == 0) {
+                binding?.todoInput?.setText("#")
+            }
+        }
+
+        // 입력시 기본적으로 들어간 #이 삭제가 된다면 삭제가 불가능하게 함.
         binding?.todoInput?.addTextChangedListener {
             val text = binding?.todoInput?.text?.toString()
-            if (text?.length == 1 && text != "#") {
-                binding?.todoInput?.setText("#${binding?.todoInput?.text.toString()}")
-                binding?.todoInput?.setSelection(2)
+            if (text?.length == 0) {
+                binding?.todoInput?.setText("#")
+                binding?.todoInput?.setSelection(1)
             }
         }
 
@@ -136,7 +142,7 @@ class TodoInputActivity : AppCompatActivity() {
 
             }
 
-            // DB에 Todo 추가
+            // DB에 데이터 추가
             TodoData.addTodo(
                 "cjeongmin27@gmail.com",
                 folder,
@@ -189,8 +195,8 @@ class TodoInputActivity : AppCompatActivity() {
         }
     }
 
-    // TextEdit으로부터 입력을 받은 text를 폴더와 Todo 내용으로 분리한다.
-    // 만약, Todo 내용이 없는 경우엔 null을 반환한다.
+    // TextEdit으로부터 입력을 받은 text를 폴더와 Content 내용으로 분리한다.
+    // 만약, Content가 없는 경우엔 null을 반환한다.
     private fun splitText(text: String): ArrayList<String>? {
         val trimText = text.trim()
         val res: ArrayList<String> = ArrayList()
@@ -202,5 +208,4 @@ class TodoInputActivity : AppCompatActivity() {
         res.add(splitted.slice(1 until splitted.size).joinToString(" "))
         return res
     }
-
 }

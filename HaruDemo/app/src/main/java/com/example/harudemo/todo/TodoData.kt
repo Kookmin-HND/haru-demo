@@ -28,7 +28,7 @@ object TodoData {
             completion = { responseStatus, todos ->
                 when (responseStatus) {
                     RESPONSE_STATUS.OKAY -> {
-                        // DB에 todo를 넣는 것에 성공하면 해당 응답을 받아서, 이를 다시 Todo[]로 만들어 반환한다.
+                        // DB에 데이터를 넣는 것에 성공하면 해당 응답을 받아서, 이를 다시 배열로 만들어 반환한다.
                         val _todos = arrayListOf<Todo>()
                         if (todos != null) {
                             for (i in 0 until todos.size()) {
@@ -53,14 +53,14 @@ object TodoData {
             })
     }
 
-    // DB에서 writer가 일치하는 Todo Data를 불러온다.
+    // DB에서 writer가 일치하는 TodoData를 불러온다.
     fun fetchTodos(
         writer: String,
         okayCallback: (todos: List<Todo>) -> Unit = {},
         failCallback: () -> Unit = {},
         noContentCallback: () -> Unit = {}
     ) {
-        // 만약 유저가 유저의 todo data를 가지고 있지 않으면 불러온다.
+        // 만약 유저가 유저의 TodoData를 가지고 있지 않으면 불러온다.
         RetrofitManager.instance.getTodos(writer, completion = { responseStatus, todos ->
             when (responseStatus) {
                 RESPONSE_STATUS.OKAY -> {

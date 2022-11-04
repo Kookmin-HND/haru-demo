@@ -48,7 +48,7 @@ class TodoFragment : Fragment() {
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
 
-        // DB에서 Todo Data를 불러온다
+        // DB에서 Data를 불러온다
         if (TodoData.todos.isEmpty()) {
             TodoData.fetchTodos("cjeongmin27@gmail.com", {
                 // 데이터를 불러오는데 성공하였을 때
@@ -79,7 +79,7 @@ class TodoFragment : Fragment() {
             false,
         )
 
-        // todo 추가 버튼 클릭시에 새로운 액티비티로 이동
+        // 데이터 추가 버튼 클릭시에 새로운 액티비티로 이동
         binding?.btnAddTodo?.setOnClickListener {
             val intent = Intent(context, TodoInputActivity::class.java)
             startActivity(intent)
