@@ -1,5 +1,6 @@
 package com.example.harudemo.todo.adapters
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -38,7 +39,7 @@ class TodoListSectionAdapter(private val section: Section) :
 
                     // TODO: Delete 성공시 Todo Item 사라지고, TodoList Recycler View가 새로고침이 되어야 함.
                     section.todoList.removeIf { it.id == todoItem.id }
-                    this@TodoListSectionAdapter.notifyItemRemoved(section.todoList.size)
+                    this@TodoListSectionAdapter.notifyDataSetChanged()
                 })
             }
         }

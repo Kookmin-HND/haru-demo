@@ -62,7 +62,7 @@ class TodoFragment : Fragment() {
                         }
                     }
                 }
-                binding?.rvFolderList?.adapter?.notifyItemInserted(TodoData.todosByFolder.keys.size)
+                binding?.rvFolderList?.adapter?.notifyDataSetChanged()
             }, {
                 // 데이터를 불러오는데 실패하였을 때
                 Toast.makeText(
