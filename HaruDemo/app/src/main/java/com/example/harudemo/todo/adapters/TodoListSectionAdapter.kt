@@ -1,6 +1,7 @@
 package com.example.harudemo.todo.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
 import com.example.harudemo.fragments.TodoFragment
+import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import java.time.LocalDate

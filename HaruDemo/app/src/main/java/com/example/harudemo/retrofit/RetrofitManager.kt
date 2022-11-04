@@ -72,7 +72,7 @@ class RetrofitManager {
         })
     }
 
-    // DB에서 데이터를 불러온다.
+    // DB에서 TodoData를 불러온다.
     fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit) {
         val call = todoService?.getTodos(writer) ?: return
 
@@ -94,7 +94,7 @@ class RetrofitManager {
         })
     }
 
-    // DB에 Todo를 추가한다.
+    // DB에 TodoData를 추가한다.
     fun addTodo(
         writer: String,
         folder: String,
@@ -123,7 +123,19 @@ class RetrofitManager {
         })
     }
 
-    // DB에서 Todo를 삭제한다.
+    // DB에서 TodoData를 업데이트한다.
+    fun updateTodo(
+        id: Number,
+        folder: String,
+        content: String,
+        date: String,
+        completed: Boolean,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+        // TODO: Update 추가하기
+    }
+
+    // DB에서 TodoData를 삭제한다.
     fun deleteTodo(
         id: Number,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit

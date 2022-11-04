@@ -1,5 +1,6 @@
 package com.example.harudemo.retrofit
 
+import androidx.browser.browseractions.BrowserActionsIntent.BrowserActionsUrlType
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.API
 import com.google.gson.JsonElement
@@ -21,6 +22,23 @@ data class DeleteRequestBodyParams(
     val id: Number
 )
 
+data class PatchRequestBodyParams(
+    @SerializedName("id")
+    val id: Number,
+
+    @SerializedName("folder")
+    val folder: String,
+
+    @SerializedName("content")
+    val content: String,
+
+    @SerializedName("dates")
+    val dates: List<String>,
+
+    @SerializedName("completed")
+    val completed: Boolean,
+)
+
 interface TodoService {
     @GET("${API.TODOS}/{email}")
     fun getTodos(@Path("email") writer: String): Call<ArrayList<Todo>>
@@ -32,5 +50,8 @@ interface TodoService {
     ): Call<JsonElement>
 
     @HTTP(method = "DELETE", path = API.TODOS, hasBody = true)
-    fun deleteTodo(@Body id: DeleteRequestBodyParams): Call<JsonElement>
+    fun deleteTodo(@Body params: DeleteRequestBodyParams): Call<JsonElement>
+
+    @PATCH("${API.TODOS}/")
+    fun updateTodo(@Body params: PatchRequestBodyParams): Call<JsonElement>
 }
