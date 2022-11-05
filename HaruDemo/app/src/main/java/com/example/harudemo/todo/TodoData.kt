@@ -21,7 +21,8 @@ object TodoData {
         failCallback: () -> Unit = {},
         noContentCallback: () -> Unit = {}
     ) {
-        RetrofitManager.instance.addTodo(writer,
+        RetrofitManager.instance.addTodo(
+            writer,
             folder,
             content,
             dates,
@@ -72,6 +73,31 @@ object TodoData {
                 RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
             }
         })
+    }
+
+    // DB에서 일치하는 todo를 업데이트한다.
+    fun updateTodo(
+        id: Number,
+        folder: String,
+        content: String,
+        date: String,
+        completed: Boolean,
+        okayCallback: (response: JsonElement) -> Unit = {},
+        failCallback: (response: JsonElement) -> Unit = {},
+        noContentCallback: (response: JsonElement) -> Unit = {},
+    ) {
+        RetrofitManager.instance.updateTodo(id,
+            folder,
+            content,
+            date,
+            completed,
+            completion = { responseStatus, jsonElement ->
+                when (responseStatus) {
+                    RESPONSE_STATUS.OKAY -> jsonElement?.let { okayCallback(it) }
+                    RESPONSE_STATUS.FAIL -> jsonElement?.let { failCallback(it) }
+                    RESPONSE_STATUS.NO_CONTENT -> jsonElement?.let { noContentCallback(it) }
+                }
+            })
     }
 
     // DB에서 일치하는 todo를 제거한다.

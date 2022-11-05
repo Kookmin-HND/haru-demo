@@ -16,10 +16,12 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import java.time.LocalDate
 
-class TodoListSectionAdapter(private val section: Section) :
-    RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
+class TodoListSectionAdapter(
+    private val section: Section
+) : RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
+        @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             val days = arrayListOf<String>("월", "화", "수", "목", "금", "토", "일")
@@ -64,8 +66,7 @@ class TodoListSectionAdapter(private val section: Section) :
     }
 
     override fun onBindViewHolder(holder: TodoListSectionViewHolder, position: Int) {
-        // 새로 받은 TodoList내에서 같은 id끼리는 정렬되어 있지만 다른 id에서는 정렬되지 않아 보이는데 혼선이 있어
-        // 새롭게 다시 정렬.
+        // 날짜별 정렬
         section.todoList.sortWith(Comparator { v1, v2 ->
             val date1 = v1.date.split('-').map { it.toInt() }
             val date2 = v2.date.split('-').map { it.toInt() }
@@ -83,5 +84,6 @@ class TodoListSectionAdapter(private val section: Section) :
     override fun getItemCount(): Int {
         return section.todoList.size
     }
+
 
 }

@@ -132,7 +132,23 @@ class RetrofitManager {
         completed: Boolean,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
-        // TODO: Update 추가하기
+        val call =
+            todoService?.updateTodo(PatchRequestBodyParams(id, folder, content, date, completed))
+                ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                }
+            }
+        })
     }
 
     // DB에서 TodoData를 삭제한다.

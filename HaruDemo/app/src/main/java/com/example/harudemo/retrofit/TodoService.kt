@@ -32,8 +32,8 @@ data class PatchRequestBodyParams(
     @SerializedName("content")
     val content: String,
 
-    @SerializedName("dates")
-    val dates: List<String>,
+    @SerializedName("date")
+    val date: String,
 
     @SerializedName("completed")
     val completed: Boolean,
