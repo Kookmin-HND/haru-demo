@@ -119,7 +119,7 @@ object TodoData {
     fun getTodosByFolder(folderName: String): List<Section> {
         val todos = arrayListOf<Todo>()
         for (todo in this.todos) {
-            if (todo.folder == folderName) {
+            if (todo.folder == folderName && !todo.completed) {
                 todos.add(todo)
             }
         }

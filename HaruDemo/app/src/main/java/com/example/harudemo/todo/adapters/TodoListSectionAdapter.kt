@@ -2,11 +2,11 @@ package com.example.harudemo.todo.adapters
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
@@ -15,6 +15,9 @@ import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import java.time.LocalDate
+import java.util.*
+import kotlin.concurrent.schedule
+
 
 class TodoListSectionAdapter(
     private val section: Section
@@ -24,13 +27,53 @@ class TodoListSectionAdapter(
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
-            val days = arrayListOf<String>("월", "화", "수", "목", "금", "토", "일")
+            val days = arrayListOf("월", "화", "수", "목", "금", "토", "일")
+
+            if (todo.completed) {
+                itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
+            }
 
             itemBinding.tvTodoContent.text = todo.content
 
             val dateToken = todo.date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
+
+            // Update 실행 Action
+            itemBinding.root.setOnClickListener {
+                if (todo.completed) {
+                    return@setOnClickListener
+                }
+
+                val intent = Intent(it.context, TodoInputActivity::class.java)
+                intent.putExtra("update", true)
+                intent.putExtra("todo", todo)
+                it.context.startActivity(intent)
+            }
+
+            // TODO: completed 업데이트 Action
+            itemBinding.btnCheckTodo.setOnClickListener {
+                if (todo.completed) {
+                    return@setOnClickListener
+                }
+
+                TodoData.updateTodo(todo.id, todo.folder, todo.content, todo.date, true, {
+                    var updated = TodoData.todos.find { it.id.toInt() == todo.id.toInt() }
+                    updated?.completed = true
+                    updated =
+                        TodoData.todosByFolder[todo.folder]?.find { it.id.toInt() == todo.id.toInt() }
+                    updated?.completed = true
+                    itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
+                    itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
+
+
+                    Timer("Completed Item", true).schedule(1000) {
+                        TodoListFragment.instance.activity?.runOnUiThread {
+                            TodoListFragment.instance.onResume()
+                        }
+                    }
+                })
+            }
 
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시, 삭제하고 todos 배열에서도 삭제한다. 만약, 폴더가 비어있게 되면 이도 삭제한다.
@@ -45,13 +88,6 @@ class TodoListSectionAdapter(
                     section.todoList.removeIf { it.id == todo.id }
                     TodoListFragment.instance.onResume()
                 })
-            }
-
-            itemBinding.root.setOnClickListener {
-                val intent = Intent(it.context, TodoInputActivity::class.java)
-                intent.putExtra("update", true)
-                intent.putExtra("todo", todo)
-                it.context.startActivity(intent)
             }
         }
     }

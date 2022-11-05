@@ -22,13 +22,24 @@
             android:elevation="1dp"
             app:layout_constraintTop_toTopOf="parent">
 
+            <View
+                android:id="@+id/btn_check_todo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/todo_check_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_todo_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/tv_todo_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_check_todo"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Todo Content" />
 
