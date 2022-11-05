@@ -8,6 +8,7 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
 
 object TodoData {
+    // TODO: todos, todosByFolder 내에 있는 todo의 데이터가 같은 instance이도록 변경필요
     val todos: ArrayList<Todo> = ArrayList()
     val todosByFolder: HashMap<String, ArrayList<Todo>> = HashMap()
 

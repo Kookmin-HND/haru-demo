@@ -51,8 +51,9 @@ class TodoListSectionAdapter(
                 it.context.startActivity(intent)
             }
 
-            // TODO: completed 업데이트 Action
+            // completed 업데이트 Action
             itemBinding.btnCheckTodo.setOnClickListener {
+                // TODO: completed Toggle 추가
                 if (todo.completed) {
                     return@setOnClickListener
                 }
@@ -70,6 +71,7 @@ class TodoListSectionAdapter(
                     Timer("Completed Item", true).schedule(1000) {
                         TodoListFragment.instance.activity?.runOnUiThread {
                             TodoListFragment.instance.onResume()
+                            TodoFragment.folderListAdapter.notifyDataSetChanged()
                         }
                     }
                 })

@@ -1,6 +1,7 @@
 package com.example.harudemo.todo.adapters
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
@@ -41,13 +42,18 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
         )
     }
 
+    // TODO: 성능 개선 필요
     override fun onBindViewHolder(holder: TodoFolderListViewHolder, position: Int) {
-        val folderNames = ArrayList(TodoData.todosByFolder.keys)
-        folderNames.sort()
+        val folderNames = ArrayList(TodoData.todosByFolder.keys.filter {
+            TodoData.todosByFolder[it]?.any { todo -> !todo.completed } ?: false
+        })
         holder.bindItem(folderNames[position])
     }
 
     override fun getItemCount(): Int {
-        return TodoData.todosByFolder.keys.size
+        val folderNames = ArrayList(TodoData.todosByFolder.keys.filter {
+            TodoData.todosByFolder[it]?.any { todo -> !todo.completed } ?: false
+        })
+        return folderNames.size
     }
 }
