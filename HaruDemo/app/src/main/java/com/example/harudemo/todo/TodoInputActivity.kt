@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -58,20 +60,6 @@ class TodoInputActivity : AppCompatActivity() {
             }
         }
 
-        // 입력시 기본적으로 들어간 #이 삭제가 된다면 삭제가 불가능하게 함.
-        // 또한, 가장 처음에 포커스를 옮기고 입력시 해당 글자가 맨 뒤로가게끔 함
-        binding?.todoInput?.addTextChangedListener {
-            val text = binding?.todoInput?.text?.toString()
-            if (text?.length == 0) {
-                binding?.todoInput?.setText("#")
-                binding?.todoInput?.setSelection(1)
-            } else if (text != null && text[0] != '#') {
-                val newText = text.slice(1 until text.length) + text[0]
-                binding?.todoInput?.setText(newText)
-                binding?.todoInput?.setSelection(text.length)
-            }
-        }
-
         // 업데이트하려고 들어온 상태인지 확인하려는 변수
         val updated = intent.getBooleanExtra("update", false)
         if (updated) {
@@ -86,9 +74,9 @@ class TodoInputActivity : AppCompatActivity() {
             val todo: Todo = intent.getSerializableExtra("todo") as Todo
             val text = "#${todo.folder} ${todo.content}"
             binding?.todoInput?.setText(text)
-            val splitedDate = todo.date.split('-').map { it.toInt() }
+            val splittedDate = todo.date.split('-').map { it.toInt() }
             val currentDate = SimpleDateFormat("yyyy-MM-dd").parse(
-                LocalDate.of(splitedDate[0], splitedDate[1], splitedDate[2]).toString()
+                LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2]).toString()
             )
             binding?.calendar?.setCurrentDate(currentDate)
             binding?.calendar?.setSelectedDate(currentDate)
@@ -135,6 +123,10 @@ class TodoInputActivity : AppCompatActivity() {
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
         binding?.btnAddTodo?.setOnClickListener {
+            if (!validation(binding?.todoInput?.text.toString())) {
+                Toast.makeText(this, "\"#폴더 내용\"의 형식으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             // 텍스트 인풋으로부터 받은 텍스트
             val text = binding?.todoInput?.text.toString()
             // 만약, 그 텍스트를 토큰화를 했을때 배열 사이즈가 2보다 작으면 종료.
@@ -182,7 +174,7 @@ class TodoInputActivity : AppCompatActivity() {
 
 
             if (updated) {
-                // TODO: DB UPDATE
+                // DB UPDATE
                 val todo = intent.getSerializableExtra("todo") as Todo
                 TodoData.updateTodo(todo.id, folder, content, datesList[0], false, {
                     var updateFolderList = false
@@ -266,6 +258,12 @@ class TodoInputActivity : AppCompatActivity() {
         for (button in dayButtons) {
             button.visibility = View.VISIBLE
         }
+    }
+
+    // 입력에 문제가 있는지 판별하는 함수
+    private fun validation(text: String): Boolean {
+        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[a-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
+        return regex.matches(text)
     }
 
     // TextEdit으로부터 입력을 받은 text를 폴더와 Content 내용으로 분리한다.

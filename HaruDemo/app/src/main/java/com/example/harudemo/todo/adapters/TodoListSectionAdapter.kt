@@ -43,7 +43,7 @@ class TodoListSectionAdapter(
                     }
 
                     section.todoList.removeIf { it.id == todo.id }
-                    this@TodoListSectionAdapter.notifyDataSetChanged()
+                    TodoListFragment.instance.onResume()
                 })
             }
 
