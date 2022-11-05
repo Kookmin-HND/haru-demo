@@ -13,14 +13,10 @@ import com.example.harudemo.todo.types.Todo
 
 class TodoFolderListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<TodoFolderListAdapter.TodoFolderListViewHolder>() {
-
     inner class TodoFolderListViewHolder(
         private val itembinding: FragmentTodoFolderItemBinding,
         private val activity: FragmentActivity
     ) : RecyclerView.ViewHolder(itembinding.root) {
-
-        private var todoListFragment: TodoListFragment? = null
-
         fun bindItem(folderTitle: String) {
             // TodoFragment내 Folder RecyclerView에 폴더 이름을 기준으로 폴더 클릭 할 수 있는 아이템 생성
             itembinding.tvFolderTitle.text = folderTitle
@@ -30,10 +26,9 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
                 bundle.putString("folder-title", folderTitle)
 
                 // Folder 클릭시에 TodoList에 폴더로부터 클릭 됬음을 알리면서 Fragment 전환
-                todoListFragment = TodoListFragment()
-                todoListFragment?.arguments = bundle
+                TodoListFragment.instance.arguments = bundle
                 activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragments_frame, todoListFragment!!).commit()
+                    .replace(R.id.fragments_frame, TodoListFragment.instance).commit()
             }
         }
     }

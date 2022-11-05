@@ -17,6 +17,7 @@ import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.adapters.TodoListAdapter
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.ViewMode
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -64,7 +65,7 @@ class TodoInputActivity : AppCompatActivity() {
             if (text?.length == 0) {
                 binding?.todoInput?.setText("#")
                 binding?.todoInput?.setSelection(1)
-            } else if (text?.length!! > 1 && text[0] != '#') {
+            } else if (text != null && text[0] != '#') {
                 val newText = text.slice(1 until text.length) + text[0]
                 binding?.todoInput?.setText(newText)
                 binding?.todoInput?.setSelection(text.length)
@@ -177,7 +178,6 @@ class TodoInputActivity : AppCompatActivity() {
                     }
                     startDate = startDate.plusDays(1)
                 }
-
             }
 
 
@@ -187,6 +187,8 @@ class TodoInputActivity : AppCompatActivity() {
                 TodoData.updateTodo(todo.id, folder, content, datesList[0], false, {
                     var updateFolderList = false
                     // 전역 데이터들 업데이트
+                    // 전역 데이터를 업데이트하고, TodoListFragment는 onResume()에서 자신이 띄울 화면을 결정하기에,
+                    // 알아서 UI Refresh가 된다.
                     val updatedTodo = TodoData.todos.find {
                         it.id.toInt() == todo.id.toInt()
                     }
@@ -213,8 +215,9 @@ class TodoInputActivity : AppCompatActivity() {
                         TodoFragment.folderListAdapter.notifyDataSetChanged()
                     }
 
-                    // TODO: Section, TodoList 접근해서 UI Refresh
-
+                    // 전역 변수들이 업데이트 됨으로써, 폴더가 변경되거나, 폴더가 삭제되는 그러한 행동이 일어날 수 있으므로
+                    // 해당 업데이트를 위해서 instance의 onResume()을 호출하여 업데이트한다.
+                    TodoListFragment.instance.onResume()
                 })
             } else {
                 // DB에 데이터 추가

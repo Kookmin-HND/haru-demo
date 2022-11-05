@@ -123,6 +123,9 @@ object TodoData {
                 todos.add(todo)
             }
         }
+        if (todos.isEmpty()) {
+            return listOf()
+        }
         return listOf(Section(folderName, todos))
     }
 
@@ -152,8 +155,6 @@ object TodoData {
             todos[date] = arrayListOf()
         }
 
-        Log.d("[debug]", dates.toString())
-        Log.d("[debug]", todos.toString())
         for (todo in this.todos) {
             if (todo.date in todos) {
                 todos[todo.date]?.add(todo)

@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
+import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.types.Section
 import kotlinx.android.synthetic.main.activity_sns_add_post.view.*
 
-class TodoListAdapter(private val sections: List<Section>) :
+class TodoListAdapter :
     RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
     inner class TodoListViewHolder(private val itemBinding: FragmentTodoListSectionBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -71,10 +72,10 @@ class TodoListAdapter(private val sections: List<Section>) :
     }
 
     override fun onBindViewHolder(holder: TodoListViewHolder, position: Int) {
-        holder.bindItem(sections[position])
+        holder.bindItem(TodoListFragment.instance.sections[position])
     }
 
     override fun getItemCount(): Int {
-        return sections.size
+        return TodoListFragment.instance.sections.size
     }
 }

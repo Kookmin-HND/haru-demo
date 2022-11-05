@@ -1,5 +1,6 @@
 package com.example.harudemo.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
+import com.example.harudemo.todo.types.Todo
 
 class TodoFragment : Fragment() {
     companion object {
@@ -32,17 +34,17 @@ class TodoFragment : Fragment() {
         val folderListAdapter: TodoFolderListAdapter
             get() {
                 if (_folderListAdapter == null) {
-                    _folderListAdapter = instance?.activity?.let { TodoFolderListAdapter(it) }
+                    _folderListAdapter = instance.activity?.let { TodoFolderListAdapter(it) }
                 }
                 return _folderListAdapter!!
             }
     }
 
-    private var todoListFragment: TodoListFragment? = null
     private var binding: FragmentTodoBinding? = null
 
     //뷰가 생성되었을 때
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -102,8 +104,7 @@ class TodoFragment : Fragment() {
     // 데이터를 Bundle에 추가해서 넣고 TodoList Fragment로 연결한다.
     private fun onBtnClicked(view: View) {
         val bundle = Bundle()
-        todoListFragment = TodoListFragment()
-        todoListFragment?.arguments = bundle
+        TodoListFragment.instance.arguments = bundle
 
         when ((view as Button).text.toString()) {
             "오늘" -> {
@@ -123,7 +124,7 @@ class TodoFragment : Fragment() {
         }
 
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragments_frame, todoListFragment!!)?.commit()
+            ?.replace(R.id.fragments_frame, TodoListFragment.instance)?.commit()
     }
 
 }
