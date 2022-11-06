@@ -3,10 +3,13 @@ import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "../app-data-source";
 import { User } from "../entity/user";
 import { Equal } from "typeorm";
-import crypto from "crypto"; // hashing 처리를 위한 라이브러리
+import bcrypt from "bcrypt"; // hashing 처리를 위한 라이브러리
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
 export const path = "/users";
 export const router = Router();
+const saltRounds = 10;
 
 interface UserParams {
   email: string;
@@ -22,17 +25,67 @@ interface UserSignBody {
 //http://localhost:8000/api/users/ ~~
 
 // user 정보조회
-router.get("/:email", async function (req: Request<UserParams>, res: Response) {
-  console.log("get : ", req.params.email);
+// router.get("/:email", async function (req: Request<UserParams>, res: Response) {
+//   console.log("get : ", req.params.email);
 
+//   try {
+//     const result = await myDataSource
+//       .getRepository(User)
+//       .findOneBy({ email: req.params.email });
+//     return res.send(result);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(400).json("No user found");
+//   }
+// });
+
+//user login
+router.post("/login", async (req: Request, res: Response, next) => {
   try {
-    const result = await myDataSource
-      .getRepository(User)
-      .findOneByOrFail({ email: req.params.email });
-    return res.send(result);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json("No user found");
+    passport.authenticate("local", (passportError, user, info) => {
+      console.log(passportError, user, info);
+      // 인증 실패 또는 user 정보 없을시 에러 발생
+      if (passportError) {
+        console.error(passportError);
+        return next(passportError);
+      }
+
+      if (info) {
+        console.log(info.reason);
+        return res.status(401).send(info.reason);
+      }
+
+      return req.login(user, { session: false }, async (loginError) => {
+        if (loginError) {
+          console.error(loginError);
+          return next(loginError);
+        }
+
+        const accessToken = jwt.sign(
+          {
+            email: user.email,
+            name: user.name,
+          },
+          "Kn`Tv_?fjbg6Br>",
+          { expiresIn: "15s" }
+        );
+
+        const refreshToken = jwt.sign({}, "Kn`Tv_?fjbg6Br>", {
+          expiresIn: "7d",
+        });
+
+        user.token = refreshToken;
+        await user.save();
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        return res.status(200).json(accessToken);
+      });
+    });
+    console.log("123");
+  } catch (error) {
+    console.error(error);
   }
 });
 
@@ -40,7 +93,7 @@ router.get("/:email", async function (req: Request<UserParams>, res: Response) {
 router.post(
   "/signup",
   async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-    const { email, password, name } = req.body;
+    let { email, password, name } = req.body;
 
     // email, password, name 중 입력되지 않은 것을 확인
     if (!email || !password || !name) {
@@ -60,131 +113,137 @@ router.post(
     }
 
     // password hashing 처리
-    const salt = crypto.randomBytes(64).toString("base64"); // salt 생성
-    const hashedPW = crypto
-      .createHash("sha512")
-      .update(password + salt)
-      .digest("base64");
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+      if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
 
-    // 데이터 생성 후 저장
-    const result = await myDataSource.getRepository(User).create({
-      email: email,
-      password: hashedPW,
-      name: name,
-      user_salt: salt,
+      bcrypt.hash(password, salt, async (err, hash) => {
+        if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+        password = hash;
+
+        const result = await myDataSource.getRepository(User).create({
+          email: email,
+          password: password,
+          name: name,
+        });
+
+        await myDataSource.getRepository(User).save(result);
+        console.log("signup success");
+        return res.send(result);
+      });
     });
-
-    await myDataSource.getRepository(User).save(result);
-    console.log("signup success");
-    return res.send(result);
+    // const salt = crypto.randomBytes(64).toString("base64"); // salt 생성
+    // const hashedPW = crypto
+    //   .createHash("sha512")
+    //   .update(password + salt)
+    //   .digest("base64");
   }
 );
 
 // user 로그인 기능
-router.post(
-  "/login",
-  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: Equal(email) });
+// router.post(
+//   "/login",
+//   async function (req: Request<{}, {}, UserSignBody>, res: Response) {
+//     const email = req.body.email;
+//     const password = req.body.password;
+//     const user = await myDataSource
+//       .getRepository(User)
+//       .findOneBy({ email: Equal(email) });
 
-    if (!user) {
-      // user가 null값이면 회원정보가 없는 상태
-      console.log("해당 user 없음!");
-      return res.status(400).send("사용자 정보가 없습니다.");
-    }
+//     if (!user) {
+//       // user가 null값이면 회원정보가 없는 상태
+//       console.log("해당 user 없음!");
+//       return res.status(400).send("사용자 정보가 없습니다.");
+//     }
 
-    const salt = user.user_salt;
-    const hashedPW = crypto
-      .createHash("sha512")
-      .update(password + salt)
-      .digest("base64");
+//     const salt = user.user_salt;
+//     const hashedPW = crypto
+//       .createHash("sha512")
+//       .update(password + salt)
+//       .digest("base64");
 
-    if (hashedPW != user.password) {
-      console.log("비밀번호 틀림");
-      return res.status(400).send("비밀번호 틀림");
-    } else {
-      console.log("로그인 성공");
-      return res.send(user);
-    }
-  }
-);
+//     if (hashedPW != user.password) {
+//       console.log("비밀번호 틀림");
+//       return res.status(400).send("비밀번호 틀림");
+//     } else {
+//       console.log("로그인 성공");
+//       return res.send(user);
+//     }
+//   }
+// );
 
 // user 정보수정
-router.patch(
-  "/changeInfo",
-  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-    const user = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: Equal(req.body.email) });
+// router.patch(
+//   "/changeInfo",
+//   async function (req: Request<{}, {}, UserSignBody>, res: Response) {
+//     const user = await myDataSource
+//       .getRepository(User)
+//       .findOneBy({ email: Equal(req.body.email) });
 
-    if (!user) {
-      // user 정보 유무 확인
-      return res.status(400).send("없는 사용자입니다.");
-    }
-    const changePW = req.body.password;
-    const changeName = req.body.name;
+//     if (!user) {
+//       // user 정보 유무 확인
+//       return res.status(400).send("없는 사용자입니다.");
+//     }
+//     const changePW = req.body.password;
+//     const changeName = req.body.name;
 
-    if (!changePW || !changeName) {
-      // 변경할 비밀번호와 이름이 비어있는지 확인
-      console.log("변경할 비밀번호와 이름을 확인해주세요.");
-      return res
-        .status(400)
-        .send("변경할 비밀번호와 이름을 다시 확인해주세요.");
-    }
+//     if (!changePW || !changeName) {
+//       // 변경할 비밀번호와 이름이 비어있는지 확인
+//       console.log("변경할 비밀번호와 이름을 확인해주세요.");
+//       return res
+//         .status(400)
+//         .send("변경할 비밀번호와 이름을 다시 확인해주세요.");
+//     }
 
-    const salt = crypto.randomBytes(64).toString("base64"); // hashing 과정에서 사용할 salt 재할당
-    const changeHashedPW = crypto
-      .createHash("sha512")
-      .update(changePW + salt)
-      .digest("base64");
+//     const salt = crypto.randomBytes(64).toString("base64"); // hashing 과정에서 사용할 salt 재할당
+//     const changeHashedPW = crypto
+//       .createHash("sha512")
+//       .update(changePW + salt)
+//       .digest("base64");
 
-    const result = await myDataSource.getRepository(User).update(user.id, {
-      // id기반으로 update
-      password: changeHashedPW,
-      name: changeName,
-      user_salt: salt,
-    });
+//     const result = await myDataSource.getRepository(User).update(user.id, {
+//       // id기반으로 update
+//       password: changeHashedPW,
+//       name: changeName,
+//       user_salt: salt,
+//     });
 
-    return res.send({
-      ...user,
-      password: changeHashedPW,
-      name: changeName,
-      user_salt: salt,
-    });
-  }
-);
+//     return res.send({
+//       ...user,
+//       password: changeHashedPW,
+//       name: changeName,
+//       user_salt: salt,
+//     });
+//   }
+// );
 
 // user 회원탈퇴
-router.delete(
-  "/:email",
-  async function (req: Request<UserParams>, res: Response) {
-    const email = req.params.email;
+// router.delete(
+//   "/:email",
+//   async function (req: Request<UserParams>, res: Response) {
+//     const email = req.params.email;
 
-    const check = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: Equal(email) });
+//     const check = await myDataSource
+//       .getRepository(User)
+//       .findOneBy({ email: Equal(email) });
 
-    // user 정보 유무 확인
-    if (!check) return res.status(400).send("사용자 정보가 없습니다.");
+//     // user 정보 유무 확인
+//     if (!check) return res.status(400).send("사용자 정보가 없습니다.");
 
-    const result = await myDataSource // email 또한 unique하기에 email기반 삭제
-      .getRepository(User)
-      .delete({ email: email });
-    console.log("Successfully deleted");
-    return res.send(result);
+//     const result = await myDataSource // email 또한 unique하기에 email기반 삭제
+//       .getRepository(User)
+//       .delete({ email: email });
+//     console.log("Successfully deleted");
+//     return res.send(result);
 
-    // merge 후에 해당 user의 게시물과 todo도 삭제해야 한다.
-  }
-);
+//     // merge 후에 해당 user의 게시물과 todo도 삭제해야 한다.
+//   }
+// );
 
 // user 정보 전체 출력 (test용)
-router.get("/", async function (req: Request, res: Response) {
-  const all_users = await myDataSource.getRepository(User).find();
-  return res.json(all_users);
-});
+// router.get("/", async function (req: Request, res: Response) {
+//   const all_users = await myDataSource.getRepository(User).find();
+//   return res.json(all_users);
+// });
 
 // 현재 로그인 상태인지 확인 할 수 있는 방법으로 JWT 또는 다른 것 찾아서
 // user delete, user changeInfo 등에 적용시키기
