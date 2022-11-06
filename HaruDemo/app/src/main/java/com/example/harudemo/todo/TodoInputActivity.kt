@@ -54,7 +54,7 @@ class TodoInputActivity : AppCompatActivity() {
         dayButtons.add(binding?.btnSat!!)
 
         // Input창에 포커스가 들어가면 #을 삽입해줌.
-        binding?.todoInput?.setOnFocusChangeListener { view, b ->
+        binding?.todoInput?.setOnFocusChangeListener { _, _ ->
             if (binding?.todoInput?.text?.length == 0) {
                 binding?.todoInput?.setText("#")
             }
@@ -116,8 +116,8 @@ class TodoInputActivity : AppCompatActivity() {
             }
 
             // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.calendar?.setOnDateChangedListener { widget, date, selected -> goneDurationView() }
-            binding?.calendar?.setOnMonthChangedListener { widget, date -> goneDurationView() }
+            binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
+            binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
 
         }
 
@@ -176,53 +176,21 @@ class TodoInputActivity : AppCompatActivity() {
             if (updated) {
                 // DB UPDATE
                 val todo = intent.getSerializableExtra("todo") as Todo
-                TodoData.updateTodo(todo.id, folder, content, datesList[0], false, {
-                    var updateFolderList = false
-                    // 전역 데이터들 업데이트
-                    // 전역 데이터를 업데이트하고, TodoListFragment는 onResume()에서 자신이 띄울 화면을 결정하기에,
-                    // 알아서 UI Refresh가 된다.
-                    val updatedTodo = TodoData.todos.find {
-                        it.id.toInt() == todo.id.toInt()
-                    }
-                    updatedTodo?.folder = folder
-                    updatedTodo?.content = content
-                    updatedTodo?.date = datesList[0]
-
-                    if (todo.folder != updatedTodo?.folder) {
-                        TodoData.todosByFolder[todo.folder]?.remove(updatedTodo)
-                        if (TodoData.todosByFolder[todo.folder]?.isEmpty() == true) {
-                            TodoData.todosByFolder.remove(todo.folder)
-                            updateFolderList = true
-                        }
-                        if (updatedTodo?.folder in TodoData.todosByFolder) {
-                            TodoData.todosByFolder[updatedTodo?.folder]?.add(updatedTodo!!)
-                        } else {
-                            TodoData.todosByFolder[updatedTodo?.folder!!] =
-                                arrayListOf(updatedTodo!!)
-                            updateFolderList = true
-                        }
-                    }
-
-                    if (updateFolderList) {
+                TodoData.API.update(todo.id, folder, content, datesList[0], false, {
+                    TodoData.update(todo, folder, content, datesList[0], false)
+                    if (todo.folder != folder) {
                         TodoFragment.folderListAdapter.notifyDataSetChanged()
                     }
-
                     // 전역 변수들이 업데이트 됨으로써, 폴더가 변경되거나, 폴더가 삭제되는 그러한 행동이 일어날 수 있으므로
                     // 해당 업데이트를 위해서 instance의 onResume()을 호출하여 업데이트한다.
                     TodoListFragment.instance.onResume()
                 })
             } else {
                 // DB에 데이터 추가
-                TodoData.addTodo("cjeongmin27@gmail.com", folder, content, datesList, {
-                    // DB에는 추가되었고,
-                    // 전역적으로 관리하는 데이터에도 추가해준다.
-                    TodoData.todos.addAll(it)
+                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
+                    // DB에는 추가되었고 전역적으로 관리하는 데이터에도 추가해준다.
                     for (todo in it) {
-                        if (todo.folder in TodoData.todosByFolder) {
-                            TodoData.todosByFolder[todo.folder]?.add(todo)
-                        } else {
-                            TodoData.todosByFolder[todo.folder] = arrayListOf(todo)
-                        }
+                        TodoData.add(todo)
                     }
 
                     // Recycler View를 새로고침한다.

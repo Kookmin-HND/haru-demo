@@ -51,43 +51,34 @@ class TodoListSectionAdapter(
                 it.context.startActivity(intent)
             }
 
-            // completed 업데이트 Action
+            // completed Toggle Action
             itemBinding.btnCheckTodo.setOnClickListener {
-                // TODO: completed Toggle 추가
-                if (todo.completed) {
-                    return@setOnClickListener
-                }
+                TodoData.API.update(todo.id, todo.folder, todo.content, todo.date, true, {
+                    TodoData.update(todo, completed = !todo.completed)
+                    if (TodoData.getTodosByFolder(todo.folder).isEmpty()) {
+                        TodoFragment.folderListAdapter.notifyDataSetChanged()
+                    }
+                    if (todo.completed) {
+                        itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
+                        itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    } else {
+                        itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_check_button)
+                        itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
+                    }
 
-                TodoData.updateTodo(todo.id, todo.folder, todo.content, todo.date, true, {
-                    var updated = TodoData.todos.find { it.id.toInt() == todo.id.toInt() }
-                    updated?.completed = true
-                    updated =
-                        TodoData.todosByFolder[todo.folder]?.find { it.id.toInt() == todo.id.toInt() }
-                    updated?.completed = true
-                    itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
-                    itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
 
-
-                    Timer("Completed Item", true).schedule(1000) {
+                    Timer("Completed Item", true).schedule(500) {
                         TodoListFragment.instance.activity?.runOnUiThread {
                             TodoListFragment.instance.onResume()
-                            TodoFragment.folderListAdapter.notifyDataSetChanged()
                         }
                     }
                 })
             }
 
             itemBinding.btnDelete.setOnClickListener {
-                // Delete 버튼 클릭시, 삭제하고 todos 배열에서도 삭제한다. 만약, 폴더가 비어있게 되면 이도 삭제한다.
-                TodoData.deleteTodo(todo.id, {
-                    TodoData.todos.removeIf { it.id == todo.id }
-                    TodoData.todosByFolder[todo.folder]?.removeIf { it.id == todo.id }
-                    if (TodoData.todosByFolder[todo.folder]?.isEmpty() == true) {
-                        TodoData.todosByFolder.remove(todo.folder)
-                        TodoFragment.folderListAdapter.notifyItemRemoved(TodoData.todosByFolder.keys.size)
-                    }
-
-                    section.todoList.removeIf { it.id == todo.id }
+                // Delete 버튼 클릭시 삭제한다.
+                TodoData.API.delete(todo.id, {
+                    TodoData.delete(todo)
                     TodoListFragment.instance.onResume()
                 })
             }

@@ -42,29 +42,34 @@ class TodoFragment : Fragment() {
 
     private var binding: FragmentTodoBinding? = null
 
-    //뷰가 생성되었을 때
-    //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
-    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        // 여러 정렬 방법 버튼들 이벤트 리스너 설정 해당 함수는 아래에 있음
+        binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
+        binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
+    }
+
+    override fun onResume() {
+        super.onResume()
         // DB에서 Data를 불러온다
-        if (TodoData.todos.isEmpty()) {
-            TodoData.fetchTodos("cjeongmin27@gmail.com", {
+        if (TodoData.isEmpty()) {
+            TodoData.API.read("cjeongmin27@gmail.com", {
                 // 데이터를 불러오는데 성공하였을 때
-                if (TodoData.todos.isEmpty()) {
-                    TodoData.todos.addAll(it)
-                    for (todo in it) {
-                        if (todo.folder in TodoData.todosByFolder) {
-                            TodoData.todosByFolder[todo.folder]?.add(todo)
-                        } else {
-                            TodoData.todosByFolder[todo.folder] = arrayListOf(todo)
-                        }
-                    }
+                for (todo in it) {
+                    TodoData.add(todo)
                 }
-                binding?.rvFolderList?.adapter?.notifyDataSetChanged()
+                binding?.rvFolderList?.adapter?.notifyItemInserted(it.size)
             }, {
                 // 데이터를 불러오는데 실패하였을 때
                 Toast.makeText(
@@ -86,18 +91,6 @@ class TodoFragment : Fragment() {
             val intent = Intent(context, TodoInputActivity::class.java)
             startActivity(intent)
         }
-        return binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (activity as AppCompatActivity).supportActionBar?.title = "하루"
-        // 여러 정렬 방법 버튼들 이벤트 리스너 설정 해당 함수는 아래에 있음
-        binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
-        binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
-        binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
-        binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
     }
 
     // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록
@@ -126,5 +119,4 @@ class TodoFragment : Fragment() {
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fragments_frame, TodoListFragment.instance)?.commit()
     }
-
 }
