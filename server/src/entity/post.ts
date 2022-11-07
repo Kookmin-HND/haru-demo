@@ -22,6 +22,9 @@ export class Post {
   writer: string;
 
   @Column({ nullable: false })
+  title: string;
+
+  @Column({ nullable: false })
   content: string;
 
   //댓글과 일대다 연결, 게시물이 삭제되면 댓글도 삭제되도록 cascade

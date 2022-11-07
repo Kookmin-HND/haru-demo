@@ -46,11 +46,13 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 });
 
 //게시물 입력
-router.post("/", async (req: Request, res: Response) => {
+router.post("/:email", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-  const post = myDataSource.getRepository(Post).create(req.body);
-  const result = await myDataSource.getRepository(Post).save(post);
 
+  const writer = req.params.email;
+
+  const post = myDataSource.getRepository(Post).create({ ...req.body, writer });
+  const result = await myDataSource.getRepository(Post).save(post);
   return res.json(result);
 });
 
