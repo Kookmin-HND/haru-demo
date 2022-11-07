@@ -63,26 +63,32 @@ class TodoListSectionAdapter(
 
             // completed Toggle Action
             itemBinding.btnCheckTodo.setOnClickListener {
-                TodoData.API.update(todo.id, todo.folder, todo.content, todo.date, true, {
-                    TodoData.update(todo, completed = !todo.completed)
-                    if (TodoData.getTodosByFolder(todo.folder).isEmpty()) {
-                        TodoFragment.folderListAdapter.notifyDataSetChanged()
-                    }
-                    if (todo.completed) {
-                        itemBinding.btnCheckTodo.isChecked = true
-                        itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                    } else {
-                        itemBinding.btnCheckTodo.isChecked = false
-                        itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
-                    }
-
-
-                    Timer("Completed Item", true).schedule(750) {
-                        TodoListFragment.instance.activity?.runOnUiThread {
-                            TodoListFragment.instance.onResume()
+                TodoData.API.update(
+                    todo.id,
+                    todo.folder,
+                    todo.content,
+                    todo.date,
+                    !todo.completed,
+                    {
+                        TodoData.update(todo, completed = !todo.completed)
+                        if (TodoData.getTodosByFolder(todo.folder).isEmpty()) {
+                            TodoFragment.folderListAdapter.notifyDataSetChanged()
                         }
-                    }
-                })
+                        if (todo.completed) {
+                            itemBinding.btnCheckTodo.isChecked = true
+                            itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                        } else {
+                            itemBinding.btnCheckTodo.isChecked = false
+                            itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
+                        }
+
+
+                        Timer("Completed Item", true).schedule(750) {
+                            TodoListFragment.instance.activity?.runOnUiThread {
+                                TodoListFragment.instance.onResume()
+                            }
+                        }
+                    })
             }
 
             itemBinding.btnDelete.setOnClickListener {
