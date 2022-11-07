@@ -12,8 +12,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <android.widget.Button
             android:id="@+id/weekbtn"
@@ -153,23 +153,18 @@
             android:layout_marginBottom="10dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_add_todo_for_calendar"
+                android:id="@+id/btn_add_todo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:elevation="0dp"
+                android:elevation="15dp"
                 android:outlineProvider="none"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:src="@drawable/ic_baseline_add_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="6dp"
-                android:text="+"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
         </FrameLayout>
 
     </FrameLayout>
+
 </LinearLayout>
