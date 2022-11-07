@@ -18,6 +18,7 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.utils.CustomToast
 
 class TodoFragment : Fragment() {
     companion object {
@@ -72,8 +73,8 @@ class TodoFragment : Fragment() {
                 binding?.rvFolderList?.adapter?.notifyItemInserted(it.size)
             }, {
                 // 데이터를 불러오는데 실패하였을 때
-                Toast.makeText(
-                    this.context, "todo 목록을 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT
+                CustomToast.makeText(
+                    this.requireContext(), "todo 목록을 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT
                 ).show()
             })
         }
