@@ -172,6 +172,15 @@ class TodoInputActivity : AppCompatActivity() {
                 }
             }
 
+            if (folder.isBlank() || content.isBlank()) {
+                Toast.makeText(this, "폴더, 내용 중 입력되지 않은 것이 있습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (datesList.isEmpty()) {
+                Toast.makeText(this, "그 어떠한 날짜도 입력이 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             if (updated) {
                 // DB UPDATE

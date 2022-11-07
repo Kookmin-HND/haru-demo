@@ -1,6 +1,5 @@
 package com.example.harudemo.todo
 
-import android.util.Log
 import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
@@ -146,7 +145,8 @@ object TodoData {
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {}
         ) {
-            RetrofitManager.instance.addTodo(writer,
+            RetrofitManager.instance.addTodo(
+                writer,
                 folder,
                 content,
                 dates,
@@ -211,8 +211,7 @@ object TodoData {
             failCallback: (response: JsonElement) -> Unit = {},
             noContentCallback: (response: JsonElement) -> Unit = {},
         ) {
-            RetrofitManager.instance.updateTodo(
-                id,
+            RetrofitManager.instance.updateTodo(id,
                 folder,
                 content,
                 date,
