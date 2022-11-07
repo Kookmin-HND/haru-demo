@@ -2,9 +2,13 @@ package com.example.harudemo.todo.adapters
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
@@ -14,13 +18,15 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
+import java.security.PrivateKey
 import java.time.LocalDate
 import java.util.*
 import kotlin.concurrent.schedule
 
 
 class TodoListSectionAdapter(
-    private val section: Section
+    private val section: Section,
+    private val colorPosition: Int,
 ) : RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -28,11 +34,13 @@ class TodoListSectionAdapter(
 
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo) {
-            // TODO: 완료된 항목 라인 긋기
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
+            itemBinding.btnCheckTodo.buttonTintList =
+                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[colorPosition % TodoListFragment.COLORS.size]))
 
             if (todo.completed) {
-                itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
+                itemBinding.btnCheckTodo.isChecked = true
+                itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
 
             itemBinding.tvTodoContent.text = todo.content
@@ -61,15 +69,15 @@ class TodoListSectionAdapter(
                         TodoFragment.folderListAdapter.notifyDataSetChanged()
                     }
                     if (todo.completed) {
-                        itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)
+                        itemBinding.btnCheckTodo.isChecked = true
                         itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     } else {
-                        itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_check_button)
+                        itemBinding.btnCheckTodo.isChecked = false
                         itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
                     }
 
 
-                    Timer("Completed Item", true).schedule(500) {
+                    Timer("Completed Item", true).schedule(750) {
                         TodoListFragment.instance.activity?.runOnUiThread {
                             TodoListFragment.instance.onResume()
                         }

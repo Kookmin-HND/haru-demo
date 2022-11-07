@@ -5,7 +5,7 @@
     android:id="@+id/todo_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp">
+    android:layout_marginBottom="13dp">
 
     <FrameLayout
         android:id="@+id/fl_todo_content"
@@ -19,14 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/background_light"
-            android:elevation="1dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:clipToOutline="false"
+            android:elevation="1dp">
 
-            <View
+            <CheckBox
                 android:id="@+id/btn_check_todo"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/todo_check_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_todo_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_check_todo"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,11 +47,22 @@
                 android:id="@+id/tv_todo_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:textSize="10sp"
+                android:layout_marginBottom="3dp"
+                android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="2022.9.30" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="5dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_todo_content" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,15 +75,7 @@
             android:enabled="false"
             android:text="Delete"
             android:textColor="#ffffff" />
+
     </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_todo_content" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

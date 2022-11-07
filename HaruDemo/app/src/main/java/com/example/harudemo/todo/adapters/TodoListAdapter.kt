@@ -1,13 +1,19 @@
 package com.example.harudemo.todo.adapters
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.types.Section
@@ -19,14 +25,16 @@ class TodoListAdapter :
         RecyclerView.ViewHolder(itemBinding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
-        fun bindItem(section: Section) {
+        fun bindItem(section: Section, position: Int) {
             // Section 이름, 하위 Recycler View에 Adapter, LayoutManager 설정
-            val sectionAdapter = TodoListSectionAdapter(section)
+            val sectionAdapter = TodoListSectionAdapter(section, position)
             itemBinding.tvSectionName.text = section.sectionTitle
             itemBinding.rvTodoList.adapter = sectionAdapter
             itemBinding.rvTodoList.layoutManager = LinearLayoutManager(
                 itemBinding.root.context, LinearLayoutManager.VERTICAL, false
             )
+            itemBinding.vSectionDivider.backgroundTintList =
+                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[position % TodoListFragment.COLORS.size]))
 
             //스와이프 함수 호출
             val swipeHelperCallback = SwipeHelperCallback().apply {
@@ -72,7 +80,7 @@ class TodoListAdapter :
     }
 
     override fun onBindViewHolder(holder: TodoListViewHolder, position: Int) {
-        holder.bindItem(TodoListFragment.instance.sections[position])
+        holder.bindItem(TodoListFragment.instance.sections[position], position)
     }
 
     override fun getItemCount(): Int {

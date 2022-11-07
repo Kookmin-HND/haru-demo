@@ -30,6 +30,20 @@ class TodoListFragment : Fragment() {
                 }
                 return _instance!!
             }
+
+        val COLORS = listOf(
+            "#EE4266",
+            "#FC9E4F",
+            "#ECF39E",
+            "#114B5F",
+            "#EDD382",
+            "#90A955",
+            "#E2E4F6",
+            "#FF521B",
+            "#1F271B",
+            "#1A936F",
+            "#DEFFFC",
+        )
     }
 
     private var binding: FragmentTodoListBinding? = null
