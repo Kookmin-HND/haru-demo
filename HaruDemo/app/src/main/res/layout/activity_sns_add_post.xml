@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:selectAllOnFocus="true"
-                android:hint="아쎄이 기열!"
+                android:hint="제목을 입력해주세요!"
                 android:textColor="#938D8D"
                 android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_height="400dp"
                 android:background="#00000000"
                 android:gravity="top"
-                android:hint="오도기합!"
+                android:hint="글 내용을 입력해주세요!"
                 android:textColor="#938D8D"
                 android:textSize="17dp" />
 
