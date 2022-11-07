@@ -22,6 +22,7 @@ import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.adapters.TodoListAdapter
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.ViewMode
+import com.example.harudemo.utils.CustomToast
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import kotlinx.android.synthetic.main.activity_sns_add_post.*
@@ -124,7 +125,7 @@ class TodoInputActivity : AppCompatActivity() {
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
         binding?.btnAddTodo?.setOnClickListener {
             if (!validation(binding?.todoInput?.text.toString())) {
-                Toast.makeText(this, "\"#폴더 내용\"의 형식으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "\"#폴더 내용\"의 형식으로 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             // 텍스트 인풋으로부터 받은 텍스트
@@ -158,7 +159,7 @@ class TodoInputActivity : AppCompatActivity() {
 
                 // 만약, 끝 날짜가 시작 날짜보다 앞에 있을 경우 예외처리.
                 if (endDate.isBefore(startDate)) {
-                    Toast.makeText(this, "시작 날짜가 더 앞설 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    CustomToast.makeText(this, "시작 날짜가 더 앞설 수 없습니다.", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
@@ -173,12 +174,12 @@ class TodoInputActivity : AppCompatActivity() {
             }
 
             if (folder.isBlank() || content.isBlank()) {
-                Toast.makeText(this, "폴더, 내용 중 입력되지 않은 것이 있습니다.", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "폴더, 내용 중 입력되지 않은 것이 있습니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (datesList.isEmpty()) {
-                Toast.makeText(this, "그 어떠한 날짜도 입력이 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "날짜를 입력해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
