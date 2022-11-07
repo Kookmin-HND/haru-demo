@@ -14,7 +14,7 @@ object CustomToast {
         binding.tvToastMessage.text = message
 
         return Toast(context).apply {
-            setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 20.toDP())
+            setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 40.toDP())
             duration
             view = binding.root
         }
