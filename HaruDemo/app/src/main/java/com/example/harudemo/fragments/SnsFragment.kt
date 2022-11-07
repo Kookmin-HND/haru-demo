@@ -118,7 +118,6 @@ class SnsFragment : Fragment() {
 
         //새로고침 리스너
         binding.snsSwipeRefresh.setOnRefreshListener {
-            lastPostId = Int.MAX_VALUE
             refreshPostApiCall()
         }
     }
@@ -137,7 +136,7 @@ class SnsFragment : Fragment() {
         })
     }
 
-
+    // 게시물 추가 로딩을 위한 API 호출
     private fun infiniteScrollPostApiCall() {
         SnsRetrofitManager.instance.getPosts(lastPostId, completion = { responseStatus, responseDataArrayList ->
             Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
@@ -150,9 +149,7 @@ class SnsFragment : Fragment() {
                         lastPostId = it.id
                         this.snsPostList.add(it)
                     }
-                    Log.d(TAG, "SnsFragment  ${this.snsPostList}- infiniteScrollPostApiCall() called")
                     sns_post_recycler_view.adapter?.notifyDataSetChanged()
-
                 }
                 RESPONSE_STATUS.FAIL -> {
                     Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
@@ -165,8 +162,9 @@ class SnsFragment : Fragment() {
     }
 
 
-
+    // 새로고침을 위한 API 호출
     private fun refreshPostApiCall() {
+        lastPostId = Int.MAX_VALUE
         SnsRetrofitManager.instance.getPosts(lastPostId, completion = { responseStatus, responseDataArrayList ->
             when (responseStatus) {
                 //API 호출 성공
@@ -177,7 +175,6 @@ class SnsFragment : Fragment() {
                         lastPostId = it.id
                         this.snsPostList.add(it)
                     }
-                    Log.d(TAG, "SnsFragment  ${this.snsPostList}- infiniteScrollPostApiCall() called")
                     sns_post_recycler_view.adapter?.notifyDataSetChanged()
                     binding.snsSwipeRefresh.isRefreshing = false
                 }
@@ -189,6 +186,14 @@ class SnsFragment : Fragment() {
                 }
             }
         })
+    }
+
+    //액티비티가 사라질 때 api 재호출
+    override fun onResume() {
+        super.onResume()
+        refreshPostApiCall()
+        //스크롤 위로 보내기
+//        binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
 
 }

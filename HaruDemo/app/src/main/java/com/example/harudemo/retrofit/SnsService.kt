@@ -2,10 +2,19 @@ package com.example.harudemo.retrofit
 
 import com.example.harudemo.utils.API
 import com.google.gson.JsonElement
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
+
+
+data class SnsPostRequestBodyParams(
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("content")
+    val content: String
+)
+
+
 
 interface SnsService {
     //url:    http://10.0.2.2/api/posts/recent/{postId}
@@ -15,12 +24,9 @@ interface SnsService {
     ) : Call<JsonElement>
 
 
-
-//    예시
-//    @GET(API.SEARCH_PHOTOS)
-//    fun searchPhotos(@Query("query") searchTerm: String) : Call<JsonElement>
-//
-//    @GET(API.SEARCH_USERS)
-//    fun searchUsers(@Query("query") searchTerm: String) : Call<JsonElement>
-
+    @POST("${API.POSTS}/{email}")
+    fun postPost(
+        @Path("email") writer: String,
+        @Body requestBodyParams: SnsPostRequestBodyParams
+    ): Call<JsonElement>
 }

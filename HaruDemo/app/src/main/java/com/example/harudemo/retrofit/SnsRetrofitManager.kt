@@ -5,7 +5,9 @@ import com.example.harudemo.model.SnsPost
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Response
 
@@ -63,6 +65,38 @@ class SnsRetrofitManager {
                             }
                             completion(RESPONSE_STATUS.OKAY, parsedSnsPostDataArray)
                         }
+                    }
+                }
+            }
+        })
+    }
+
+
+    //SNS에서 글쓰기를 저장하는 함수
+    fun postPost(
+        writer: String,
+        title: String,
+        content: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postPost(writer, SnsPostRequestBodyParams(title, content)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
                     }
                 }
             }
