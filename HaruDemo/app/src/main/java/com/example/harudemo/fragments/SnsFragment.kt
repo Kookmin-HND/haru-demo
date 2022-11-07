@@ -19,6 +19,7 @@ import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity
 import com.example.harudemo.sns.SnsFriendsActivity
 import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
+import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
 
@@ -57,9 +58,7 @@ class SnsFragment : Fragment() {
 
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "HomeFragment - onCreateView() called")
 
@@ -143,10 +142,10 @@ class SnsFragment : Fragment() {
                     snsPostRecyclerViewAdapter.notifyItemInserted(SnsPostList.size)
                 }
                 RESPONSE_STATUS.FAIL -> {
-                    Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                    CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
                 }
                 RESPONSE_STATUS.NO_CONTENT -> {
-                    Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                    CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         })

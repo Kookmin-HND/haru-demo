@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.databinding.ActivitySnsAddPostBinding
+import com.example.harudemo.utils.CustomToast
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
 class SnsAddPostActivity : AppCompatActivity() {
@@ -16,19 +17,19 @@ class SnsAddPostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.addCancel.setOnClickListener {
-            Toast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
+            CustomToast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
             finish();
         }
         binding.addApply.setOnClickListener {
-            Toast.makeText(applicationContext, "작성작성", Toast.LENGTH_SHORT).show();
+            CustomToast.makeText(applicationContext, "작성작성", Toast.LENGTH_SHORT).show();
         }
 
         binding.addPolicy.setOnClickListener {
-            Toast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
+            CustomToast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
         }
 
         binding.addimage.setOnClickListener {
-            Toast.makeText(applicationContext, "찰칵찰칵", Toast.LENGTH_SHORT).show()
+            CustomToast.makeText(applicationContext, "찰칵찰칵", Toast.LENGTH_SHORT).show()
         }
 
     }
