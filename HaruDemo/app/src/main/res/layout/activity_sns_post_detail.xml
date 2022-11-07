@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,76 +11,90 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:padding="0dp"
+        android:orientation="horizontal">
 
-        >
-
-        <Button
+        <ImageButton
             android:id="@+id/sns_post_detail_cancel_button"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:background="#00ff0000"
+            android:background="#00000000"
             android:backgroundTint="@color/white"
             android:gravity="bottom"
-            android:text="X"
-            android:textSize="25dp"
-            android:insetBottom="0dp"
             android:insetTop="0dp"
-            >
-        </Button>
+            android:insetBottom="0dp"
+            android:src="@drawable/ic_baseline_clear_24"></ImageButton>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_margin="0dp"
-            android:gravity="bottom"
-            android:text="글 쓰기"
+            android:gravity="center"
+            android:text="제목"
             android:textColor="@color/black"
             android:textSize="25dp" />
-
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="30dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:layout_gravity="bottom"
-            android:insetBottom="0dp"
-            android:insetTop="0dp"
-            android:text="완료"
-            android:textColor="@color/white">
-        </Button>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
         android:orientation="vertical"
-        >
+        android:layout_marginTop="50dp">
+
         <TextView
             android:id="@+id/sns_post_detail_writer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="작성자"
-            android:textSize="20dp"
-            >
-        </TextView>
+            android:layout_marginTop="10dp"
+            android:hint="작성자"
+            android:textSize="20dp"></TextView>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray"/>
+            android:layout_marginVertical="10dp"
+            android:background="@color/gray" />
+
         <TextView
             android:id="@+id/sns_post_detail_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="게시물 내용"
-            android:textSize="20dp"
-            >
-        </TextView>
+            android:background="#00000000"
+            android:hint="게시물 내용"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="10dp"
+            android:background="@color/gray" />
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="30dp"
+        android:gravity="bottom"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/writecomment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="9"
+            android:hint="댓글을 입력하세요" />
+
+        <ImageButton
+            android:id="@+id/sendcomment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:src="@drawable/ic_baseline_send_24" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

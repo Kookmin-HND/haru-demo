@@ -11,31 +11,39 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.R
-import com.example.harudemo.TodoDummyData
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
+import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
+import java.time.LocalDate
 
-class TodoListFragment: Fragment() {
+class TodoListFragment : Fragment() {
+    // UI Update를 위해 Instance 접근 가능하게끔하고,
+    // 이를 Singleton 방식으로하여 객체를 하나로하여 재활용한다.
     companion object {
-        const val TAG: String = "[TODO_LIST-LOG]"
-
-        fun newInstance(): TodoListFragment {
-            return TodoListFragment()
-        }
+        private var _instance: TodoListFragment? = null
+        val instance: TodoListFragment
+            get() {
+                if (_instance == null) {
+                    _instance = TodoListFragment()
+                }
+                return _instance!!
+            }
     }
 
     private var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment? = null
+    var todoListAdapter: TodoListAdapter? = null
+    var sections: List<Section> = listOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // 뒤로가기 키 핸들링위한 함수, 뒤로가기 눌리면 todoFragment로 돌아간다.
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                todoFragment = TodoFragment.getInstance()
+                todoFragment = TodoFragment.instance
                 activity?.supportFragmentManager?.beginTransaction()
                     ?.replace(R.id.fragments_frame, todoFragment!!)?.commit()
             }
@@ -44,47 +52,57 @@ class TodoListFragment: Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
         // Recycler View에 전달
-        var sections = ArrayList<Section>()
         val by = arguments?.getString("by") as String
-        Log.d(TAG, by)
         when (by) {
             "today" -> {
-                sections = TodoDummyData.getTodayTodoByFolder()
+                sections = TodoData.getTodosByDates(arrayListOf(LocalDate.now().toString()))
             }
             "week" -> {
-                sections = TodoDummyData.getWeekTodoByDate()
+                val dates = ArrayList<String>()
+                var today = LocalDate.now()
+                for (i in 1..7) {
+                    dates.add(today.toString())
+                    today = today.plusDays(1)
+                }
+                sections = TodoData.getTodosByDates(dates)
             }
             "all" -> {
-                sections = TodoDummyData.getAllSectionsByFolder()
+                sections = TodoData.getTodos()
             }
             "completed" -> {
-                sections = TodoDummyData.getAllCompletedTodoByDate()
+                sections = TodoData.getTodos(true)
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-                sections = TodoDummyData.getFolderByFolderTitle(folderTitle)
+                sections = TodoData.getTodosByFolder(folderTitle)
             }
-            else -> {
-
-            }
+            else -> {}
         }
 
-        val todoListAdapter = TodoListAdapter(sections)
-        binding?.rvTodoSectionList?.adapter = todoListAdapter
-        binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
-            binding?.root?.context,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-        return binding?.root
+        if (sections.isEmpty()) {
+            binding?.rvTodoSectionList?.visibility = View.GONE
+            binding?.tvEmpty?.visibility = View.VISIBLE
+        } else {
+            binding?.rvTodoSectionList?.visibility = View.VISIBLE
+            binding?.tvEmpty?.visibility = View.GONE
+
+            todoListAdapter = TodoListAdapter()
+            binding?.rvTodoSectionList?.adapter = todoListAdapter
+            binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
+                binding?.root?.context, LinearLayoutManager.VERTICAL, false
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

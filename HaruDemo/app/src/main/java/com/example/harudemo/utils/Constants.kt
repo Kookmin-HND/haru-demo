@@ -9,7 +9,6 @@ enum class RESPONSE_STATUS {
     OKAY, FAIL, NO_CONTENT
 }
 
-//테스트용 API
 object API {
     const val BASE_URL: String = "http://10.0.2.2:8000/api/"
     const val API_KEY: String = ""

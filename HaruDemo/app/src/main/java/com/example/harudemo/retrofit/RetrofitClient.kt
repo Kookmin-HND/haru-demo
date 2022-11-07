@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit
 
 
 object RetrofitClient {
-    private var retrofitClient : Retrofit? = null
+    private var retrofitClient: Retrofit? = null
 
-    fun getClient(baseUrl: String): Retrofit?{
+    fun getClient(baseUrl: String): Retrofit? {
 
         //okhttp 인스턴스 생성
         val client = OkHttpClient.Builder()
@@ -59,8 +59,8 @@ object RetrofitClient {
         val baseParameterInterceptor: Interceptor = (object : Interceptor {
             override fun intercept(chain: Interceptor.Chain): Response {
 
-                Log.d(TAG, "RetrofitClient - intercept() called abcdse")
-                // 오리지널 리퀘스트그
+                Log.d(TAG, "RetrofitClient - intercept() called")
+                // 오리지널 리퀘스트
                 val originalRequest = chain.request()
 
 //                // 쿼리 파라미터 추가하기 추후 API KET 추가 용도
@@ -74,8 +74,9 @@ object RetrofitClient {
 //                    .build()
 //
 //                val response = chain.proceed(finalRequest)
-
+                Log.d("[debug]", originalRequest.toString())
                 val response = chain.proceed(originalRequest)
+                Log.d("[debug]", response.toString())
                 Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
                 Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
                 if(response.code != 200){

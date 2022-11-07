@@ -41,7 +41,7 @@
                 android:layout_marginTop="10dp">
 
                 <Button
-                    android:id="@+id/btnToday"
+                    android:id="@+id/btn_today"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -51,7 +51,7 @@
                     android:textColor="@color/white" />
 
                 <Button
-                    android:id="@+id/btnWeek"
+                    android:id="@+id/btn_week"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btnAll"
+                    android:id="@+id/btn_all"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -77,7 +77,7 @@
                     android:textColor="@color/white" />
 
                 <Button
-                    android:id="@+id/btnCompleted"
+                    android:id="@+id/btn_completed"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"

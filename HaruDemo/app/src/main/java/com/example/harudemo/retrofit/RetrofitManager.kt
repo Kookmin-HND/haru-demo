@@ -2,9 +2,11 @@ package com.example.harudemo.retrofit
 
 import android.util.Log
 import com.example.harudemo.model.SnsPost
+import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.Response
@@ -69,9 +71,38 @@ class RetrofitManager {
         })
     }
 
-    // DB에서 Todo Data를 불러온다.
-    fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<SnsPost>?) -> Unit) {
+    // DB에서 TodoData를 불러온다.
+    fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit) {
         val call = todoService?.getTodos(writer) ?: return
+
+        call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
+            override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(
+                call: Call<ArrayList<Todo>>, response: Response<ArrayList<Todo>>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val todos = response.body() ?: return
+                        completion(RESPONSE_STATUS.OKAY, todos)
+                    }
+                }
+            }
+        })
+    }
+
+    // DB에 TodoData를 추가한다.
+    fun addTodo(
+        writer: String,
+        folder: String,
+        content: String,
+        dates: List<String>,
+        completion: (RESPONSE_STATUS, JsonArray?) -> Unit
+    ) {
+        val call =
+            todoService?.addTodos(writer, PostRequestBodyParams(folder, content, dates)) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -80,22 +111,61 @@ class RetrofitManager {
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()) {
-                    // STATUS 200
                     200 -> {
-                        val responseBody = response.body() ?: return
-                        val todos = responseBody.asJsonArray
+                        completion(RESPONSE_STATUS.OKAY, response.body()?.asJsonArray)
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
 
-                        todos.forEach { todoJson ->
-                            val todo = todoJson.asJsonObject
-                            val writer = todo.get("writer").asString
-                            val folder = todo.get("folder").asString
-                            val content = todo.get("content").asString
-                            val date = todo.get("date").asString
-                            val completed = todo.get("completed").asBoolean
-                            val createdAt = todo.get("createdAt").asJsonObject
-                            val updatedAt = todo.get("updatedAt").asJsonObject
+    // DB에서 TodoData를 업데이트한다.
+    fun updateTodo(
+        id: Number,
+        folder: String,
+        content: String,
+        date: String,
+        completed: Boolean,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+        val call =
+            todoService?.updateTodo(PatchRequestBodyParams(id, folder, content, date, completed))
+                ?: return
 
-                        }
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                }
+            }
+        })
+    }
+
+    // DB에서 TodoData를 삭제한다.
+    fun deleteTodo(
+        id: Number,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+        val call = todoService?.deleteTodo(DeleteRequestBodyParams(id)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
                     }
                 }
             }

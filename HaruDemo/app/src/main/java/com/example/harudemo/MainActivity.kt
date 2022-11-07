@@ -1,6 +1,8 @@
 package com.example.harudemo
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,7 +16,6 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_todo_list_section.*
 import kotlin.text.Typography.section
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.menu.getItem(2).isChecked = true
         // TodoFragment를 가장 먼저 실행함
         snsFragment = SnsFragment.newInstance()
-        todoFragment = TodoFragment.getInstance()
+        todoFragment = TodoFragment.instance
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
     }
 
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                     binding?.fragmentsFrame?.visibility = View.VISIBLE
                 }
                 R.id.menu_todo -> {
-                    todoFragment = TodoFragment.getInstance()
+                    todoFragment = TodoFragment.instance
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, todoFragment!!).commit()
                     binding?.fragmentSns?.visibility = View.GONE
