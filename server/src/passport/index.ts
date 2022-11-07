@@ -8,9 +8,7 @@ import { ExtractJwt } from "passport-jwt";
 const passportConfig = { usernameField: "email", passwordField: "password" };
 
 const passportVerify = async (email: string, password: string, done: any) => {
-  console.log("1");
   try {
-    console.log("test");
     const user = await myDataSource
       .getRepository(User)
       .findOneBy({ email: email });
@@ -24,17 +22,29 @@ const passportVerify = async (email: string, password: string, done: any) => {
     if (!result) {
       return done(null, false, { reason: "올바르지 않은 비밀번호 입니다." });
     }
-    return done(null, user, null);
+    return done(null, user);
   } catch (error) {
     console.error(error);
     done(error, false, null);
   }
 };
 
+/* 다른 해싱 방법
+const salt = user.user_salt;
+    const hashedPW = crypto
+      .createHash("sha512")
+      .update(password + salt)
+      .digest("base64"); */
+
 // const JWTConfig = {
 //   jwtFromRequest : ExtractJwt.fromHeader('authorization'),
 //   secretOrKey : ":YZiEm/viU5(2MD",
 // };
+
+const JWTconfig = {
+  jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  secretOrKey: process.env.JWT_KEY,
+};
 
 export default function passportOpt() {
   passport.use("local", new LocalStrategy(passportConfig, passportVerify));

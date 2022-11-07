@@ -5,7 +5,7 @@ import { User } from "../entity/user";
 import { Equal } from "typeorm";
 import bcrypt from "bcrypt"; // hashing 처리를 위한 라이브러리
 import passport from "passport";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 
 export const path = "/users";
 export const router = Router();
@@ -60,30 +60,34 @@ router.post("/login", async (req: Request, res: Response, next) => {
           console.error(loginError);
           return next(loginError);
         }
-
-        const accessToken = jwt.sign(
-          {
-            email: user.email,
-            name: user.name,
-          },
-          "Kn`Tv_?fjbg6Br>",
-          { expiresIn: "15s" }
+        const token = jwt.sign(
+          { email: user.email, name: user.name, createAt: user.createAt },
+          process.env.JWT_KEY as Secret
         );
+        return res.json({ user, token });
 
-        const refreshToken = jwt.sign({}, "Kn`Tv_?fjbg6Br>", {
-          expiresIn: "7d",
-        });
+        // const accessToken = jwt.sign(
+        //   {
+        //     email: user.email,
+        //     name: user.name,
+        //   },
+        //   "Kn`Tv_?fjbg6Br>",
+        //   { expiresIn: "15s" }
+        // );
 
-        user.token = refreshToken;
-        await user.save();
-        res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000,
-        });
-        return res.status(200).json(accessToken);
+        // const refreshToken = jwt.sign({}, "Kn`Tv_?fjbg6Br>", {
+        //   expiresIn: "7d",
+        // });
+
+        // user.token = refreshToken;
+        // await user.save();
+        // res.cookie("refreshToken", refreshToken, {
+        //   httpOnly: true,
+        //   maxAge: 24 * 60 * 60 * 1000,
+        // });
+        // return res.status(200).json(accessToken);
       });
-    });
-    console.log("123");
+    })(req, res, next);
   } catch (error) {
     console.error(error);
   }
@@ -131,45 +135,8 @@ router.post(
         return res.send(result);
       });
     });
-    // const salt = crypto.randomBytes(64).toString("base64"); // salt 생성
-    // const hashedPW = crypto
-    //   .createHash("sha512")
-    //   .update(password + salt)
-    //   .digest("base64");
   }
 );
-
-// user 로그인 기능
-// router.post(
-//   "/login",
-//   async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-//     const email = req.body.email;
-//     const password = req.body.password;
-//     const user = await myDataSource
-//       .getRepository(User)
-//       .findOneBy({ email: Equal(email) });
-
-//     if (!user) {
-//       // user가 null값이면 회원정보가 없는 상태
-//       console.log("해당 user 없음!");
-//       return res.status(400).send("사용자 정보가 없습니다.");
-//     }
-
-//     const salt = user.user_salt;
-//     const hashedPW = crypto
-//       .createHash("sha512")
-//       .update(password + salt)
-//       .digest("base64");
-
-//     if (hashedPW != user.password) {
-//       console.log("비밀번호 틀림");
-//       return res.status(400).send("비밀번호 틀림");
-//     } else {
-//       console.log("로그인 성공");
-//       return res.send(user);
-//     }
-//   }
-// );
 
 // user 정보수정
 // router.patch(
