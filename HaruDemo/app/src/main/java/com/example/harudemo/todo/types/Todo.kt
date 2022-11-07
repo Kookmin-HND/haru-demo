@@ -1,7 +1,13 @@
 package com.example.harudemo.todo.types
 
-// 단순히 DB에 있는 두 데이터를 합친 데이터
+import java.io.Serializable
+
+// TodoData Interface
 data class Todo(
-    val todo: TodoInterface,
-    val todoDate: TodoDateInterface,
-)
+    var id: Number,
+    var writer: String,
+    var folder: String,
+    var content: String,
+    var date: String,
+    var completed: Boolean,
+) : Serializable

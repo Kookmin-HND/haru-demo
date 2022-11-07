@@ -140,7 +140,6 @@ class SnsFragment : Fragment() {
                     responseDataArrayList!!.forEach {
                         this.SnsPostList.add(it)
                     }
-
                     snsPostRecyclerViewAdapter.notifyItemInserted(SnsPostList.size)
                 }
                 RESPONSE_STATUS.FAIL -> {

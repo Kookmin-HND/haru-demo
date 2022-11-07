@@ -13,6 +13,7 @@ interface TodoRequestBody {
   folder: string;
   content: string;
   dates: string[];
+  completed: boolean;
 }
 
 type TodoResponseBody = Todo[];
@@ -78,9 +79,13 @@ router.post(
 );
 
 // 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
+// completed는 사용자가 완료 체크시에만 true로 보내고 이외에는 false로 가정한다.
 router.patch(
   "/",
-  async (req: Request<{}, {}, TodoRequestBody>, res: Response) => {
+  async (
+    req: Request<{}, {}, TodoRequestBody & { date: string }>,
+    res: Response
+  ) => {
     // todo data의 id값을 가져온다.
     const id = req.body.id;
     if (!id) {
@@ -88,24 +93,24 @@ router.patch(
     }
 
     // request body로부터 데이터를 가져온다.
-    const { folder, content, dates } = req.body;
+    const { folder, content, date, completed } = req.body;
 
-    if ((folder && !folder.trim()) || (content && !content.trim())) {
-      return res.status(400).send("folder 또는 content가 비어있습니다.");
-    }
-
-    if (!dates || (dates && dates.length != 1)) {
+    if (
+      (folder && !folder.trim()) ||
+      (content && !content.trim()) ||
+      (date && !date.trim())
+    ) {
       return res
         .status(400)
-        .send("dates의 입력이 없거나, 두 개 이상의 날짜가 선택되었습니다.");
+        .send("folder 또는 content 또는 date가 비어있습니다.");
     }
-    const date = dates[0];
 
     // todo 데이터를 업데이트 한다.
     const result = await myDataSource.getRepository(Todo).update(id, {
       folder,
       content,
       date,
+      completed,
     });
 
     return res.json(result);

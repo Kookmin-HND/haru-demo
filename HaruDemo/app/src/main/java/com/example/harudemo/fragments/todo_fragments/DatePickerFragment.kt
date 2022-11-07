@@ -1,4 +1,4 @@
-package com.example.harudemo.todo
+package com.example.harudemo.fragments.todo_fragments
 
 import android.app.DatePickerDialog
 import android.app.Dialog
@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import java.time.LocalDate
 
-// Todo 입력시에 기간으로 입력시 날짜를 선택하기 위한 만들어진 DatePicker 클래스
+// 입력시에 기간으로 입력시 날짜를 선택하기 위한 만들어진 DatePicker 클래스
 class DatePickerFragment(private val textView: TextView) : DialogFragment(),
     DatePickerDialog.OnDateSetListener {
 
