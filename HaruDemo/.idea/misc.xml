@@ -12,8 +12,10 @@
         <entry key="app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.231" />
         <entry key="app/src/main/res/drawable/ic_baseline_align_vertical_bottom_24.xml" value="0.221" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_circle_up_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.221" />
         <entry key="app/src/main/res/drawable/ic_baseline_check_box_24.xml" value="0.2485" />
+        <entry key="app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_dehaze_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_format_list_numbered_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_menu_24.xml" value="0.21" />
@@ -65,6 +67,7 @@
         <entry key="app/src/main/res/layout/login_layout.xml" value="0.11822916666666666" />
         <entry key="app/src/main/res/layout/my_dialog.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/progress_bar.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/signup_layout.xml" value="0.2515625" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
         <entry key="app/src/main/res/menu/sns_top_app_bar.xml" value="0.4276041666666667" />

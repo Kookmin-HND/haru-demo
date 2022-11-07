@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_sns_post_detail.*
 
 class SnsPostDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        var binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
+        val binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sns_post_detail)
 
