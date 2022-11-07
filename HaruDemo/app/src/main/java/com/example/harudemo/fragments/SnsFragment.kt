@@ -2,6 +2,7 @@ package com.example.harudemo.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -120,6 +121,8 @@ class SnsFragment : Fragment() {
         binding.snsSwipeRefresh.setOnRefreshListener {
             refreshPostApiCall()
         }
+
+        binding.snsSwipeRefresh.setColorSchemeColors(Color.BLUE, Color.YELLOW, Color.BLUE);
     }
 
     //스크롤 이벤트 처리 함수

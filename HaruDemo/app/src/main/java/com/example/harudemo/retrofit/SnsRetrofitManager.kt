@@ -49,7 +49,7 @@ class SnsRetrofitManager {
                                 val postId = resultItemObject.get("id").asInt
                                 val writer = resultItemObject.get("writer").asString
                                 val content =
-                                    resultItemObject.get("content").asString + "====" + postId
+                                    resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
 
