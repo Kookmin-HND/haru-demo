@@ -112,6 +112,10 @@ object TodoData {
         }
 
         for (todo in this.todos) {
+            if (todo.completed) {
+                continue
+            }
+
             if (todo.date in todos) {
                 todos[todo.date]?.add(todo)
             }
