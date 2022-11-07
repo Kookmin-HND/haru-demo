@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.App
 import com.example.harudemo.R
+import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.retrofit.SnsRetrofitManager
@@ -24,6 +25,9 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
 
 class SnsFragment : Fragment() {
+    private var mBinding:FragmentSnsBinding? = null
+    private val binding get() = mBinding!!
+
     //API에 post 데이터를 요청하기 위한 기준 id
     private var lastPostId = Int.MAX_VALUE
 
@@ -41,6 +45,7 @@ class SnsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "HomeFragment - on Create() called")
+
     }
 
     override fun onAttach(context: Context) {
@@ -56,10 +61,11 @@ class SnsFragment : Fragment() {
     ): View? {
         Log.d(TAG, "HomeFragment - onCreateView() called")
 
-        val view = inflater.inflate(R.layout.fragment_sns, container, false)
-
+        //뷰바인딩
+        mBinding = FragmentSnsBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.setSupportActionBar(sns_top_app_bar)
-        return view
+
+        return binding.root
     }
 
     //레이아웃 연결 후
@@ -68,16 +74,15 @@ class SnsFragment : Fragment() {
 
         //최초로 API 호출하여 데이터 얻어오기
         sns_post_recycler_view.adapter = SnsPostRecyclerViewAdapter()
-        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
         infiniteScrollPostApiCall()
-        Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
-
 
         sns_post_recycler_view.layoutManager =
             GridLayoutManager(this.context, 1, GridLayoutManager.VERTICAL, false)
 
         //스크롤 이벤트 처리 함수
         initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
+
+
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         sns_top_app_bar.setOnMenuItemClickListener {
@@ -123,8 +128,9 @@ class SnsFragment : Fragment() {
         })
     }
 
-    fun infiniteScrollPostApiCall() {
-        RetrofitManager.instance.getPosts(lastPostId, completion = { responseStatus, responseDataArrayList ->
+
+    private fun infiniteScrollPostApiCall() {
+        SnsRetrofitManager.instance.getPosts(lastPostId, completion = { responseStatus, responseDataArrayList ->
             Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
             when (responseStatus) {
 
@@ -135,8 +141,8 @@ class SnsFragment : Fragment() {
                         lastPostId = it.id
                         this.snsPostList.add(it)
                     }
-                    Log.d(TAG, "SnsFragment - adapter!! called ${sns_post_recycler_view.adapter}")
-                    sns_post_recycler_view.adapter?.notifyItemInserted(snsPostList.size)
+                    (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
+                    sns_post_recycler_view.adapter?.notifyItemInserted(this.snsPostList.size)
                 }
                 RESPONSE_STATUS.FAIL -> {
                     Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
