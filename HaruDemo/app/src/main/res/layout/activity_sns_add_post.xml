@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -54,8 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:selectAllOnFocus="true"
                 android:hint="제목을 입력해 주세요"
+                android:selectAllOnFocus="true"
                 android:textColor="#938D8D"
                 android:textStyle="bold" />
 
