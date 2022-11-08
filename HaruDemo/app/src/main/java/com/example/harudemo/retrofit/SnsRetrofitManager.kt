@@ -102,4 +102,39 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+
+
+    //SNS에서 댓글을 저장하는 함수
+    fun postComment(
+        writer: String,
+        postId: Int,
+        content: String,
+        parentCommentId: Int,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postComment(writer, SnsCommentPostRequestBodyParams(postId, content, parentCommentId)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
 }

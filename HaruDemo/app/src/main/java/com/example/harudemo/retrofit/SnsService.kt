@@ -14,6 +14,14 @@ data class SnsPostRequestBodyParams(
     val content: String
 )
 
+data class SnsCommentPostRequestBodyParams(
+    @SerializedName("postId")
+    val postId : Int,
+    @SerializedName("content")
+    val content: String,
+    @SerializedName("parentCommentId")
+    val parentCommentId : Int
+)
 
 
 interface SnsService {
@@ -29,4 +37,13 @@ interface SnsService {
         @Path("email") writer: String,
         @Body requestBodyParams: SnsPostRequestBodyParams
     ): Call<JsonElement>
+
+
+
+    @POST("${API.COMMENTS}/{email}")
+    fun postComment(
+        @Path("email") writer: String,
+        @Body requestBodyParams: SnsCommentPostRequestBodyParams
+    ): Call<JsonElement>
+
 }

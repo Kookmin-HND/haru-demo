@@ -23,7 +23,7 @@ class SnsAddPostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.addCancel.setOnClickListener {
-            Toast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, "글 작성을 취소했습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -43,7 +43,7 @@ class SnsAddPostActivity : AppCompatActivity() {
                     }
                     RESPONSE_STATUS.FAIL -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        Toast.makeText(App.instance, "글 작성에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")

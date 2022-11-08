@@ -14,5 +14,6 @@ object API {
     const val API_KEY: String = ""
     const val RECENT_POSTS: String = "posts/recent/{postId}"
     const val POSTS: String = "posts"
+    const val COMMENTS: String = "comments"
     const val TODOS: String = "todos"
 }
