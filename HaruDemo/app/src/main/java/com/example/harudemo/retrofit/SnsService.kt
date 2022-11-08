@@ -46,4 +46,10 @@ interface SnsService {
         @Body requestBodyParams: SnsCommentPostRequestBodyParams
     ): Call<JsonElement>
 
+
+    @GET("${API.COMMENTS}/{postId}")
+    fun getComments(
+        @Path("postId") postId: Int,
+    ): Call<JsonElement>
+
 }

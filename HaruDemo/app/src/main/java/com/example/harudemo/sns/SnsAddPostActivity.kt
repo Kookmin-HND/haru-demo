@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_sns.*
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
 class SnsAddPostActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivitySnsAddPostBinding;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,9 +26,7 @@ class SnsAddPostActivity : AppCompatActivity() {
             finish();
         }
 
-
         binding.addApply.setOnClickListener {
-
             val title = binding.addPostTitle.text.toString()
             val content = binding.addPostText.text.toString()
 
@@ -62,4 +59,7 @@ class SnsAddPostActivity : AppCompatActivity() {
         }
 
     }
+
+
+
 }

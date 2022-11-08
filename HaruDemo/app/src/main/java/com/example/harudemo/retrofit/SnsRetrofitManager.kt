@@ -1,6 +1,7 @@
 package com.example.harudemo.retrofit
 
 import android.util.Log
+import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
@@ -128,6 +129,61 @@ class SnsRetrofitManager {
                     200 -> {
                         response.body()?.let {
                             completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    //SNS에서 댓글을 저장하는 함수
+    fun getComments(
+        postId: Int,
+        completion: (RESPONSE_STATUS, ArrayList<SnsComment>?) -> Unit
+    ) {
+
+        val call =
+            snsService?.getComments(postId) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            val parsedSnsCommentDataArray = ArrayList<SnsComment>()
+                            val results = it.asJsonArray
+
+                            // 데이터가 있다면
+                            results.forEach { resultItem ->
+                                val resultItemObject = resultItem.asJsonObject
+                                val writer = resultItemObject.get("writer").asString
+                                val parentCommentId = resultItemObject.get("parentCommentId").asInt
+                                val content = resultItemObject.get("content").asString
+                                val id = resultItemObject.get("id").asInt
+                                val createdAt = resultItemObject.get("createdAt").asString
+                                val updatedAt = resultItemObject.get("updatedAt").asString
+
+                                val snsCommentItem = SnsComment(
+                                    id,
+                                    postId,
+                                    writer,
+                                    parentCommentId,
+                                    content,
+                                    createdAt,
+                                    updatedAt,
+                                    writerPhoto = "",
+                                )
+                                parsedSnsCommentDataArray.add(snsCommentItem)
+                            }
+                            completion(RESPONSE_STATUS.OKAY, parsedSnsCommentDataArray)
                         }
                     }
                     400 -> {
