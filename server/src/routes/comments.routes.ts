@@ -31,11 +31,13 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 });
 
 //새 댓글 입력
-router.post("/", async (req: Request, res: Response) => {
+router.post("/:email", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
+  const writer = req.params.email;
+
   const post = myDataSource
     .getRepository(Comment)
-    .create({ ...req.body, post: req.body.postId });
+    .create({ ...req.body, post: req.body.postId, writer });
   const result = await myDataSource.getRepository(Comment).save(post);
 
   return res.json(result);
