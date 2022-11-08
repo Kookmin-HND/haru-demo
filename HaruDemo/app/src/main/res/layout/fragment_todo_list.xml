@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:clipToPadding="true">
 
     <TextView
         android:id="@+id/tv_empty"
@@ -22,6 +23,7 @@
         android:id="@+id/rv_todo_section_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="true"
         android:padding="10dp"
         tools:listitem="@layout/fragment_todo_list_section" />
 
