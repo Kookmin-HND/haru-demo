@@ -19,4 +19,6 @@
     <color name="gray_web">#7F7F7F</color>
     <color name="rhythm">#646881</color>
     <color name="charcoal">#364652</color>
+    <color name="background">#19BCC4C6</color>
+    <color name="text">#33333f</color>
 </resources>

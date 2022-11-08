@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -77,13 +78,13 @@
                     android:layout_gravity="center"
                     android:background="#00000000"
                     android:text="팔로워"
-                    android:textColor="#BEE0FF"/>
+                    android:textColor="#BEE0FF" />
 
                 <View
                     android:id="@+id/followerline"
-                    android:background="@color/skyBlue"
                     android:layout_width="match_parent"
-                    android:layout_height="5px"/>
+                    android:layout_height="5px"
+                    android:background="@color/skyBlue" />
             </LinearLayout>
 
             <LinearLayout
@@ -98,13 +99,13 @@
                     android:layout_height="wrap_content"
                     android:background="#00000000"
                     android:text="팔로잉"
-                    android:textColor="#B6B8B8"/>
+                    android:textColor="#B6B8B8" />
 
                 <View
                     android:id="@+id/followingline"
-                    android:background="#B6B8B8"
                     android:layout_width="match_parent"
-                    android:layout_height="5px"/>
+                    android:layout_height="5px"
+                    android:background="#B6B8B8" />
 
             </LinearLayout>
 

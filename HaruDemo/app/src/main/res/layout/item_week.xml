@@ -1,18 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-->주간 아이템 xml<!-->
+<?xml version="1.0" encoding="utf-8"?><!-->주간 아이템 xml<!-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_day_layout"
     android:layout_width="match_parent"
-    android:gravity="left"
-    android:orientation="vertical"
     android:layout_height="60dp"
     android:layout_marginTop="5dp"
-    android:layout_marginRight="5dp">
+    android:layout_marginRight="5dp"
+    android:gravity="left"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/item_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="9"/>
+        android:text="9"
+        android:textSize="16sp" />
 </LinearLayout>
