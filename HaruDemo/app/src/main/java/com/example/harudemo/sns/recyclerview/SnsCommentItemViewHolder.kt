@@ -26,7 +26,6 @@ class SnsCommentItemViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView
         //이미지 생성
         Glide.with(App.instance)
             .load(snsCommentItem.writerPhoto)
-            .placeholder(R.drawable.ic_baseline_account_circle_24)
             .into(snsCommentWriterPhoto)
     }
 }

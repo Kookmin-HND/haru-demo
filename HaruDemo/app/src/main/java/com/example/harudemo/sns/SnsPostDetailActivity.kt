@@ -72,6 +72,11 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         //API 호출 성공
                         RESPONSE_STATUS.OKAY -> {
                             Toast.makeText(App.instance, "댓글 입력에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                            //API 재호출
+                            commentApiCall(snsPostId)
+                            binding.etWriteComment.setText("")
+                            binding.snsPostCommentsRecyclerview.smoothScrollToPosition(100)
                         }
                         RESPONSE_STATUS.FAIL -> {
                             Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
@@ -92,6 +97,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 when (responseStatus) {
                     //API 호출 성공
                     RESPONSE_STATUS.OKAY -> {
+                        this.snsCommentList.clear()
                         responseDataArrayList!!.forEach {
                             this.snsCommentList.add(it)
                         }
