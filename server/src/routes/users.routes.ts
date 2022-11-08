@@ -9,7 +9,6 @@ import jwt, { Secret } from "jsonwebtoken";
 
 export const path = "/users";
 export const router = Router();
-const saltRounds = 10;
 
 interface UserParams {
   email: string;
@@ -25,69 +24,46 @@ interface UserSignBody {
 //http://localhost:8000/api/users/ ~~
 
 // user 정보조회
-// router.get("/:email", async function (req: Request<UserParams>, res: Response) {
-//   console.log("get : ", req.params.email);
-
-//   try {
-//     const result = await myDataSource
-//       .getRepository(User)
-//       .findOneBy({ email: req.params.email });
-//     return res.send(result);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(400).json("No user found");
-//   }
-// });
+router.get("/info", async (req: Request<UserParams>, res: Response) => {
+  try {
+    passport.authenticate("jwt", (jwtError, user, info) => {
+      console.log(jwtError, user, info);
+      if (!user || jwtError) {
+        return res.status(400).send("re-login");
+      }
+      user.password = "";
+      return res.json({ user });
+    })(req, res);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("No user found");
+  }
+});
 
 //user login
 router.post("/login", async (req: Request, res: Response, next) => {
   try {
-    passport.authenticate("local", (passportError, user, info) => {
-      console.log(passportError, user, info);
+    passport.authenticate("local", (authError, user, info) => {
+      console.log(authError, user, info);
       // 인증 실패 또는 user 정보 없을시 에러 발생
-      if (passportError) {
-        console.error(passportError);
-        return next(passportError);
+      if (authError || !user) {
+        return res.status(400).json(info.reason);
       }
 
-      if (info) {
-        console.log(info.reason);
-        return res.status(401).send(info.reason);
-      }
-
-      return req.login(user, { session: false }, async (loginError) => {
+      req.login(user, { session: false }, (loginError) => {
         if (loginError) {
           console.error(loginError);
-          return next(loginError);
+          return res.status(400).json(loginError);
         }
         const token = jwt.sign(
-          { email: user.email, name: user.name, createAt: user.createAt },
+          { email: user.email },
           process.env.JWT_KEY as Secret
         );
-        return res.json({ user, token });
-
-        // const accessToken = jwt.sign(
-        //   {
-        //     email: user.email,
-        //     name: user.name,
-        //   },
-        //   "Kn`Tv_?fjbg6Br>",
-        //   { expiresIn: "15s" }
-        // );
-
-        // const refreshToken = jwt.sign({}, "Kn`Tv_?fjbg6Br>", {
-        //   expiresIn: "7d",
-        // });
-
-        // user.token = refreshToken;
-        // await user.save();
-        // res.cookie("refreshToken", refreshToken, {
-        //   httpOnly: true,
-        //   maxAge: 24 * 60 * 60 * 1000,
-        // });
-        // return res.status(200).json(accessToken);
+        return res
+          .cookie("token", token, { httpOnly: true })
+          .json({ message: "토큰 발급 완료" });
       });
-    })(req, res, next);
+    })(req, res);
   } catch (error) {
     console.error(error);
   }
@@ -117,7 +93,7 @@ router.post(
     }
 
     // password hashing 처리
-    bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.genSalt(10, (err, salt) => {
       if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
 
       bcrypt.hash(password, salt, async (err, hash) => {

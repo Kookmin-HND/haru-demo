@@ -3,9 +3,13 @@ import bcrypt from "bcrypt";
 import { User } from "../entity/user";
 import myDataSource from "../app-data-source";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
+import { ExtractJwt, Strategy } from "passport-jwt";
 
-const passportConfig = { usernameField: "email", passwordField: "password" };
+const passportConfig = {
+  usernameField: "email",
+  passwordField: "password",
+  session: false,
+};
 
 const passportVerify = async (email: string, password: string, done: any) => {
   try {
@@ -22,46 +26,56 @@ const passportVerify = async (email: string, password: string, done: any) => {
     if (!result) {
       return done(null, false, { reason: "올바르지 않은 비밀번호 입니다." });
     }
-    return done(null, user);
+    done(null, user);
   } catch (error) {
     console.error(error);
-    done(error, false, null);
+    done(error);
   }
 };
 
 /* 다른 해싱 방법
 const salt = user.user_salt;
-    const hashedPW = crypto
+    const hashedPW = c
+    rypto
       .createHash("sha512")
       .update(password + salt)
       .digest("base64"); */
 
-// const JWTConfig = {
-//   jwtFromRequest : ExtractJwt.fromHeader('authorization'),
-//   secretOrKey : ":YZiEm/viU5(2MD",
-// };
+const cookieExtractor = (req: any) => {
+  const { token } = req.cookies;
+  return token;
+};
 
 const JWTConfig = {
-  jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  jwtFromRequest: cookieExtractor,
   secretOrKey: process.env.JWT_KEY,
 };
 
-const JWTVerify = async (jwtPayload: any, done: any) => {
+const JWTVerify = async (token: any, done: any) => {
   try {
+    if (!token) {
+      console.log("token이 없습니다.");
+      return done(null, false, { reason: "token이 없습니다." });
+    }
+
     const user = await myDataSource
       .getRepository(User)
-      .findOneBy({ email: jwtPayload.email });
+      .findOneBy({ email: token.email });
 
-    if (!user) done(null, false, { reason: "올바르지 않은 인증 정보입니다." });
+    if (!user) {
+      console.log("token과 맞는 user가 없습니다.");
+      return done(null, false, { reason: "token과 맞는 user가 없습니다." });
+    }
 
     return done(null, user);
   } catch (error) {
-    console.log(error);
+    console.log("123");
+    console.error(error);
     done(error);
   }
 };
 
 export default function passportOpt() {
   passport.use("local", new LocalStrategy(passportConfig, passportVerify));
-  passport.use("jwt", new JWTStrategy(JWTConfig, JWTVerify));
+  passport.use("jwt", new Strategy(JWTConfig, JWTVerify));
 }
