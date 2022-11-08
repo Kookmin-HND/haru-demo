@@ -6,5 +6,6 @@ data class SnsPost(
     var content: String?,
     var createdAt: String?,
     var writerPhoto: String?,
+    var average: String?,
 ) {
 }

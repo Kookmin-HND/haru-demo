@@ -61,6 +61,7 @@ class RetrofitManager {
                                     content = postBody,
                                     createdAt = "2022.10.07",
                                     writerPhoto = "",
+                                    average = "",
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }
