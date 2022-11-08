@@ -9,6 +9,8 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 
@@ -78,11 +80,12 @@ class SnsRetrofitManager {
         writer: String,
         title: String,
         content: String,
+        images: ArrayList<MultipartBody.Part>?,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
 
         val call =
-            snsService?.postPost(writer, SnsPostRequestBodyParams(title, content)) ?: return
+            snsService?.postPost(writer, images, SnsPostRequestBodyParams(title, content)) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {

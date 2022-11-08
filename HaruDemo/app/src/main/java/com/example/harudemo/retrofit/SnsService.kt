@@ -3,6 +3,8 @@ package com.example.harudemo.retrofit
 import com.example.harudemo.utils.API
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -32,10 +34,12 @@ interface SnsService {
     ) : Call<JsonElement>
 
 
+    @Multipart
     @POST("${API.POSTS}/{email}")
     fun postPost(
         @Path("email") writer: String,
-        @Body requestBodyParams: SnsPostRequestBodyParams
+        @Part images: ArrayList<MultipartBody.Part>?,
+        @Part("requestBodyParams") requestBodyParams: SnsPostRequestBodyParams
     ): Call<JsonElement>
 
 

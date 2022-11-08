@@ -19,6 +19,10 @@ import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.activity_sns_add_post.*
 import kotlinx.android.synthetic.main.fragment_sns.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
@@ -59,7 +63,16 @@ class SnsAddPostActivity : AppCompatActivity() {
             val title = binding.addPostTitle.text.toString()
             val content = binding.addPostText.text.toString()
 
-            SnsRetrofitManager.instance.postPost("LMJ", title, content, completion = { responseStatus, _ ->
+            val imagesMultipartBodyList = ArrayList<MultipartBody.Part>()
+
+            for(imageUri in imagesList){
+                val file = File(imageUri.path)
+                val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                imagesMultipartBodyList.add(MultipartBody.Part.createFormData("images", file.name, requestBody))
+            }
+
+
+            SnsRetrofitManager.instance.postPost("LMJ",  title, content, imagesMultipartBodyList , completion = { responseStatus, _ ->
                 when (responseStatus) {
                     //API 호출 성공
                     RESPONSE_STATUS.OKAY -> {
