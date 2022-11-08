@@ -31,8 +31,10 @@
 
                 <CheckBox
                     android:id="@+id/btn_check_todo"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleX="1.125"
+                    android:scaleY="1.125" />
 
                 <TextView
                     android:id="@+id/tv_todo_content"

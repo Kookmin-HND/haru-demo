@@ -18,6 +18,9 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
 import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 class TodoListFragment : Fragment() {
     // UI Update를 위해 Instance 접근 가능하게끔하고,
@@ -75,11 +78,31 @@ class TodoListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
         // Recycler View에 전달
-        val by = arguments?.getString("by") as String
-        when (by) {
+        updateSections()
+        if (decideView()) {
+            todoListAdapter = TodoListAdapter()
+            binding?.rvTodoSectionList?.adapter = todoListAdapter
+            binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
+                binding?.root?.context, LinearLayoutManager.VERTICAL, false
+            )
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = "하루"
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        // 뒤로가기 키 이벤트 삭제
+        callback?.remove()
+    }
+
+    fun updateSections() {
+        when (arguments?.getString("by") as String) {
             "today" -> {
                 sections = TodoData.getTodosByDates(arrayListOf(LocalDate.now().toString()))
             }
@@ -104,30 +127,17 @@ class TodoListFragment : Fragment() {
             }
             else -> {}
         }
+    }
 
+    fun decideView(): Boolean {
         if (sections.isEmpty()) {
             binding?.rvTodoSectionList?.visibility = View.GONE
             binding?.tvEmpty?.visibility = View.VISIBLE
+            return false
         } else {
             binding?.rvTodoSectionList?.visibility = View.VISIBLE
             binding?.tvEmpty?.visibility = View.GONE
-
-            todoListAdapter = TodoListAdapter()
-            binding?.rvTodoSectionList?.adapter = todoListAdapter
-            binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
-                binding?.root?.context, LinearLayoutManager.VERTICAL, false
-            )
+            return true
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = "하루"
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        // 뒤로가기 키 이벤트 삭제
-        callback?.remove()
     }
 }

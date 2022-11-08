@@ -5,7 +5,9 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.view.setPadding
@@ -33,7 +35,7 @@ class TodoListSectionAdapter(
         private val days = arrayListOf("월", "화", "수", "목", "금", "토", "일")
 
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-        fun bindItem(todo: Todo) {
+        fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             itemBinding.btnCheckTodo.buttonTintList =
                 ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[colorPosition % TodoListFragment.COLORS.size]))
@@ -42,7 +44,6 @@ class TodoListSectionAdapter(
                 itemBinding.btnCheckTodo.isChecked = true
                 itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
-
             itemBinding.tvTodoContent.text = todo.content
 
             val dateToken = todo.date.split('-').map { it.toInt() }
@@ -62,7 +63,11 @@ class TodoListSectionAdapter(
             }
 
             // completed Toggle Action
+            val completed = todo.completed
             itemBinding.btnCheckTodo.setOnClickListener {
+                if (!todo.completed == completed)
+                    return@setOnClickListener
+
                 TodoData.API.update(
                     todo.id,
                     todo.folder,
@@ -70,22 +75,34 @@ class TodoListSectionAdapter(
                     todo.date,
                     !todo.completed,
                     {
-                        TodoData.update(todo, completed = !todo.completed)
-                        if (TodoData.getTodosByFolder(todo.folder).isEmpty()) {
-                            TodoFragment.folderListAdapter.notifyDataSetChanged()
-                        }
-                        if (todo.completed) {
+                        if (!todo.completed) {
                             itemBinding.btnCheckTodo.isChecked = true
                             itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                         } else {
                             itemBinding.btnCheckTodo.isChecked = false
                             itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
                         }
-
-
-                        Timer("Completed Item", true).schedule(750) {
+                        Timer("completed_item", true).schedule(1000) {
                             TodoListFragment.instance.activity?.runOnUiThread {
-                                TodoListFragment.instance.onResume()
+                                TodoData.update(todo, completed = !todo.completed)
+                                val index = section.todoList.indexOf(todo)
+                                section.todoList.remove(todo)
+                                notifyItemRemoved(index)
+                                if (section.todoList.isEmpty()) {
+                                    TodoFragment.folderListAdapter.notifyDataSetChanged()
+                                    val sectionIndex =
+                                        TodoListFragment.instance.sections.indexOf(section)
+                                    TodoListFragment.instance.sections =
+                                        TodoListFragment.instance.sections.filter {
+                                            it != section
+                                        }
+                                    TodoListFragment.instance.todoListAdapter?.notifyItemRemoved(
+                                        sectionIndex
+                                    )
+                                    if (TodoListFragment.instance.sections.isEmpty()) {
+                                        TodoListFragment.instance.decideView()
+                                    }
+                                }
                             }
                         }
                     })
@@ -123,7 +140,7 @@ class TodoListSectionAdapter(
             }
             return@Comparator date1[0].compareTo(date2[0])
         })
-        holder.bindItem(section.todoList[position])
+        holder.bindItem(section.todoList[position], position)
     }
 
     override fun getItemCount(): Int {

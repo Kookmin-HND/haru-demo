@@ -33,6 +33,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class TodoInputActivity : AppCompatActivity() {
+    // TODO: 기간 선택 입력 안됨
     private var binding: ActivityTodoInputBinding? = null
     private var startDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 시작 날짜 선택하는 변수
     private var endDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 끝 날짜 선택하는 변수
@@ -240,7 +241,7 @@ class TodoInputActivity : AppCompatActivity() {
 
     // 입력에 문제가 있는지 판별하는 함수
     private fun validation(text: String): Boolean {
-        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[a-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
+        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[\\sa-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
         return regex.matches(text)
     }
 

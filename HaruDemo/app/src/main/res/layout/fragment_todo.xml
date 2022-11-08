@@ -49,24 +49,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_today"
                     style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:padding="18dp"
+                    android:padding="25dp"
                     android:text="오늘" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_week"
                     style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:padding="18dp"
+                    android:padding="25dp"
                     android:text="일주일" />
 
             </LinearLayout>
@@ -75,24 +75,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_all"
                     style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:padding="18dp"
+                    android:padding="25dp"
                     android:text="전체" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_completed"
                     style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:padding="18dp"
+                    android:padding="25dp"
                     android:text="완료된 항목" />
 
             </LinearLayout>
