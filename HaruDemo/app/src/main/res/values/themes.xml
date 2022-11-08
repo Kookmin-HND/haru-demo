@@ -14,10 +14,16 @@
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text</item>
+        <item name="backgroundColor">#f0f0f0</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TodoButton" parent="Widget.AppCompat.Button">
         <item name="android:textColor">#727780</item>
         <item name="android:textStyle">bold</item>
     </style>
+
 </resources>

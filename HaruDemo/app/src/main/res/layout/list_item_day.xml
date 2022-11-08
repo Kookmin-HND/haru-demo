@@ -3,9 +3,8 @@
     android:id="@+id/item_day_layout"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:layout_marginStart="20dp"
     android:layout_marginTop="5dp"
-    android:layout_marginRight="5dp"
-    android:gravity="left"
     android:orientation="vertical">
 
     <TextView

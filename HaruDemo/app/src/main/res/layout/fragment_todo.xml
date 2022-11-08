@@ -21,7 +21,8 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:menu="@menu/todo_top_app_bar_menu"
-            app:title="하루" />
+            app:title="하루"
+            app:titleTextAppearance="@style/ToolbarTitle" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
