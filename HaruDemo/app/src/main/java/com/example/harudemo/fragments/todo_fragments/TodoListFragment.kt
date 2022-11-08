@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
