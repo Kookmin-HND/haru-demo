@@ -26,5 +26,4 @@
         <item name="android:textStyle">bold</item>
         <item name="android:backgroundTint">#E3F2FD</item>
     </style>
-
 </resources>

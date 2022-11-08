@@ -33,7 +33,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class TodoInputActivity : AppCompatActivity() {
-    // TODO: 기간 선택 입력 안됨
     private var binding: ActivityTodoInputBinding? = null
     private var startDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 시작 날짜 선택하는 변수
     private var endDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 끝 날짜 선택하는 변수
@@ -120,7 +119,6 @@ class TodoInputActivity : AppCompatActivity() {
             // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
             binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
             binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
-
         }
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
