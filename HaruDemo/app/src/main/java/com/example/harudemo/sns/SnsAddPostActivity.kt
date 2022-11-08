@@ -39,8 +39,6 @@ class SnsAddPostActivity : AppCompatActivity() {
     private var imagesList = ArrayList<Uri>()
     private val adapter = SnsPostImagesRecyclerViewAdapter(imagesList, this)
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySnsAddPostBinding.inflate(layoutInflater);
@@ -50,12 +48,13 @@ class SnsAddPostActivity : AppCompatActivity() {
         binding.ivAddedMultipleImagesRecyclerview.layoutManager = layoutManager
         binding.ivAddedMultipleImagesRecyclerview.adapter = adapter
 
-
+        //글 작성 취소 버튼 클릭 시
         binding.addCancel.setOnClickListener {
             Toast.makeText(applicationContext, "글 작성을 취소했습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
+        //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
             val title = binding.addPostTitle.text.toString()
             val content = binding.addPostText.text.toString()
