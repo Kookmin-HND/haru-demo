@@ -34,13 +34,20 @@ interface SnsService {
     ) : Call<JsonElement>
 
 
-    @Multipart
     @POST("${API.POSTS}/{email}")
     fun postPost(
         @Path("email") writer: String,
-        @Part images: ArrayList<MultipartBody.Part>?,
-        @Part("requestBodyParams") requestBodyParams: SnsPostRequestBodyParams
+        @Body requestBodyParams: SnsPostRequestBodyParams
     ): Call<JsonElement>
+
+    // 이미지 추가 버전
+//    @Multipart
+//    @POST("${API.POSTS}/{email}")
+//    fun postPost(
+//        @Path("email") writer: String,
+//        @Part images: ArrayList<MultipartBody.Part>?,
+//        @Part("requestBodyParams") requestBodyParams: SnsPostRequestBodyParams
+//    ): Call<JsonElement>
 
 
 

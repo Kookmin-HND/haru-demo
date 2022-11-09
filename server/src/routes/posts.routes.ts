@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "../app-data-source";
 import { Post } from "../entity/post";
 import { LessThan, MoreThan } from "typeorm";
+import multer, { FileFilterCallback } from "multer";
 
 export const path = "/posts";
 export const router = Router();
@@ -10,6 +11,31 @@ export const router = Router();
 interface PostParams {
   postId: number;
 }
+
+type FileNameCallback = (error: Error | null, filename: string) => void;
+
+const multerConfig = {
+  storage: multer.diskStorage({
+    destination: "images/",
+    filename: function (
+      req: Request,
+      file: Express.Multer.File,
+      cb: FileNameCallback
+    ) {
+      cb(null, file.originalname);
+    },
+  }),
+};
+
+const upload = multer(multerConfig); //dest : 저장 위치
+
+// multer test
+router.post("/upload", upload.single("img"), (req: any, res: any) => {
+  const file = req.files;
+  console.log(file);
+
+  res.json(req.file);
+});
 
 //postid 이후 최근 게시물 50개 정보 sns fragment에서 보여지는 정보
 router.get(
@@ -49,10 +75,13 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 router.post("/:email", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
 
+  console.log("hererere@@@@@@@@");
+  console.log(req);
   const writer = req.params.email;
 
   const post = myDataSource.getRepository(Post).create({ ...req.body, writer });
   const result = await myDataSource.getRepository(Post).save(post);
+
   return res.json(result);
 });
 

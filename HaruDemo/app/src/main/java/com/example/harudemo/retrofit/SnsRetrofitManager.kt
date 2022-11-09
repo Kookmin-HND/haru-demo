@@ -75,17 +75,17 @@ class SnsRetrofitManager {
     }
 
 
+
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
         writer: String,
         title: String,
         content: String,
-        images: ArrayList<MultipartBody.Part>?,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
 
         val call =
-            snsService?.postPost(writer, images, SnsPostRequestBodyParams(title, content)) ?: return
+            snsService?.postPost(writer, SnsPostRequestBodyParams(title, content)) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -106,6 +106,40 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+    //이미지 추가버전
+    //SNS에서 글쓰기를 저장하는 함수
+//    fun postPost(
+//        writer: String,
+//        title: String,
+//        content: String,
+//        images: ArrayList<MultipartBody.Part>?,
+//        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+//    ) {
+//
+//        val call =
+//            snsService?.postPost(writer, images, SnsPostRequestBodyParams(title, content)) ?: return
+//
+//        call.enqueue(object : retrofit2.Callback<JsonElement> {
+//            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+//                completion(RESPONSE_STATUS.FAIL, null)
+//            }
+//
+//            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+//                when (response.code()) {
+//                    200 -> {
+//                        response.body()?.let {
+//                            completion(RESPONSE_STATUS.OKAY, it)
+//                        }
+//                    }
+//                    400 -> {
+//                        Log.d("[debug]", response.body().toString())
+//                    }
+//                }
+//            }
+//        })
+//    }
 
 
 
