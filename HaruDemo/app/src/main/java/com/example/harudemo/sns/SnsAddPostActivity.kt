@@ -78,16 +78,16 @@ class SnsAddPostActivity : AppCompatActivity() {
                     //API 호출 성공
                     RESPONSE_STATUS.OKAY -> {
                         Log.d("로그", "SnsAddPostActivity - onCreate() called")
-                        Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
