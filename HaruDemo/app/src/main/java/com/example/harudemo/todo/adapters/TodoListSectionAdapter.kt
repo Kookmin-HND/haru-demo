@@ -27,8 +27,8 @@ import kotlin.concurrent.schedule
 
 
 class TodoListSectionAdapter(
-    private val section: Section,
-    private val colorPosition: Int,
+    var section: Section,
+    private val index: Int,
 ) : RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -38,7 +38,7 @@ class TodoListSectionAdapter(
         fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
             itemBinding.btnCheckTodo.buttonTintList =
-                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[colorPosition % TodoListFragment.COLORS.size]))
+                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[index % TodoListFragment.COLORS.size]))
 
             if (todo.completed) {
                 itemBinding.btnCheckTodo.isChecked = true
