@@ -32,6 +32,7 @@ class SnsPostRecyclerViewAdapter : RecyclerView.Adapter<SnsPostItemViewHolder>()
         holder.itemView.setOnClickListener{
             //아이템을 클릭하면 해당 아이템의 데이터를 받아서 새로운 액티비티 생성
             val intent = Intent(App.instance, SnsPostDetailActivity::class.java)
+            intent.putExtra("sns_post_id", this.snsPostList[position].id)
             intent.putExtra("sns_post_writer", this.snsPostList[position].writer)
             intent.putExtra("sns_post_content", this.snsPostList[position].content)
             //액티비티가 아닌 곳에서 새로운 액티비티 생성하기 위해 추가
