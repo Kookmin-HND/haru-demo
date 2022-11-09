@@ -17,6 +17,7 @@ import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsCommentRecyclerViewAdapter
 import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.Constants.TAG
+import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.activity_sns_post_detail.*
 import kotlinx.android.synthetic.main.fragment_sns.*
@@ -71,7 +72,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                     when (responseStatus) {
                         //API 호출 성공
                         RESPONSE_STATUS.OKAY -> {
-                            Toast.makeText(App.instance, "댓글 입력에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "댓글 입력에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
                             //API 재호출
                             commentApiCall(snsPostId)
@@ -79,10 +80,10 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             binding.snsPostCommentsRecyclerview.smoothScrollToPosition(100)
                         }
                         RESPONSE_STATUS.FAIL -> {
-                            Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
                         }
                         RESPONSE_STATUS.NO_CONTENT -> {
-                            Toast.makeText(App.instance, "댓글이 없습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "댓글이 없습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 })
@@ -101,14 +102,13 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         responseDataArrayList!!.forEach {
                             this.snsCommentList.add(it)
                         }
-                        Log.d(TAG, "SnsPostDetailActivity - commentApiCall() ${this.snsCommentList} called")
                         binding.snsPostCommentsRecyclerview.adapter?.notifyItemInserted(this.snsCommentList.size)
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

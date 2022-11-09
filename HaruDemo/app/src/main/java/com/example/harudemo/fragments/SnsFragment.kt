@@ -160,10 +160,10 @@ class SnsFragment : Fragment() {
                         sns_post_recycler_view.adapter?.notifyItemInserted(this.snsPostList.size)
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -189,10 +189,10 @@ class SnsFragment : Fragment() {
                         binding.snsSwipeRefresh.isRefreshing = false
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        Toast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
