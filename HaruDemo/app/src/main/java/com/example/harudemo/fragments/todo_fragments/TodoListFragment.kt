@@ -81,7 +81,7 @@ class TodoListFragment : Fragment() {
         // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
         // Recycler View에 전달
         updateSections()
-        if (decideView()) {
+        if (refreshView()) {
             todoListAdapter = TodoListAdapter()
             binding?.rvTodoSectionList?.adapter = todoListAdapter
             binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
@@ -129,15 +129,15 @@ class TodoListFragment : Fragment() {
         }
     }
 
-    fun decideView(): Boolean {
-        if (sections.isEmpty()) {
+    fun refreshView(): Boolean {
+        return if (sections.isEmpty()) {
             binding?.rvTodoSectionList?.visibility = View.GONE
             binding?.tvEmpty?.visibility = View.VISIBLE
-            return false
+            false
         } else {
             binding?.rvTodoSectionList?.visibility = View.VISIBLE
             binding?.tvEmpty?.visibility = View.GONE
-            return true
+            true
         }
     }
 }

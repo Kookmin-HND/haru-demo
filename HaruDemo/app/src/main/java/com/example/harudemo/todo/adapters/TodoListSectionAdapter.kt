@@ -100,7 +100,7 @@ class TodoListSectionAdapter(
                                         sectionIndex
                                     )
                                     if (TodoListFragment.instance.sections.isEmpty()) {
-                                        TodoListFragment.instance.decideView()
+                                        TodoListFragment.instance.refreshView()
                                     }
                                 }
                             }
