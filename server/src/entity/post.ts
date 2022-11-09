@@ -9,6 +9,7 @@ import {
   JoinTable,
 } from "typeorm";
 import { Comment } from "./comment";
+import { imageFile } from "./imageFile";
 
 //필요한 데이터베이스 스키마 entity에 생성
 
@@ -33,6 +34,13 @@ export class Post {
   })
   @JoinTable()
   comments: Comment[];
+
+  //이미지와 일대다 연결, 게시물이 삭제되면 이미지도 삭제되도록 cascade
+  @OneToMany(() => imageFile, (imagefile) => imagefile.post, {
+    cascade: true,
+  })
+  @JoinTable()
+  imageFiles: imageFile[];
 
   @CreateDateColumn({
     type: "timestamp",

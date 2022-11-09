@@ -22,6 +22,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/passport-jwt": "^3.0.7",
     "@types/passport-local": "^1.0.34",
+    "aws-sdk": "^2.1250.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",

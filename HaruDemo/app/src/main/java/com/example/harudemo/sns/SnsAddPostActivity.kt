@@ -61,66 +61,40 @@ class SnsAddPostActivity : AppCompatActivity() {
 
 
 
-
+        //이미지 추가 버전
+        //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
             val title = binding.addPostTitle.text.toString()
             val content = binding.addPostText.text.toString()
 
-            SnsRetrofitManager.instance.postPost("LMJ", title, content, completion = { responseStatus, _ ->
+            val imagesMultipartBodyList = ArrayList<MultipartBody.Part>()
+
+            for(imageUri in imagesList){
+                val file = File(imageUri.path)
+                val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                imagesMultipartBodyList.add(MultipartBody.Part.createFormData("images", file.name, requestBody))
+            }
+
+
+            SnsRetrofitManager.instance.postPost("LMJ",  title, content, imagesMultipartBodyList , completion = { responseStatus, _ ->
                 when (responseStatus) {
                     //API 호출 성공
                     RESPONSE_STATUS.OKAY -> {
                         Log.d("로그", "SnsAddPostActivity - onCreate() called")
-                        CustomToast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        CustomToast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
                         Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
         }
-
-
-        //이미지 추가 버전
-        //글 작성 버튼 클릭시
-//        binding.addApply.setOnClickListener {
-//            val title = binding.addPostTitle.text.toString()
-//            val content = binding.addPostText.text.toString()
-//
-//            val imagesMultipartBodyList = ArrayList<MultipartBody.Part>()
-//
-//            for(imageUri in imagesList){
-//                val file = File(imageUri.path)
-//                val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-//                imagesMultipartBodyList.add(MultipartBody.Part.createFormData("images", file.name, requestBody))
-//            }
-//
-//
-//            SnsRetrofitManager.instance.postPost("LMJ",  title, content, imagesMultipartBodyList , completion = { responseStatus, _ ->
-//                when (responseStatus) {
-//                    //API 호출 성공
-//                    RESPONSE_STATUS.OKAY -> {
-//                        Log.d("로그", "SnsAddPostActivity - onCreate() called")
-//                        Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
-//                        finish()
-//                    }
-//                    RESPONSE_STATUS.FAIL -> {
-//                        Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-//                        Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                    RESPONSE_STATUS.NO_CONTENT -> {
-//                        Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-//                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//        }
 
         binding.addPolicy.setOnClickListener {
             CustomToast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
