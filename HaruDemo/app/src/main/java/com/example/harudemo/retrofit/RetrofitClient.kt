@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.example.harudemo.App
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
+import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.isJsonArray
 import com.example.harudemo.utils.isJsonObject
 import okhttp3.Interceptor
@@ -81,8 +82,9 @@ object RetrofitClient {
                 Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
                 if(response.code != 200){
                     Handler(Looper.getMainLooper()).post {
-                        Toast.makeText(App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT)
-                            .show()
+                        CustomToast.makeText(
+                            App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
                 return response
@@ -101,12 +103,10 @@ object RetrofitClient {
 
         // 레트로핏 빌더를 통해 인스턴스 생성
         if (retrofitClient == null) {
-            retrofitClient = Retrofit.Builder()
-                .baseUrl(baseUrl)
+            retrofitClient = Retrofit.Builder().baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
-                .client(client.build())
-                .build()
+                .client(client.build()).build()
         }
         return retrofitClient
     }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.R
+import com.example.harudemo.utils.CustomToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.login_layout.*
 
@@ -38,10 +39,10 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, pw).addOnCompleteListener{
                     task -> if(task.isSuccessful){ // firebase에 있을시 동작
                 Log.d("MainActivity : ", "Login success")
-                Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
             } else {
                 Log.d("MainActivity : ", "Login fail")
-                Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
             }
 
             }

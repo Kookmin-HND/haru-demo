@@ -24,6 +24,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
+import com.example.harudemo.utils.CustomToast
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
 class SnsAddPostActivity : AppCompatActivity() {
@@ -54,7 +55,7 @@ class SnsAddPostActivity : AppCompatActivity() {
 
         //글 작성 취소 버튼 클릭 시
         binding.addCancel.setOnClickListener {
-            Toast.makeText(applicationContext, "글 작성을 취소했습니다.", Toast.LENGTH_SHORT).show();
+            CustomToast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -93,7 +94,7 @@ class SnsAddPostActivity : AppCompatActivity() {
         }
 
         binding.addPolicy.setOnClickListener {
-            Toast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
+            CustomToast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
         }
 
 

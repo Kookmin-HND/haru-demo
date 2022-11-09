@@ -2,6 +2,9 @@ import "./env.ts";
 import express, { Request, Response, NextFunction } from "express";
 import myDataSource from "./app-data-source";
 import router from "./routes";
+import passport from "passport";
+import passportOpt from "./passport";
+import cookies from "cookie-parser";
 
 // establish database connection
 myDataSource
@@ -14,7 +17,11 @@ myDataSource
   });
 
 const app = express();
+
 app.use(express.json());
+app.use(cookies());
+app.use(passport.initialize());
+passportOpt();
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   console.log("First page!");

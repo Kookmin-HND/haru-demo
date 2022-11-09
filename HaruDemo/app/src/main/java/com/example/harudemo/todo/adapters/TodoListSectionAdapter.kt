@@ -24,10 +24,12 @@ class TodoListSectionAdapter(
 ) : RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
+        private val days = arrayListOf("월", "화", "수", "목", "금", "토", "일")
+
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo) {
+            // TODO: 완료된 항목 라인 긋기
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
-            val days = arrayListOf("월", "화", "수", "목", "금", "토", "일")
 
             if (todo.completed) {
                 itemBinding.btnCheckTodo.setBackgroundResource(R.drawable.todo_completed_check_button)

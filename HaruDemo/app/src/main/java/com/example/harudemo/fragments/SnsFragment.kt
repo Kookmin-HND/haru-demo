@@ -22,6 +22,7 @@ import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity
 import com.example.harudemo.sns.SnsFriendsActivity
 import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
+import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
 
@@ -56,9 +57,7 @@ class SnsFragment : Fragment() {
 
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "HomeFragment - onCreateView() called")
 
