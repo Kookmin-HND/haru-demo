@@ -17,9 +17,9 @@ class RetrofitManager {
     }
 
     private val snsService: SnsService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(SnsService::class.java)
+        RetrofitClient.getClient()?.create(SnsService::class.java)
     private val todoService: TodoService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(TodoService::class.java)
+        RetrofitClient.getClient()?.create(TodoService::class.java)
 
     //sns Test용 getPosts 함수 - SNS에서 게시물을 호출하는 함수
     fun getPosts(
