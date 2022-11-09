@@ -14,14 +14,10 @@ import kotlinx.android.synthetic.main.login_layout.*
 //로그인 액티비티
 class LoginActivity : AppCompatActivity() {
 
-    // FirebaseAuth 객체
-    private lateinit var auth : FirebaseAuth
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        auth = FirebaseAuth.getInstance()  // auth에 instance가져오기
 
         // 회원가입 버튼 클릭 기능
         signUpBtn.setOnClickListener{

@@ -6,17 +6,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.R
 import com.example.harudemo.utils.CustomToast
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.signup_layout.*
 
 class SignUpActivity : AppCompatActivity(){
 
-    private lateinit var auth : FirebaseAuth  // FirebaseAuth 객체 생성
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_layout)
-
-        auth = FirebaseAuth.getInstance() // instance가져오기
 
         // 취소버튼 클릭시 동작
         cancelBtn.setOnClickListener{
