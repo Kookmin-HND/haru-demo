@@ -4,6 +4,7 @@ import myDataSource from "../app-data-source";
 import { Post } from "../entity/post";
 import { LessThan, MoreThan } from "typeorm";
 import multer, { FileFilterCallback } from "multer";
+import { multerConfig } from "../../config/multerConfig";
 
 export const path = "/posts";
 export const router = Router();
@@ -11,21 +12,6 @@ export const router = Router();
 interface PostParams {
   postId: number;
 }
-
-type FileNameCallback = (error: Error | null, filename: string) => void;
-
-const multerConfig = {
-  storage: multer.diskStorage({
-    destination: "images/",
-    filename: function (
-      req: Request,
-      file: Express.Multer.File,
-      cb: FileNameCallback
-    ) {
-      cb(null, file.originalname);
-    },
-  }),
-};
 
 const upload = multer(multerConfig); //dest : 저장 위치
 
