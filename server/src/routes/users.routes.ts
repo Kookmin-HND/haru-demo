@@ -15,7 +15,6 @@ interface UserParams {
 }
 
 interface UserSignBody {
-  id: Number | null;
   email: string;
   password: string;
   name: string;
@@ -94,10 +93,10 @@ router.post(
 
     // password hashing 처리
     bcrypt.genSalt(10, (err, salt) => {
-      if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+      if (err) return res.status(500).send("비밀번호 해쉬화에 실패");
 
       bcrypt.hash(password, salt, async (err, hash) => {
-        if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+        if (err) return res.status(500).send("비밀번호 해쉬화에 실패");
         password = hash;
 
         const result = await myDataSource.getRepository(User).create({
@@ -108,7 +107,7 @@ router.post(
 
         await myDataSource.getRepository(User).save(result);
         console.log("signup success");
-        return res.send(result);
+        return res.status(200).send("회원 가입 성공");
       });
     });
   }

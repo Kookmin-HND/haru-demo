@@ -14,4 +14,5 @@ object API {
     const val API_KEY: String = ""
     const val POSTS: String = "posts"
     const val TODOS: String = "todos"
+    const val USERS : String = "users"
 }
