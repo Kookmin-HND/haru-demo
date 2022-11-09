@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.harudemo">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".App"
@@ -17,22 +20,26 @@
         android:theme="@style/Theme.HaruDemo"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
 
         <activity
             android:name=".sns.SnsPostDetailActivity"
             android:exported="false" />
         <activity
             android:name=".sns.SnsAddPostActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".sns.SnsDirectMessageActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".sns.SnsFriendsActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -44,11 +51,13 @@
         </activity>
         <activity
             android:name=".todo.TodoInputActivity"
-            android:screenOrientation="portrait" />
-
-        <!--  로그인 ,회원가입 Activity 추가 -->
+            android:screenOrientation="portrait" /> <!-- 로그인 ,회원가입 Activity 추가 -->
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".auth.SignUpActivity" />
+
+        <receiver
+            android:name=".service.MyReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

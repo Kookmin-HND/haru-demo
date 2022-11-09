@@ -207,6 +207,15 @@ class TodoInputActivity : AppCompatActivity() {
                     TodoFragment.folderListAdapter.notifyDataSetChanged()
                 })
             }
+
+            val calendar: Calendar = Calendar.getInstance().apply { // 1
+                timeInMillis = System.currentTimeMillis()
+                set(Calendar.HOUR_OF_DAY, 9)
+                set(Calendar.MINUTE, 57)
+            }
+
+            MainActivity().addAlarm(calendar)
+
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()
         }

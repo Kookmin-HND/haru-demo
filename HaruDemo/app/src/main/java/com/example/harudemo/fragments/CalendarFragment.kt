@@ -8,22 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.example.harudemo.MainActivity
 import com.example.harudemo.R
 import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.calendar.AdapterWeek
 import com.example.harudemo.todo.TodoInputActivity
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import okhttp3.internal.notify
-import okhttp3.internal.notifyAll
 import java.util.*
 
-
 //상록
-class CalendarFragment: Fragment() {
+class CalendarFragment: Fragment(){
     companion object{
         const val TAG : String = "로그"
 
