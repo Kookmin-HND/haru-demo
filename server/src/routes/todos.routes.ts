@@ -13,7 +13,7 @@ interface TodoRequestBody {
   folder: string;
   content: string;
   dates: string[];
-  completed: boolean;
+  days: boolean[];
 }
 
 type TodoResponseBody = Todo[];
@@ -43,17 +43,24 @@ router.get(
   }
 );
 
-// 사용자로부터 folder, content, dates를 받아서 todo table에 데이터를 저장한다.
+// 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
 router.post(
   "/:email",
   async (req: Request<TodoParams, {}, TodoRequestBody>, res: Response) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
 
-    const { folder, content, dates } = req.body;
+    const { folder, content, dates, days } = req.body;
 
     // 혹시 입력으로부터 빠져있는 값이 있는지 확인한다.
-    if (!folder || !content || !dates || (dates && !dates.length)) {
+    if (
+      !folder ||
+      !content ||
+      !dates ||
+      (dates && !dates.length) ||
+      !days ||
+      (days && !days.length)
+    ) {
       return res
         .status(400)
         .send("folder, content, dates 중 하나의 값이 없습니다.");
@@ -66,8 +73,8 @@ router.post(
         writer,
         folder,
         content,
-        date,
-        completed: false,
+        dates: JSON.stringify(dates),
+        days: JSON.stringify(days),
       });
 
       // 위에서 생성한 todo 데이터를 table에 저장한다.
@@ -79,7 +86,6 @@ router.post(
 );
 
 // 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
-// completed는 사용자가 완료 체크시에만 true로 보내고 이외에는 false로 가정한다.
 router.patch(
   "/",
   async (
@@ -93,12 +99,12 @@ router.patch(
     }
 
     // request body로부터 데이터를 가져온다.
-    const { folder, content, date, completed } = req.body;
+    const { folder, content, dates, days } = req.body;
 
     if (
       (folder && !folder.trim()) ||
       (content && !content.trim()) ||
-      (date && !date.trim())
+      (dates && !dates.length)
     ) {
       return res
         .status(400)
@@ -109,8 +115,8 @@ router.patch(
     const result = await myDataSource.getRepository(Todo).update(id, {
       folder,
       content,
-      date,
-      completed,
+      dates: JSON.stringify(dates),
+      days: JSON.stringify(days),
     });
 
     return res.json(result);

@@ -1,39 +1,27 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
 
-//필요한 데이터베이스 스키마 entity에 생성
-
-@Entity()
-export class Todo {
+// Todo가 완료되는 시점을 기록하는 데이터의 Entity
+export class TodoLog {
   //id : auto Increment
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @Column({ nullable: false })
-  writer: string;
+  todoId: number;
 
   @Column({ nullable: false })
-  folder: string;
-
-  @Column({ nullable: false })
-  content: string;
-
-  @Column({ nullable: false })
-  dates: string; // string[]
-
-  @Column({ nullable: false })
-  days: string; // boolean[]
+  date: string;
 
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",
   })
-  createdAt: Date;
+  completedAt: Date;
 
   @UpdateDateColumn({
     type: "timestamp",
