@@ -12,8 +12,6 @@ import com.example.harudemo.model.SnsPost
 
 //SNS 프래그먼트에서 친구목록을 확인할 수 있는 액티비티
 class SnsFriendsActivity : AppCompatActivity() {
-    private val FriendsList = ArrayListOf<SnsPost>
-    val listAdapter = ListAdapter(itemList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +31,6 @@ class SnsFriendsActivity : AppCompatActivity() {
         binding.cancel.setOnClickListener{
             finish()
         }
-
-        binding.friendsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.friendsView.adapter = ListAdapter(FriendsList)
-
-        listAdapter.notifyDataSetChanged()
 
     }
 }

@@ -9,7 +9,7 @@ import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.SnsPostDetailActivity
 
-class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsitemViewHolder>() {
+class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsitemViewHolder>(){
 
     private var snsFriendsList = ArrayList<SnsPost>()
 

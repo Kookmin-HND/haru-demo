@@ -3,21 +3,15 @@ package com.example.harudemo.todo.adapters
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListSectionBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.types.Section
-import kotlinx.android.synthetic.main.activity_sns_add_post.view.*
 
 class TodoListAdapter :
     RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {

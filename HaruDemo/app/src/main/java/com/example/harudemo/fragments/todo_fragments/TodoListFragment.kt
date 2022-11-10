@@ -52,8 +52,8 @@ class TodoListFragment : Fragment() {
 
     private var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
-    private var todoFragment: TodoFragment? = null
-    var todoListAdapter: TodoListAdapter? = null
+    private var todoFragment: TodoFragment = TodoFragment.instance
+    var todoListAdapter: TodoListAdapter = TodoListAdapter()
     var sections: List<Section> = listOf()
 
     override fun onAttach(context: Context) {
@@ -63,7 +63,7 @@ class TodoListFragment : Fragment() {
             override fun handleOnBackPressed() {
                 todoFragment = TodoFragment.instance
                 activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragments_frame, todoFragment!!)?.commit()
+                    ?.replace(R.id.fragments_frame, todoFragment)?.commit()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback!!)

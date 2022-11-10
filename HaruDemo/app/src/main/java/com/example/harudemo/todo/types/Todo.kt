@@ -4,10 +4,10 @@ import java.io.Serializable
 
 // TodoData Interface
 data class Todo(
-    var id: Number,
-    var writer: String,
-    var folder: String,
-    var content: String,
-    var date: String,
-    var completed: Boolean,
+    val id: Number,
+    val writer: String,
+    val folder: String,
+    val content: String,
+    val date: String,
+    val completed: Boolean,
 ) : Serializable

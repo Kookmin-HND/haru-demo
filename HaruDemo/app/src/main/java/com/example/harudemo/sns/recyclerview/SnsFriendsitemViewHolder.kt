@@ -17,7 +17,6 @@ class SnsFriendsitemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         snsFriendsWriterName.text = snsFriendsItem.writer
         snsFriendsAverage.text = snsFriendsItem.average
 
-
         //이미지 생성
         Glide.with(App.instance)
             .load(snsFriendsItem.writerPhoto)
