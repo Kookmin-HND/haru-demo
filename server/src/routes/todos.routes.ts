@@ -127,6 +127,9 @@ router.patch(
 router.patch(
   "/check",
   async (req: Request<{}, {}, { id: number; date: string }>, res: Response) => {
+    // date는 무조건 유효한 일자만 입력으로 주어진다고 가정한다.
+    // 이유는, 아이템이 클릭되었을때만 이 API가 호출되는데 해당되는 Todo 아이템은
+    // 정상적인 date를 가질 것이다.
     const { id, date } = req.body;
 
     if (!date || (date && !date.trim())) {
