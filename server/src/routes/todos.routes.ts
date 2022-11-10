@@ -63,29 +63,25 @@ router.post(
     ) {
       return res
         .status(400)
-        .send("folder, content, dates 중 하나의 값이 없습니다.");
+        .send("folder, content, dates, days 중 하나의 값이 없습니다.");
     }
 
-    const result: Todo[] = [];
-    for (const date of dates) {
-      // 입력 값에 따른 데이터를 생성한다.
-      const todo = await myDataSource.getRepository(Todo).create({
-        writer,
-        folder,
-        content,
-        dates: JSON.stringify(dates),
-        days: JSON.stringify(days),
-      });
+    // 입력 값에 따른 데이터를 생성한다.
+    const todo = await myDataSource.getRepository(Todo).create({
+      writer,
+      folder,
+      content,
+      dates: JSON.stringify(dates),
+      days: JSON.stringify(days),
+    });
 
-      // 위에서 생성한 todo 데이터를 table에 저장한다.
-      await myDataSource.getRepository(Todo).save(todo);
-      result.push(todo);
-    }
-    return res.json(result);
+    // 위에서 생성한 todo 데이터를 table에 저장한다.
+    await myDataSource.getRepository(Todo).save(todo);
+    return res.json(todo);
   }
 );
 
-// 사용자로부터 입력받은 데이터(folder, content, date)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
+// 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
 router.patch(
   "/",
   async (
@@ -120,6 +116,16 @@ router.patch(
     });
 
     return res.json(result);
+  }
+);
+
+// todo id값을 입력받아 해당하는 데이터를 찾은 후 date를 제거하거나, 추가한다.
+// 그리고 date를 제거하게 되면, todo-log에 추가하고,
+// 추가하게 된다면, todo-log에 있는지 확인하고, 제거한다.
+router.patch(
+  "/check",
+  async (req: Request<{ id: number; date: string }>, res: Response) => {
+    const { id, date } = req.body;
   }
 );
 
