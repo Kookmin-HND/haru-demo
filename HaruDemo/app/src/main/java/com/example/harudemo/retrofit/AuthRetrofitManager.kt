@@ -33,23 +33,23 @@ class AuthRetrofitManager {
         })
     }
 
-    // email과 password로 로그인후 토큰 반환
-//    fun loginUser(email : String, password : String, completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
-//        val call = authService?.postLogin(LoginRequestBodyParams(email, password)) ?: return
-//
-//        call.enqueue(object : retrofit2.Callback<JsonElement>{
-//            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-//                completion(RESPONSE_STATUS.FAIL, null)
-//            }
-//
-//            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-//                when (response.code()){
-//                    200 -> {
-//
-//                    }
-//                }
-//            }
-//        })
+//     email과 password로 로그인후 토큰 반환
+    fun loginUser(email : String, password : String, completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
+        val call = authService?.postLogin(LoginRequestBodyParams(email, password)) ?: return
 
-//    }
+        call.enqueue(object : retrofit2.Callback<JsonElement>{
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()){
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                }
+            }
+        })
+
+    }
 }

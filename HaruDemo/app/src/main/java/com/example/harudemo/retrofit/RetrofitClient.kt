@@ -31,7 +31,7 @@ object RetrofitClient {
         //okhttp 인스턴스 생성
         val client = OkHttpClient.Builder()
 
-        val okHttpClient = client.cookieJar(JavaNetCookieJar(CookieManager())).build()
+//        val okHttpClient = client.cookieJar(JavaNetCookieJar(CookieManager())).build()
 
         // 로그를 찍기 위해 로깅 인터셉터 추가 - 테스트 용도
         val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
@@ -110,7 +110,7 @@ object RetrofitClient {
             retrofitClient = Retrofit.Builder().baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
-                .client(okHttpClient).build()
+                .client(client.build()).build()
         }
         return retrofitClient
     }

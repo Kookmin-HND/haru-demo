@@ -34,7 +34,7 @@
             android:windowSoftInputMode="adjustNothing"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +47,7 @@
             android:screenOrientation="portrait" />
 
         <!--  로그인 ,회원가입 Activity 추가 -->
-        <activity android:name=".auth.LoginActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".auth.SignUpActivity" />
     </application>
 

@@ -33,10 +33,14 @@ class SignUpActivity : AppCompatActivity(){
             val email :String = createEmailET.text.toString()  // 변수에 e-mail 저장
             val pw : String = createPwET.text.toString()        // 변수에 password 저장
             val pw2 : String = createPw2ET.text.toString()      // 변수에 재확인용 password 저장
-            var name : String = createNameET.text.toString()    // 변수에 사용자 이름 저장
+            val name : String = createNameET.text.toString()    // 변수에 사용자 이름 저장
 
+            if (email == ""|| pw == ""|| pw2 == "" || name == ""){
+                Log.d(TAG, "fill the blank")
+                CustomToast.makeText(this, "모든 빈칸을 채워주세요.", Toast.LENGTH_SHORT).show()
+            }
             // email에 @없거나 길이가 10 미만이면 Toast message 출력
-            if (email.contains("{") || email.contains("}")
+            else if (email.contains("{") || email.contains("}")
                 || email.contains("\"") || email.contains(",")
                 || !(Patterns.EMAIL_ADDRESS.matcher(email).matches()) ) {
                 Log.d("signActivity : ", "E-mail not correct")
@@ -47,9 +51,9 @@ class SignUpActivity : AppCompatActivity(){
                 Log.d(TAG, "pw, pw2 not equal")
                 CustomToast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             }
-            else if (!Pattern.matches("^[a-zA-Z0-9@!%*#?&]+\$", pw)){
-                Log.d(TAG, "password의 형식을 지켜주세요")
-                CustomToast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
+            else if (!Pattern.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}\$", pw)){
+                Log.d(TAG, "wrong password form")
+                CustomToast.makeText(this, "비밀번호 형식이 틀립니다.", Toast.LENGTH_SHORT).show()
             }
             else if (!Pattern.matches("^[a-zA-Z가-힣 ]+$", name)){
                 Log.d(TAG, "wrong name")
@@ -59,15 +63,19 @@ class SignUpActivity : AppCompatActivity(){
                 AuthRetrofitManager.instance.signUpUser(email, pw, name, completion =  { responseStatus, jsonElement ->
                     when (responseStatus){
                         RESPONSE_STATUS.OKAY -> {
-                            Log.d(TAG, "회원가입에 성공하였습니다.")
+                            Log.d(TAG, "success signUp")
+                            Log.d(TAG, "${jsonElement}")
                             CustomToast.makeText(this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                            finish()
                         }
                         RESPONSE_STATUS.FAIL -> {
                             Log.d(TAG, "${responseStatus} called")
+                            Log.d(TAG, "${jsonElement}")
                             CustomToast.makeText(this, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         }
                         RESPONSE_STATUS.NO_CONTENT ->{
                             Log.d(TAG, "${responseStatus} called")
+                            Log.d(TAG, "${jsonElement}")
                             CustomToast.makeText(this, "NO_CONTENT", Toast.LENGTH_SHORT).show()
                         }
                     }

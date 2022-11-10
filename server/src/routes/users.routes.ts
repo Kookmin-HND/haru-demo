@@ -31,7 +31,7 @@ router.get("/info", async (req: Request<UserParams>, res: Response) => {
         return res.status(400).send("re-login");
       }
       user.password = "";
-      return res.json({ user });
+      return res.json(user);
     })(req, res);
   } catch (err) {
     console.log(err);
@@ -40,7 +40,7 @@ router.get("/info", async (req: Request<UserParams>, res: Response) => {
 });
 
 //user login
-router.post("/login", async (req: Request, res: Response, next) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     passport.authenticate("local", (authError, user, info) => {
       console.log(authError, user, info);
@@ -58,9 +58,7 @@ router.post("/login", async (req: Request, res: Response, next) => {
           { email: user.email },
           process.env.JWT_KEY as Secret
         );
-        return res
-          .cookie("token", token, { httpOnly: true })
-          .json({ message: "토큰 발급 완료" });
+        return res.cookie("token", token, { httpOnly: true }).json(token);
       });
     })(req, res);
   } catch (error) {
@@ -107,7 +105,7 @@ router.post(
 
         await myDataSource.getRepository(User).save(result);
         console.log("signup success");
-        return res.status(200).send("회원 가입 성공");
+        return res.json("회원가입 성공");
       });
     });
   }
