@@ -40,6 +40,10 @@ router.get(
   }
 );
 
+// TODO: 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
+router.get("/:email/all"),
+  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {};
+
 // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
 router.get(
   "/:email/folder/:folder",
@@ -55,9 +59,31 @@ router.get(
   }
 );
 
+// 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
 router.get(
   "/:email/date/:date",
-  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {}
+  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
+    const { email: writer, date } = req.params;
+
+    const todos = await myDataSource.getRepository(Todo).findBy({
+      writer: Equal(writer),
+    });
+
+    const result: Todo[] = [];
+    for (const todo of todos) {
+      const todoLogs = await myDataSource
+        .getRepository(TodoLog)
+        .findAndCountBy({
+          todoId: Equal(todo.id),
+          date: Equal(date),
+        });
+      if (todoLogs[1]) {
+        result.push(todo);
+      }
+    }
+
+    return res.json(result);
+  }
 );
 
 // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
