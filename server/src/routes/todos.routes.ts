@@ -7,6 +7,8 @@ import { User } from "../entity/user";
 
 interface TodoParams {
   email: string;
+  folder: string;
+  date: string;
 }
 
 interface TodoRequestBody {
@@ -27,8 +29,6 @@ export const router = Router();
 router.get(
   "/:email",
   async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
-    const result: TodoResponseBody = [];
-
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
 
@@ -37,12 +37,29 @@ router.get(
       writer: Equal(writer),
     });
 
-    // 위에서 가져온 데이터를 결과값에 추가한다.
-    result.push(...todos);
-
     // 이 사용자가 가지고 있는 모든 todo를 반환한다.
-    return res.json(result);
+    return res.json(todos);
   }
+);
+
+// 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
+router.get(
+  "/:email/folder/:folder",
+  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
+    const { email: writer, folder } = req.params;
+
+    const todos = await myDataSource.getRepository(Todo).findBy({
+      writer: Equal(writer),
+      folder: Equal(folder),
+    });
+
+    return res.json(todos);
+  }
+);
+
+router.get(
+  "/:email/date/:date",
+  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {}
 );
 
 // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
