@@ -3,7 +3,6 @@ import { Equal } from "typeorm";
 import myDataSource from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { TodoLog } from "../entity/todo-log";
-import { User } from "../entity/user";
 
 interface TodoParams {
   email: string;
@@ -20,7 +19,6 @@ interface TodoRequestBody {
 }
 
 type TodoResponseBody = Todo[];
-type Date = string;
 
 export const path = "/todos";
 export const router = Router();
@@ -85,28 +83,40 @@ router.post(
         .send("folder, content, dates, days 중 하나의 값이 없습니다.");
     }
 
+    const result: any[] = [];
     // 입력 값에 따른 데이터를 생성한다.
     const todo = await myDataSource.getRepository(Todo).create({
       writer,
       folder,
       content,
-      dates: JSON.stringify(dates),
       days: JSON.stringify(days),
     });
-
     // 위에서 생성한 todo 데이터를 table에 저장한다.
     await myDataSource.getRepository(Todo).save(todo);
-    return res.json(todo);
+    result.push(todo);
+
+    // TodoLog에 기록을 추가한다.
+    const logs: TodoLog[] = [];
+    for (const date of dates) {
+      logs.push(
+        await myDataSource.getRepository(TodoLog).create({
+          todoId: todo.id,
+          date,
+          completed: false,
+        })
+      );
+    }
+    await myDataSource.getRepository(TodoLog).save(logs);
+    result.push(...logs);
+    return res.json(result);
   }
 );
 
 // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
+// 그리고 todo-logs에 접근하여 해당 데이터를 삭제, 추가한다.
 router.patch(
   "/",
-  async (
-    req: Request<{}, {}, TodoRequestBody & { date: string }>,
-    res: Response
-  ) => {
+  async (req: Request<{}, {}, TodoRequestBody>, res: Response) => {
     // todo data의 id값을 가져온다.
     const id = req.body.id;
     if (!id) {
@@ -116,90 +126,69 @@ router.patch(
     // request body로부터 데이터를 가져온다.
     const { folder, content, dates, days } = req.body;
 
-    if (
-      (folder && !folder.trim()) ||
-      (content && !content.trim()) ||
-      (dates && !dates.length)
-    ) {
-      return res
-        .status(400)
-        .send("folder 또는 content 또는 date가 비어있습니다.");
-    }
-
     // todo 데이터를 업데이트 한다.
-    const result = await myDataSource.getRepository(Todo).update(id, {
-      folder,
-      content,
-      dates: JSON.stringify(dates),
-      days: JSON.stringify(days),
-    });
+    const result: any[] = [
+      await myDataSource.getRepository(Todo).update(id, {
+        folder,
+        content,
+        days: JSON.stringify(days),
+      }),
+    ];
 
+    // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다.
+    // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
+    if (dates && dates.length) {
+      result.push(
+        await myDataSource.getRepository(TodoLog).delete({
+          todoId: Equal(id),
+        })
+      );
+      console.log(dates);
+      for (const date of dates) {
+        console.log(date);
+        result.push(
+          await myDataSource.getRepository(TodoLog).create({
+            todoId: id,
+            date,
+            completed: false,
+          })
+        );
+      }
+      await myDataSource.getRepository(TodoLog).save(result.slice(2));
+    }
     return res.json(result);
   }
 );
 
-// todo id값을 입력받아 해당하는 데이터를 찾은 후 date를 제거하거나, 추가한다.
-// 그리고 date를 제거하게 되면, todo-log에 추가하고,
-// 추가하게 된다면, todo-log에 있는지 확인하고, 제거한다.
+// todo-logs DB에 접근하여 입력으로 받은 completed 값으로 바꾸어준다.
 router.patch(
   "/check",
-  async (req: Request<{}, {}, { id: number; date: string }>, res: Response) => {
-    // date는 무조건 유효한 일자만 입력으로 주어진다고 가정한다.
-    // 이유는, 아이템이 클릭되었을때만 이 API가 호출되는데 해당되는 Todo 아이템은
-    // 정상적인 date를 가질 것이다.
-    const { id, date } = req.body;
+  async (
+    req: Request<{}, {}, { todoId: number; date: string; completed: boolean }>,
+    res: Response
+  ) => {
+    const { todoId, date, completed } = req.body;
 
     if (!date || (date && !date.trim())) {
       return res.status(400).send("date가 비어있습니다.");
     }
 
-    const todo = await myDataSource.getRepository(Todo).findOneBy({
-      id: Equal(id),
-    });
+    const result = await myDataSource.getRepository(TodoLog).update(
+      {
+        todoId: Equal(todoId),
+        date: Equal(date),
+      },
+      {
+        completed,
+      }
+    );
 
-    if (!todo) {
-      return res.status(400).send("Todo Data를 찾을 수 없습니다.");
-    }
-
-    const todoLog = await myDataSource.getRepository(TodoLog).findOneBy({
-      todoId: Equal(id),
-      date: Equal(date),
-    });
-
-    console.log(`todoLog: ${todoLog}`);
-    const result: any[] = [];
-    if (todoLog) {
-      // Log에 있으므로 삭제한다.
-      result.push(
-        await myDataSource.getRepository(Todo).update(todo.id, {
-          dates: JSON.stringify([...(JSON.parse(todo.dates) as Date[]), date]),
-        })
-      );
-
-      result.push(await myDataSource.getRepository(TodoLog).delete(todoLog.id));
-    } else {
-      // Log에 없으므로 추가한다.
-      result.push(
-        await myDataSource.getRepository(Todo).update(todo.id, {
-          dates: JSON.stringify(
-            (JSON.parse(todo.dates) as Date[]).filter((v) => v != date)
-          ),
-        })
-      );
-
-      result.push(
-        await myDataSource.getRepository(TodoLog).create({
-          todoId: id,
-          date: date,
-        })
-      );
-      await myDataSource.getRepository(TodoLog).save(result[result.length - 1]);
-    }
     return res.json(result);
   }
 );
 
 // 사용자로부터 todo id값을 입력받아 해당 데이터를 삭제한다.
+// 그리고 todo-logs에 접근하여 해당하는 log들을 모두 삭제한다.
 router.delete("/", async (req: Request, res: Response) => {
   const id = req.body.id;
 
@@ -208,5 +197,8 @@ router.delete("/", async (req: Request, res: Response) => {
   }
 
   const result = await myDataSource.getRepository(Todo).delete(id);
+  await myDataSource.getRepository(TodoLog).delete({
+    todoId: Equal(id),
+  });
   return res.json(result);
 });

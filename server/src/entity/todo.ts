@@ -24,9 +24,6 @@ export class Todo {
   content: string;
 
   @Column({ nullable: false })
-  dates: string; // string[]
-
-  @Column({ nullable: false })
   days: string; // boolean[]
 
   @CreateDateColumn({

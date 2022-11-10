@@ -2,13 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
-// Todo가 완료되는 시점을 기록하는 데이터의 Entity
+// Todo의 일정을 기록하는 데이터의 Entity
 export class TodoLog {
   //id : auto Increment
   @PrimaryGeneratedColumn()
@@ -19,6 +18,9 @@ export class TodoLog {
 
   @Column({ nullable: false })
   date: string;
+
+  @Column({ nullable: false })
+  completed: boolean;
 
   @CreateDateColumn({
     type: "timestamp",
