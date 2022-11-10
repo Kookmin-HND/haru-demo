@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { Equal } from "typeorm";
 import myDataSource from "../app-data-source";
 import { Todo } from "../entity/todo";
+import { TodoLog } from "../entity/todo-log";
 import { User } from "../entity/user";
 
 interface TodoParams {
@@ -17,6 +18,7 @@ interface TodoRequestBody {
 }
 
 type TodoResponseBody = Todo[];
+type Date = string;
 
 export const path = "/todos";
 export const router = Router();
@@ -124,8 +126,56 @@ router.patch(
 // 추가하게 된다면, todo-log에 있는지 확인하고, 제거한다.
 router.patch(
   "/check",
-  async (req: Request<{ id: number; date: string }>, res: Response) => {
+  async (req: Request<{}, {}, { id: number; date: string }>, res: Response) => {
     const { id, date } = req.body;
+
+    if (!date || (date && !date.trim())) {
+      return res.status(400).send("date가 비어있습니다.");
+    }
+
+    const todo = await myDataSource.getRepository(Todo).findOneBy({
+      id: Equal(id),
+    });
+
+    if (!todo) {
+      return res.status(400).send("Todo Data를 찾을 수 없습니다.");
+    }
+
+    const todoLog = await myDataSource.getRepository(TodoLog).findOneBy({
+      todoId: Equal(id),
+      date: Equal(date),
+    });
+
+    console.log(`todoLog: ${todoLog}`);
+    const result: any[] = [];
+    if (todoLog) {
+      // Log에 있으므로 삭제한다.
+      result.push(
+        await myDataSource.getRepository(Todo).update(todo.id, {
+          dates: JSON.stringify([...(JSON.parse(todo.dates) as Date[]), date]),
+        })
+      );
+
+      result.push(await myDataSource.getRepository(TodoLog).delete(todoLog.id));
+    } else {
+      // Log에 없으므로 추가한다.
+      result.push(
+        await myDataSource.getRepository(Todo).update(todo.id, {
+          dates: JSON.stringify(
+            (JSON.parse(todo.dates) as Date[]).filter((v) => v != date)
+          ),
+        })
+      );
+
+      result.push(
+        await myDataSource.getRepository(TodoLog).create({
+          todoId: id,
+          date: date,
+        })
+      );
+      await myDataSource.getRepository(TodoLog).save(result[result.length - 1]);
+    }
+    return res.json(result);
   }
 );
 
