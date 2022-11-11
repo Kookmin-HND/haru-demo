@@ -1,23 +1,14 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  Generated,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Generated, UpdateDateColumn, ManyToOne, JoinColumn, BaseEntity } from "typeorm";
 import { Post } from "./post";
 
 //필요한 데이터베이스 스키마 entity에 생성
 @Entity()
-export class imageFile {
+export class ImageFile {
   //id : auto Increment
   @PrimaryGeneratedColumn()
   id: number;
 
-  //게시물이 삭제되면 댓글도 삭제되도록 cascade
+  //게시물이 삭제되면 이미지도 삭제되도록 cascade
   @ManyToOne(() => Post, (post) => post.imageFiles, {
     onDelete: "CASCADE",
     nullable: false,
@@ -26,14 +17,7 @@ export class imageFile {
   post: Post;
 
   @Column({ nullable: false })
-  link: string;
-
-  @Column({ nullable: false })
-  fileName: string;
-
-  //대댓글 기능을 위한 부모의 comment id 추가
-  @Column({ default: -1 })
-  parentCommentId: number;
+  url: string;
 
   @CreateDateColumn({
     type: "timestamp",
