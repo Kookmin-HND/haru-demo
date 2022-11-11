@@ -13,13 +13,20 @@ interface PostParams {
   postId: number;
 }
 
+interface MulterS3File extends Express.Multer.File {
+  location: string;
+}
+
 // multer test
-router.post("/upload", awsUpload.array("img"), async (req: any, res: any) => {
+router.post("/upload", awsUpload.array("img"), async (req: Request, res: Response) => {
   const locationList: Array<String> = [];
-  const filesList: Array<any> = req.files;
+
+  const filesList: MulterS3File[] = req.files as MulterS3File[];
   filesList.forEach((file) => {
     locationList.push(file.location);
   });
+
+  console.log(locationList);
   // 업로드한 이미지 파일 url 전달
   res.json({ locationList });
 });
@@ -54,31 +61,28 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
   }
 });
 
-//게시물 입력
-router.post("/:email", awsUpload.array("img"), async (req: any, res: Response) => {
+//게시물 입력 이미지 추가
+router.post("/:email", awsUpload.array("images"), async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-
-  console.log(req.body);
   const writer = req.params.email;
+  const title = req.body.title;
+  const content = req.body.content;
 
   //이미지 S3에 저장한 url
   const locationList: Array<string> = [];
-  const filesList: Array<any> = req.files;
+  const filesList: MulterS3File[] = req.files as MulterS3File[];
   filesList.forEach((file) => {
     locationList.push(file.location);
   });
 
-  const imageFileList: Array<any> = [];
-
-  locationList.forEach((item) => {
-    console.log(item);
-    imageFileList.push(myDataSource.getRepository(ImageFile).create({ post: req.body.postId, url: item }));
-  });
-
-  const post = myDataSource.getRepository(Post).create({ ...req.body, writer });
-  await myDataSource.getRepository(ImageFile).save(imageFileList);
+  const imageFileList: ImageFile[] = [];
+  const post = myDataSource.getRepository(Post).create({ title, content, writer });
   const result = await myDataSource.getRepository(Post).save(post);
 
+  locationList.forEach((item) => {
+    imageFileList.push(myDataSource.getRepository(ImageFile).create({ post, url: item }));
+  });
+  await myDataSource.getRepository(ImageFile).save(imageFileList);
   // 업로드한 이미지 파일 url 전달
   return res.json({ ...result, locationList });
 });
@@ -104,6 +108,5 @@ router.patch("/:postId", async (req: Request<PostParams>, res: Response) => {
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected) return res.status(400).send("게시물 수정에 실패했습니다.");
-
   return res.json(result);
 });
