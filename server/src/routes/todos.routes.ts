@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Equal } from "typeorm";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { TodoLog } from "../entity/todo-log";
 
@@ -31,7 +31,7 @@ router.get(
     const writer = req.params.email;
 
     // 이 사용자가 작성한 모든 todo를 가져온다.
-    const todos = await myDataSource.getRepository(Todo).findBy({
+    const todos = await DB.getRepository(Todo).findBy({
       writer: Equal(writer),
     });
 
@@ -40,9 +40,25 @@ router.get(
   }
 );
 
-// TODO: 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
-router.get("/:email/all"),
-  async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {};
+// 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
+router.get("/:email/all", async (req: Request<TodoParams>, res: Response) => {
+  const writer = req.params.email;
+
+  const todos = await DB.getRepository(Todo).findBy({
+    writer: Equal(writer),
+  });
+
+  const todosMap: { [key: number]: { todo: Todo; todoLogs: TodoLog[] } } = {};
+  for (const todo of todos) {
+    const todoLogs = await DB.getRepository(TodoLog).findBy({
+      todoId: Equal(todo.id),
+    });
+
+    todosMap[todo.id] = { todo, todoLogs };
+  }
+
+  return res.json(todosMap);
+});
 
 // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
 router.get(
@@ -50,7 +66,7 @@ router.get(
   async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
     const { email: writer, folder } = req.params;
 
-    const todos = await myDataSource.getRepository(Todo).findBy({
+    const todos = await DB.getRepository(Todo).findBy({
       writer: Equal(writer),
       folder: Equal(folder),
     });
@@ -65,18 +81,16 @@ router.get(
   async (req: Request<TodoParams>, res: Response<TodoResponseBody>) => {
     const { email: writer, date } = req.params;
 
-    const todos = await myDataSource.getRepository(Todo).findBy({
+    const todos = await DB.getRepository(Todo).findBy({
       writer: Equal(writer),
     });
 
     const result: Todo[] = [];
     for (const todo of todos) {
-      const todoLogs = await myDataSource
-        .getRepository(TodoLog)
-        .findAndCountBy({
-          todoId: Equal(todo.id),
-          date: Equal(date),
-        });
+      const todoLogs = await DB.getRepository(TodoLog).findAndCountBy({
+        todoId: Equal(todo.id),
+        date: Equal(date),
+      });
       if (todoLogs[1]) {
         result.push(todo);
       }
@@ -111,28 +125,28 @@ router.post(
 
     const result: any[] = [];
     // 입력 값에 따른 데이터를 생성한다.
-    const todo = await myDataSource.getRepository(Todo).create({
+    const todo = await DB.getRepository(Todo).create({
       writer,
       folder,
       content,
       days: JSON.stringify(days),
     });
     // 위에서 생성한 todo 데이터를 table에 저장한다.
-    await myDataSource.getRepository(Todo).save(todo);
+    await DB.getRepository(Todo).save(todo);
     result.push(todo);
 
     // TodoLog에 기록을 추가한다.
     const logs: TodoLog[] = [];
     for (const date of dates) {
       logs.push(
-        await myDataSource.getRepository(TodoLog).create({
+        await DB.getRepository(TodoLog).create({
           todoId: todo.id,
           date,
           completed: false,
         })
       );
     }
-    await myDataSource.getRepository(TodoLog).save(logs);
+    await DB.getRepository(TodoLog).save(logs);
     result.push(...logs);
     return res.json(result);
   }
@@ -154,7 +168,7 @@ router.patch(
 
     // todo 데이터를 업데이트 한다.
     const result: any[] = [
-      await myDataSource.getRepository(Todo).update(id, {
+      await DB.getRepository(Todo).update(id, {
         folder,
         content,
         days: JSON.stringify(days),
@@ -165,7 +179,7 @@ router.patch(
     // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
     if (dates && dates.length) {
       result.push(
-        await myDataSource.getRepository(TodoLog).delete({
+        await DB.getRepository(TodoLog).delete({
           todoId: Equal(id),
         })
       );
@@ -173,14 +187,14 @@ router.patch(
       for (const date of dates) {
         console.log(date);
         result.push(
-          await myDataSource.getRepository(TodoLog).create({
+          await DB.getRepository(TodoLog).create({
             todoId: id,
             date,
             completed: false,
           })
         );
       }
-      await myDataSource.getRepository(TodoLog).save(result.slice(2));
+      await DB.getRepository(TodoLog).save(result.slice(2));
     }
     return res.json(result);
   }
@@ -199,7 +213,7 @@ router.patch(
       return res.status(400).send("date가 비어있습니다.");
     }
 
-    const result = await myDataSource.getRepository(TodoLog).update(
+    const result = await DB.getRepository(TodoLog).update(
       {
         todoId: Equal(todoId),
         date: Equal(date),
@@ -222,8 +236,8 @@ router.delete("/", async (req: Request, res: Response) => {
     return res.status(400).send("id가 존재하지 않습니다");
   }
 
-  const result = await myDataSource.getRepository(Todo).delete(id);
-  await myDataSource.getRepository(TodoLog).delete({
+  const result = await DB.getRepository(Todo).delete(id);
+  await DB.getRepository(TodoLog).delete({
     todoId: Equal(id),
   });
   return res.json(result);
