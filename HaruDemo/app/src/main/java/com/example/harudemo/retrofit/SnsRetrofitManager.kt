@@ -75,19 +75,18 @@ class SnsRetrofitManager {
     }
 
 
-
     //이미지 추가버전
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
         writer: String,
-        title: String,
-        content: String,
+        title: RequestBody,
+        content: RequestBody,
         images: ArrayList<MultipartBody.Part>?,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
 
         val call =
-            snsService?.postPost(writer, images, SnsPostRequestBodyParams(title, content)) ?: return
+            snsService?.postPost(writer, title, content, images) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -110,8 +109,6 @@ class SnsRetrofitManager {
     }
 
 
-
-
     //SNS에서 댓글을 저장하는 함수
     fun postComment(
         writer: String,
@@ -122,7 +119,10 @@ class SnsRetrofitManager {
     ) {
 
         val call =
-            snsService?.postComment(writer, SnsCommentPostRequestBodyParams(postId, content, parentCommentId)) ?: return
+            snsService?.postComment(
+                writer,
+                SnsCommentPostRequestBodyParams(postId, content, parentCommentId)
+            ) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {

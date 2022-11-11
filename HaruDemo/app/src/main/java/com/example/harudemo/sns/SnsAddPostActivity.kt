@@ -25,6 +25,10 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
 import com.example.harudemo.utils.CustomToast
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
 class SnsAddPostActivity : AppCompatActivity() {
@@ -32,14 +36,19 @@ class SnsAddPostActivity : AppCompatActivity() {
 
     //어플리케이션 갤러리 접근 권한 확인
     private val permissionList = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    private val checkPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-        result.forEach {
-            if(!it.value) {
-                Toast.makeText(applicationContext, "권한 동의후 사진을 업로드할 수 있습니다.", Toast.LENGTH_SHORT).show()
-                finish()
+    private val checkPermission =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            result.forEach {
+                if (!it.value) {
+                    Toast.makeText(
+                        applicationContext,
+                        "권한 동의후 사진을 업로드할 수 있습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
             }
         }
-    }
 
     private var imagesList = ArrayList<Uri>()
     private val adapter = SnsPostImagesRecyclerViewAdapter(imagesList, this)
@@ -60,40 +69,57 @@ class SnsAddPostActivity : AppCompatActivity() {
         }
 
 
-
         //이미지 추가 버전
         //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
-            val title = binding.addPostTitle.text.toString()
-            val content = binding.addPostText.text.toString()
+            val title =
+                binding.addPostTitle.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val content =
+                binding.addPostText.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
             val imagesMultipartBodyList = ArrayList<MultipartBody.Part>()
 
-            for(imageUri in imagesList){
-                val file = File(imageUri.path)
+            for (imageUri in imagesList) {
+                val realPath = createCopyAndReturnRealPath(imageUri)
+                if(realPath.isEmpty()) return@setOnClickListener
+                val file = File(realPath)
+                Log.d(TAG, "SnsAddPostActivity ${realPath} - onCreate() called")
                 val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                imagesMultipartBodyList.add(MultipartBody.Part.createFormData("images", file.name, requestBody))
+                imagesMultipartBodyList.add(
+                    MultipartBody.Part.createFormData(
+                        "images",
+                        file.name,
+                        requestBody
+                    )
+                )
             }
 
+            Log.d(TAG, "SnsAddPostActivity ${imagesMultipartBodyList} - onCreate() called")
 
-            SnsRetrofitManager.instance.postPost("LMJ",  title, content, imagesMultipartBodyList , completion = { responseStatus, _ ->
-                when (responseStatus) {
-                    //API 호출 성공
-                    RESPONSE_STATUS.OKAY -> {
-                        Log.d("로그", "SnsAddPostActivity - onCreate() called")
-                        Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
-                        finish()
+            SnsRetrofitManager.instance.postPost(
+                "LMJ",
+                title,
+                content,
+                imagesMultipartBodyList,
+                completion = { responseStatus, _ ->
+                    when (responseStatus) {
+                        //API 호출 성공
+                        RESPONSE_STATUS.OKAY -> {
+                            Log.d("로그", "SnsAddPostActivity - onCreate() called")
+                            Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        RESPONSE_STATUS.FAIL -> {
+                            Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
+                            Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        RESPONSE_STATUS.NO_CONTENT -> {
+                            Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
+                            Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                    RESPONSE_STATUS.FAIL -> {
-                        Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                    RESPONSE_STATUS.NO_CONTENT -> {
-                        Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                        Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+                })
         }
 
         binding.addPolicy.setOnClickListener {
@@ -129,7 +155,7 @@ class SnsAddPostActivity : AppCompatActivity() {
                 }
             } else { // 단일 선택
                 data?.data?.let { uri ->
-                    val imageUri : Uri? = data?.data
+                    val imageUri: Uri? = data?.data
                     if (imageUri != null) {
                         imagesList.add(imageUri)
                     }
@@ -137,5 +163,31 @@ class SnsAddPostActivity : AppCompatActivity() {
             }
             adapter.notifyDataSetChanged()
         }
+    }
+
+    // 이미지 uri를 절대 경로로 바꾸고 return
+    fun createCopyAndReturnRealPath(uri: Uri): String {
+        val context = applicationContext
+        val contentResolver = context.contentResolver ?: return ""
+
+        // Create file path inside app's data dir
+        val filePath = (context.applicationInfo.dataDir + File.separator
+                + System.currentTimeMillis())
+        val file = File(filePath)
+        try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return ""
+            val outputStream: OutputStream = FileOutputStream(file)
+            val buf = ByteArray(1024)
+            var len: Int
+            while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+            outputStream.close()
+            inputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+
+            return ""
+        }
+        /*  절대 경로를 getGps()에 넘겨주기   */
+        return file.getAbsolutePath()
     }
 }
