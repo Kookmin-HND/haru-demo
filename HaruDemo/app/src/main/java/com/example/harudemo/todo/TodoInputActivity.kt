@@ -210,11 +210,11 @@ class TodoInputActivity : AppCompatActivity() {
 
             val calendar: Calendar = Calendar.getInstance().apply { // 1
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 9)
-                set(Calendar.MINUTE, 57)
+                /*set(Calendar.HOUR_OF_DAY, 21)
+                set(Calendar.MINUTE, 45)*/
             }
 
-            MainActivity().addAlarm(calendar)
+            MainActivity.getInstance()?.addAlarm(calendar)
 
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()

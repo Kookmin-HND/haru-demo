@@ -14,7 +14,7 @@ const myDataSource = new DataSource({
   host: "127.0.0.1",
   port: 3306,
   username: "root",
-  password: "storyone123",
+  password: "gpt271100",
   database: "haru",
   entities: ["src/entity/*.*"],
   logging: true,

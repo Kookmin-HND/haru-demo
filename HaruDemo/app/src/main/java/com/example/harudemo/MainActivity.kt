@@ -26,6 +26,17 @@ class MainActivity : AppCompatActivity() {
     private var alarmManager: AlarmManager? = null
     private var pendingIntent: PendingIntent? = null
 
+    init{
+        instance = this
+    }
+
+    companion object{
+        private var instance:MainActivity? = null
+        fun getInstance(): MainActivity? {
+            return instance
+        }
+    }
+
     fun addAlarm(calendar: Calendar){
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 

@@ -48,7 +48,7 @@ const cookieExtractor = (req: any) => {
 
 const JWTConfig = {
   jwtFromRequest: cookieExtractor,
-  secretOrKey: process.env.JWT_KEY,
+  secretOrKey: process.env.JWT_KEY = "qwerasdf",
 };
 
 const JWTVerify = async (token: any, done: any) => {
