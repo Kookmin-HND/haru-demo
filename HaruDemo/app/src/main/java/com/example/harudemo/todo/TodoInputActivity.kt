@@ -119,7 +119,6 @@ class TodoInputActivity : AppCompatActivity() {
             // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
             binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
             binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
-
         }
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
@@ -240,7 +239,7 @@ class TodoInputActivity : AppCompatActivity() {
 
     // 입력에 문제가 있는지 판별하는 함수
     private fun validation(text: String): Boolean {
-        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[a-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
+        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[\\sa-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
         return regex.matches(text)
     }
 

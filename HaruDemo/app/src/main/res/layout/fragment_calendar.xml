@@ -5,13 +5,15 @@
     android:id="@+id/nextbtn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal">
 
         <android.widget.Button
@@ -126,48 +128,53 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/calendar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F0F0F0"
-                android:orientation="horizontal" />
+                android:gravity="center"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000"
+                    android:orientation="horizontal" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:elevation="10dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_add_todo_for_calendar"
+                android:id="@+id/btn_add_todo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:elevation="0dp"
                 android:outlineProvider="none"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:src="@drawable/ic_baseline_add_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="6dp"
-                android:text="+"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
         </FrameLayout>
 
     </FrameLayout>
+
 </LinearLayout>

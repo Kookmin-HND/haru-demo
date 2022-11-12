@@ -3,6 +3,7 @@ package com.example.harudemo.fragments
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
@@ -18,6 +20,8 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.utils.API
+import com.example.harudemo.utils.Constants
 import com.example.harudemo.utils.CustomToast
 
 class TodoFragment : Fragment() {
@@ -52,13 +56,28 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
         // 여러 정렬 방법 버튼들 이벤트 리스너 설정 해당 함수는 아래에 있음
         binding?.btnCompleted?.setOnClickListener { onBtnClicked(it) }
         binding?.btnToday?.setOnClickListener { onBtnClicked(it) }
         binding?.btnWeek?.setOnClickListener { onBtnClicked(it) }
         binding?.btnAll?.setOnClickListener { onBtnClicked(it) }
+
+        // 데이터 추가 버튼 클릭시에 새로운 액티비티로 이동
+        binding?.btnAddTodo?.setOnClickListener {
+            val intent = Intent(context, TodoInputActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 스크롤시 버튼 숨기기 토글
+        binding?.rvFolderList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0)
+                    binding?.btnAddTodo?.hide();
+                else if (dy < 0)
+                    binding?.btnAddTodo?.show();
+            }
+        })
     }
 
     override fun onResume() {
@@ -86,12 +105,6 @@ class TodoFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false,
         )
-
-        // 데이터 추가 버튼 클릭시에 새로운 액티비티로 이동
-        binding?.btnAddTodo?.setOnClickListener {
-            val intent = Intent(context, TodoInputActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록
