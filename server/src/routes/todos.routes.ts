@@ -276,7 +276,7 @@ router.patch(
 );
 
 // 사용자로부터 todo id값을 입력받아 해당 데이터를 삭제한다.
-// 그리고 todo-logs에 접근하여 해당하는 log들을 모두 삭제한다.
+// 그리고 todo-logs에 접근하여 해당하는 log를 모두 삭제한다.
 router.delete(
   "/",
   async (req: Request<{}, {}, { id: number }>, res: Response) => {
