@@ -71,6 +71,9 @@ class SnsPostDetailActivity : AppCompatActivity() {
         //이미지 불러오기
         imageApiCall(snsPostId)
 
+        //indicator 지정
+        binding.snsImageIndicator.setViewPager(binding.snsImageViewpager)
+
         binding.snsImageViewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         binding.snsImageViewpager.setPageTransformer(ZoomOutPageTransformer()) //애니메이션 적용
 
@@ -146,6 +149,8 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             this.snsImagesList.add(it)
                         }
                         binding.snsImageViewpager.adapter?.notifyItemInserted(this.snsImagesList.size)
+                        // indicator 지정
+                        binding.snsImageIndicator.createIndicators(this.snsImagesList.size,0)
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
