@@ -206,7 +206,7 @@ class SnsRetrofitManager {
     ) {
 
         val call =
-            snsService?.getComments(postId) ?: return
+            snsService?.getImages(postId) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -224,7 +224,7 @@ class SnsRetrofitManager {
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
                                 val id = resultItemObject.get("id").asInt
-                                val url = resultItemObject.get("writer").asString
+                                val url = resultItemObject.get("url").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
                                 val snsImageItem = SnsImage(

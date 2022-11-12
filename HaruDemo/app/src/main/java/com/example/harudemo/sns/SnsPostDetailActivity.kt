@@ -12,6 +12,7 @@ import com.example.harudemo.databinding.ActivitySnsAddPostBinding
 import com.example.harudemo.databinding.ActivitySnsPostDetailBinding
 import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsComment
+import com.example.harudemo.model.SnsImage
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsCommentRecyclerViewAdapter
@@ -27,6 +28,8 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
     // 코멘트 데이터
     private var snsCommentList = ArrayList<SnsComment>()
+    // 이미지 데이터
+    private var snsImagesList = ArrayList<SnsImage>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
@@ -36,7 +39,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsPostDetailCancelButton.setOnClickListener{
             finish()
         }
-
 
         val intent = getIntent();
         val snsPostId = intent.getIntExtra("sns_post_id", -1)
@@ -49,7 +51,10 @@ class SnsPostDetailActivity : AppCompatActivity() {
         //comment adapter 연결
         binding.snsPostCommentsRecyclerview.adapter = SnsCommentRecyclerViewAdapter()
         (binding.snsPostCommentsRecyclerview.adapter as SnsCommentRecyclerViewAdapter).submitList(this.snsCommentList)
+        //댓글 불러오기
         commentApiCall(snsPostId)
+        //이미지 불러오기
+        imageApiCall(snsPostId)
 
         binding.snsPostCommentsRecyclerview.layoutManager =
             GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
@@ -111,6 +116,29 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
+            }
+        )
+    }
+
+
+    private fun imageApiCall(postId: Int){
+        SnsRetrofitManager.instance.getImages(
+            postId,
+            completion = {responseStatus, responseDataArrayList ->
+                when (responseStatus){
+                    RESPONSE_STATUS.OKAY -> {
+                        responseDataArrayList!!.forEach {
+                            this.snsImagesList.add(it)
+                        }
+                    }
+                    RESPONSE_STATUS.FAIL -> {
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    RESPONSE_STATUS.NO_CONTENT -> {
+//                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Log.d(TAG, "SnsPostDetailActivity ${this.snsImagesList} - imageApiCall() called")
             }
         )
     }
