@@ -2,13 +2,12 @@ package com.example.harudemo.retrofit
 
 import android.util.Log
 import com.example.harudemo.model.SnsComment
+import com.example.harudemo.model.SnsImage
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
-import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -145,7 +144,7 @@ class SnsRetrofitManager {
     }
 
 
-    //SNS에서 댓글을 저장하는 함수
+    //SNS에서 댓글을 불러오는 함수
     fun getComments(
         postId: Int,
         completion: (RESPONSE_STATUS, ArrayList<SnsComment>?) -> Unit
@@ -198,4 +197,53 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+    //SNS에서 이미지를 불러오는 함수
+    fun getImages(
+        postId: Int,
+        completion: (RESPONSE_STATUS, ArrayList<SnsImage>?) -> Unit
+    ) {
+
+        val call =
+            snsService?.getComments(postId) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            val parsedSnsImageDataArray = ArrayList<SnsImage>()
+                            val results = it.asJsonArray
+
+                            // 데이터가 있다면
+                            results.forEach { resultItem ->
+                                val resultItemObject = resultItem.asJsonObject
+                                val id = resultItemObject.get("id").asInt
+                                val url = resultItemObject.get("writer").asString
+                                val createdAt = resultItemObject.get("createdAt").asString
+                                val updatedAt = resultItemObject.get("updatedAt").asString
+                                val snsImageItem = SnsImage(
+                                    id,
+                                    url,
+                                    createdAt,
+                                    updatedAt,
+                                )
+                                parsedSnsImageDataArray.add(snsImageItem)
+                            }
+                            completion(RESPONSE_STATUS.OKAY, parsedSnsImageDataArray)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
 }

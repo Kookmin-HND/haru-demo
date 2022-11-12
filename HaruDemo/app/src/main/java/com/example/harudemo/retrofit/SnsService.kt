@@ -68,4 +68,10 @@ interface SnsService {
         @Path("postId") postId: Int,
     ): Call<JsonElement>
 
+
+    // 해당 postId가 갖고 있는 이미지 가져오는 api
+    @GET("${API.POSTS}/{postId}/images")
+    fun getImages(
+        @Path("postId") postId: Int,
+    ): Call<JsonElement>
 }
