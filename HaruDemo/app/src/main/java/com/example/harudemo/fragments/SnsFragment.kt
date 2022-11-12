@@ -210,11 +210,13 @@ class SnsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         refreshPostApiCall()
-        //스크롤 위로 보내기
-//        binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
 
     fun postScrolltoTop() {
+        //이미 맨 위면 스크롤 안함
+        if(binding.snsPostRecyclerView.computeVerticalScrollOffset() == 0){
+            return
+        }
         binding.snsPostRecyclerView.scrollToPosition(7);
         binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
