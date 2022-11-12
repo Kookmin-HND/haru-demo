@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { User } from "../entity/user";
 
 export const path = "/tests";
@@ -15,7 +15,7 @@ router.get("/", (req: Request, res: Response, next: NextFunction) => {
 //예시 DB호출하는 api
 //http://localhost:8000/api/tests/users/
 router.get("/users", async function (req: Request, res: Response) {
-  const users = await myDataSource.getRepository(User).find();
+  const users = await DB.getRepository(User).find();
   console.log("get /users 호출됨!");
   res.json(users);
 });

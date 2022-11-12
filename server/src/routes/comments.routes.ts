@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Post } from "../entity/post";
 import { Comment } from "../entity/comment";
 import { Equal } from "typeorm";
@@ -21,7 +21,7 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
   try {
     // postId로 게시물 하나의 데이터를 가져온다
-    const result = await myDataSource.getRepository(Comment).find({
+    const result = await DB.getRepository(Comment).find({
       where: { post: Equal(postId) },
     });
     return res.json(result);
@@ -35,10 +35,12 @@ router.post("/:email", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
   const writer = req.params.email;
 
-  const post = myDataSource
-    .getRepository(Comment)
-    .create({ ...req.body, post: req.body.postId, writer });
-  const result = await myDataSource.getRepository(Comment).save(post);
+  const post = DB.getRepository(Comment).create({
+    ...req.body,
+    post: req.body.postId,
+    writer,
+  });
+  const result = await DB.getRepository(Comment).save(post);
 
   return res.json(result);
 });
@@ -48,7 +50,7 @@ router.delete(
   "/:commentId",
   async (req: Request<CommentParams>, res: Response) => {
     const commentId = Number(req.params.commentId);
-    const result = await myDataSource.getRepository(Comment).update(
+    const result = await DB.getRepository(Comment).update(
       {
         id: commentId,
       },

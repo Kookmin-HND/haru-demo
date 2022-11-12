@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { User } from "../entity/user";
 import { Equal } from "typeorm";
 import bcrypt from "bcrypt"; // hashing 처리를 위한 라이브러리
@@ -82,9 +82,9 @@ router.post(
     }
 
     // email 중복 확인을 위한 변수
-    const overlap_check = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: Equal(email) });
+    const overlap_check = await DB.getRepository(User).findOneBy({
+      email: Equal(email),
+    });
 
     if (overlap_check) {
       // overlap_check가 null이 아니면 중복
@@ -100,13 +100,13 @@ router.post(
         if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
         password = hash;
 
-        const result = await myDataSource.getRepository(User).create({
+        const result = await DB.getRepository(User).create({
           email: email,
           password: password,
           name: name,
         });
 
-        await myDataSource.getRepository(User).save(result);
+        await DB.getRepository(User).save(result);
         console.log("signup success");
         return res.send(result);
       });
