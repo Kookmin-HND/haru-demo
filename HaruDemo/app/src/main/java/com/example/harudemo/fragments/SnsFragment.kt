@@ -73,24 +73,23 @@ class SnsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //최초로 API 호출하여 데이터 얻어오기
-        sns_post_recycler_view.adapter = SnsPostRecyclerViewAdapter()
+        binding.snsPostRecyclerView.adapter = SnsPostRecyclerViewAdapter()
         infiniteScrollPostApiCall()
 
-        sns_post_recycler_view.layoutManager =
+        binding.snsPostRecyclerView.layoutManager =
             GridLayoutManager(this.context, 1, GridLayoutManager.VERTICAL, false)
 
         //스크롤 이벤트 처리 함수
         initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
 
-
         binding.btnUp.setOnClickListener {
             // 스크롤 위로 보내기
-            binding.snsPostRecyclerView.smoothScrollToPosition(0);
+            postScrolltoTop()
         }
 
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
-        sns_top_app_bar.setOnMenuItemClickListener {
+        binding.snsTopAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.sns_post_add -> {
                     activity?.let { FragmentActivity ->
@@ -117,7 +116,7 @@ class SnsFragment : Fragment() {
             }
         }
 
-        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
+        (binding.snsPostRecyclerView.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
 
         //새로고침 리스너
         binding.snsSwipeRefresh.setOnRefreshListener {
@@ -134,7 +133,7 @@ class SnsFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
 
                 // 스크롤이 끝에 도달했는지 확인하고 API 호출하여 새로운 데이터 추가
-                if (!sns_post_recycler_view.canScrollVertically(1)) {
+                if (!binding.snsPostRecyclerView.canScrollVertically(1)) {
                     infiniteScrollPostApiCall()
                 }
             }
@@ -148,7 +147,6 @@ class SnsFragment : Fragment() {
             completion = { responseStatus, responseDataArrayList ->
                 Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
                 when (responseStatus) {
-
                     //API 호출 성공
                     RESPONSE_STATUS.OKAY -> {
                         responseDataArrayList!!.forEach {
@@ -156,8 +154,7 @@ class SnsFragment : Fragment() {
                             lastPostId = it.id
                             this.snsPostList.add(it)
                         }
-//                    sns_post_recycler_view.adapter?.notifyDataSetChanged()
-                        sns_post_recycler_view.adapter?.notifyItemInserted(this.snsPostList.size)
+                        binding.snsPostRecyclerView.adapter?.notifyItemInserted(this.snsPostList.size)
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
@@ -185,7 +182,7 @@ class SnsFragment : Fragment() {
                             lastPostId = it.id
                             this.snsPostList.add(it)
                         }
-                        sns_post_recycler_view.adapter?.notifyDataSetChanged()
+                        binding.snsPostRecyclerView.adapter?.notifyDataSetChanged()
                         binding.snsSwipeRefresh.isRefreshing = false
                     }
                     RESPONSE_STATUS.FAIL -> {
@@ -206,5 +203,9 @@ class SnsFragment : Fragment() {
 //        binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
 
+    fun postScrolltoTop(){
+        binding.snsPostRecyclerView.scrollToPosition(7);
+        binding.snsPostRecyclerView.smoothScrollToPosition(0);
+    }
 
 }

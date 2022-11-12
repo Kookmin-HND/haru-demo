@@ -42,6 +42,11 @@ class MainActivity : AppCompatActivity() {
     //바텀 네비게이션 아이템 클릭 리스너
     private val onBottomNavItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
+            // 현재 SNS가 열려있고, 다시 sns 버튼을 누른경우 스크롤을 맨위로 보낸다.
+            if(it.itemId == R.id.menu_home && binding?.fragmentSns?.visibility == View.VISIBLE){
+                snsFragment?.postScrolltoTop()
+            }
+
             /*
             데이터를 유지하기 위해
             snsFragment를 관리하는 FrameLayout이 따로 있고 해당 레이아웃만 보여지는 상태를 토글로 관리하여
