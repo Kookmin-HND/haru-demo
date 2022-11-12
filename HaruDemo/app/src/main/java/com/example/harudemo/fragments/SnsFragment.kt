@@ -2,6 +2,7 @@ package com.example.harudemo.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.App
 import com.example.harudemo.R
+import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.RetrofitManager
+import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity
 import com.example.harudemo.sns.SnsFriendsActivity
@@ -24,18 +27,14 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
 
 class SnsFragment : Fragment() {
-//    추후 API 만들고 사용할 변수들
-//    private var totalCount = 0 // 전체 아이템 개수
-//    private var isNext = true // 다음 페이지 유무
-//    private var page = 0       // 현재 페이지
-//    private var limit = 10     // 한 번에 가져올 아이템 수
+    private var mBinding: FragmentSnsBinding? = null
+    private val binding get() = mBinding!!
+
+    //API에 post 데이터를 요청하기 위한 기준 id
+    private var lastPostId = Int.MAX_VALUE
 
     // 게시물 데이터
-    private var SnsPostList = ArrayList<SnsPost>()
-
-    // 어답터
-    private lateinit var snsPostRecyclerViewAdapter: SnsPostRecyclerViewAdapter
-
+    private var snsPostList = ArrayList<SnsPost>()
 
     companion object {
         const val TAG: String = "로그"
@@ -48,8 +47,8 @@ class SnsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "HomeFragment - on Create() called")
-    }
 
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -62,10 +61,11 @@ class SnsFragment : Fragment() {
     ): View? {
         Log.d(TAG, "HomeFragment - onCreateView() called")
 
-        val view = inflater.inflate(R.layout.fragment_sns, container, false)
-
+        //뷰바인딩
+        mBinding = FragmentSnsBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity?)!!.setSupportActionBar(sns_top_app_bar)
-        return view
+
+        return binding.root
     }
 
     //레이아웃 연결 후
@@ -73,16 +73,21 @@ class SnsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //최초로 API 호출하여 데이터 얻어오기
-        testApiCall()
-        this.snsPostRecyclerViewAdapter = SnsPostRecyclerViewAdapter()
-        this.snsPostRecyclerViewAdapter.submitList(this.SnsPostList)
+        sns_post_recycler_view.adapter = SnsPostRecyclerViewAdapter()
+        infiniteScrollPostApiCall()
 
         sns_post_recycler_view.layoutManager =
             GridLayoutManager(this.context, 1, GridLayoutManager.VERTICAL, false)
-        sns_post_recycler_view.adapter = this.snsPostRecyclerViewAdapter
 
         //스크롤 이벤트 처리 함수
-        initScrollListener(this.snsPostRecyclerViewAdapter)
+        initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
+
+
+        binding.btnUp.setOnClickListener {
+            // 스크롤 위로 보내기
+            binding.snsPostRecyclerView.smoothScrollToPosition(0);
+        }
+
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         sns_top_app_bar.setOnMenuItemClickListener {
@@ -111,8 +116,16 @@ class SnsFragment : Fragment() {
                 else -> super.onOptionsItemSelected(it)
             }
         }
-    }
 
+        (sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter).submitList(this.snsPostList)
+
+        //새로고침 리스너
+        binding.snsSwipeRefresh.setOnRefreshListener {
+            refreshPostApiCall()
+        }
+
+        binding.snsSwipeRefresh.setColorSchemeColors(Color.BLUE, Color.YELLOW, Color.BLUE);
+    }
 
     //스크롤 이벤트 처리 함수
     private fun initScrollListener(snsPostRecyclerViewAdapter: SnsPostRecyclerViewAdapter) {
@@ -122,32 +135,76 @@ class SnsFragment : Fragment() {
 
                 // 스크롤이 끝에 도달했는지 확인하고 API 호출하여 새로운 데이터 추가
                 if (!sns_post_recycler_view.canScrollVertically(1)) {
-                    testApiCall()
+                    infiniteScrollPostApiCall()
                 }
             }
         })
     }
 
+    // 게시물 추가 로딩을 위한 API 호출
+    private fun infiniteScrollPostApiCall() {
+        SnsRetrofitManager.instance.getPosts(
+            lastPostId,
+            completion = { responseStatus, responseDataArrayList ->
+                Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
+                when (responseStatus) {
 
-    fun testApiCall() {
-        RetrofitManager.instance.getPosts(completion = { responseStatus, responseDataArrayList ->
-            Log.d(TAG, "SnsFragment - ApiCallTest() called ${responseStatus}")
-            when (responseStatus) {
-
-                //API 호출 성공
-                RESPONSE_STATUS.OKAY -> {
-                    responseDataArrayList!!.forEach {
-                        this.SnsPostList.add(it)
+                    //API 호출 성공
+                    RESPONSE_STATUS.OKAY -> {
+                        responseDataArrayList!!.forEach {
+                            //마지막에 보인 게시물의 번호 초기화
+                            lastPostId = it.id
+                            this.snsPostList.add(it)
+                        }
+//                    sns_post_recycler_view.adapter?.notifyDataSetChanged()
+                        sns_post_recycler_view.adapter?.notifyItemInserted(this.snsPostList.size)
                     }
-                    snsPostRecyclerViewAdapter.notifyItemInserted(SnsPostList.size)
+                    RESPONSE_STATUS.FAIL -> {
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    RESPONSE_STATUS.NO_CONTENT -> {
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                RESPONSE_STATUS.FAIL -> {
-                    CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
-                }
-                RESPONSE_STATUS.NO_CONTENT -> {
-                    CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+            })
     }
+
+
+    // 새로고침을 위한 API 호출
+    private fun refreshPostApiCall() {
+        lastPostId = Int.MAX_VALUE
+        SnsRetrofitManager.instance.getPosts(
+            lastPostId,
+            completion = { responseStatus, responseDataArrayList ->
+                when (responseStatus) {
+                    //API 호출 성공
+                    RESPONSE_STATUS.OKAY -> {
+                        this.snsPostList.clear()
+                        responseDataArrayList!!.forEach {
+                            //마지막에 보인 게시물의 번호 초기화
+                            lastPostId = it.id
+                            this.snsPostList.add(it)
+                        }
+                        sns_post_recycler_view.adapter?.notifyDataSetChanged()
+                        binding.snsSwipeRefresh.isRefreshing = false
+                    }
+                    RESPONSE_STATUS.FAIL -> {
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    RESPONSE_STATUS.NO_CONTENT -> {
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+    }
+
+    //액티비티가 사라질 때 api 재호출
+    override fun onResume() {
+        super.onResume()
+        refreshPostApiCall()
+        //스크롤 위로 보내기
+//        binding.snsPostRecyclerView.smoothScrollToPosition(0);
+    }
+
+
 }

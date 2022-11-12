@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     tools:context=".auth.LoginActivity">
 
-<!--   로그인 레이아웃 재사용-->
-    <include layout="@layout/login_layout"/>
+    <!--   로그인 레이아웃 재사용-->
+    <include layout="@layout/login_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

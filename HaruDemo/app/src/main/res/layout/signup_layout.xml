@@ -2,15 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_marginStart="24dp"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="24dp"
-    >
+    android:layout_marginBottom="8dp"
+    android:background="@color/background"
+    android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -22,10 +21,10 @@
             android:id="@+id/createEmailET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:hint="E-Mail"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:hint="E-Mail"/>
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -38,10 +37,10 @@
             android:id="@+id/createPwET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:hint="PassWord"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:hint="PassWord"/>
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -54,10 +53,10 @@
             android:id="@+id/createPw2ET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:hint="PassWord"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:hint="PassWord"/>
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -70,28 +69,27 @@
             android:id="@+id/createNameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:hint="Name"
             android:inputType="textPersonName"
             android:maxLines="1"
-            android:hint="Name"/>
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/signUpBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="회원가입"
         android:layout_marginTop="20dp"
-        android:textColor="@color/white"
         android:backgroundTint="@color/gray"
-        />
+        android:text="회원가입"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/cancelBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray"
         android:text="취소"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/gray"/>
+        android:textColor="@color/white" />
 
 </LinearLayout>

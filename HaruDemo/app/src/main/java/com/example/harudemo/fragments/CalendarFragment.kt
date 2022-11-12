@@ -131,7 +131,7 @@ class CalendarFragment: Fragment(){
             }
         }
 
-        btn_add_todo_for_calendar.setOnClickListener {
+        btn_add_todo.setOnClickListener {
             val intent = Intent(context, TodoInputActivity::class.java)
             startActivity(intent)
         }

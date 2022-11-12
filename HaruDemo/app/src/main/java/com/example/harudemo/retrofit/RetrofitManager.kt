@@ -17,20 +17,16 @@ class RetrofitManager {
     }
 
     private val snsService: SnsService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(SnsService::class.java)
+        RetrofitClient.getClient()?.create(SnsService::class.java)
     private val todoService: TodoService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(TodoService::class.java)
+        RetrofitClient.getClient()?.create(TodoService::class.java)
 
-    //sns Test용 getPosts 함수 - SNS에서 게시물을 호출하는 함수
-    fun getPosts(
+    //SNS에서 게시물을 호출하는 함수
+    fun getPosts(id:Int,
         completion: (RESPONSE_STATUS, ArrayList<SnsPost>?) -> Unit
     ) {
 
-        val call = snsService?.getPosts().let {
-            it
-        } ?: return
-
-
+        val call = snsService?.getPosts(id) ?: return
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             //응답 실패 시
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -51,16 +47,20 @@ class RetrofitManager {
                             // 데이터가 있다면
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
-                                val userId = resultItemObject.get("userId").asInt.toString()
-                                val postId = resultItemObject.get("id").asInt.toString()
-                                val postTitle = resultItemObject.get("title").asString
-                                val postBody = resultItemObject.get("body").asString
+                                val postId = resultItemObject.get("id").asInt
+                                val writer = resultItemObject.get("writer").asString
+                                val content = resultItemObject.get("content").asString + "====" + postId
+                                val createdAt = resultItemObject.get("createdAt").asString
+                                val updatedAt = resultItemObject.get("updatedAt").asString
 
                                 val snsPostItem = SnsPost(
-                                    writer = postTitle,
-                                    content = postBody,
-                                    createdAt = "2022.10.07",
+                                    id = postId,
+                                    writer = writer,
+                                    content = content,
+                                    createdAt = createdAt,
+                                    updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    average = "",
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }

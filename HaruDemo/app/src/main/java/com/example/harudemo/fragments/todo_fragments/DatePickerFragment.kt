@@ -2,11 +2,17 @@ package com.example.harudemo.fragments.todo_fragments
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.example.harudemo.R
+import com.example.harudemo.utils.CustomToast
 import java.time.LocalDate
 
 // 입력시에 기간으로 입력시 날짜를 선택하기 위한 만들어진 DatePicker 클래스
@@ -22,8 +28,11 @@ class DatePickerFragment(private val textView: TextView) : DialogFragment(),
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(requireContext(), this, year, month, day)
-
+        val datePicker = DatePickerDialog(requireContext(), this, year, month, day)
+        datePicker.show()
+        datePicker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK)
+        datePicker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK)
+        return datePicker
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {

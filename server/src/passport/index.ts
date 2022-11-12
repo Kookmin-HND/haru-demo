@@ -1,7 +1,7 @@
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { User } from "../entity/user";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Strategy as LocalStrategy } from "passport-local";
 import { ExtractJwt, Strategy } from "passport-jwt";
 
@@ -13,9 +13,7 @@ const passportConfig = {
 
 const passportVerify = async (email: string, password: string, done: any) => {
   try {
-    const user = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: email });
+    const user = await DB.getRepository(User).findOneBy({ email: email });
 
     if (!user) {
       return done(null, false, { reason: "존재하지 않는 사용자입니다." });
@@ -58,9 +56,7 @@ const JWTVerify = async (token: any, done: any) => {
       return done(null, false, { reason: "token이 없습니다." });
     }
 
-    const user = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: token.email });
+    const user = await DB.getRepository(User).findOneBy({ email: token.email });
 
     if (!user) {
       console.log("token과 맞는 user가 없습니다.");

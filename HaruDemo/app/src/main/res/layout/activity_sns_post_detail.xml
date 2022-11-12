@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -39,8 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="20dp"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/sns_post_detail_writer"
@@ -65,10 +65,18 @@
             android:textSize="20dp" />
 
         <View
+            android:id="@+id/sns_post_detail_underline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="10dp"
             android:background="@color/gray" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sns_post_comments_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sns_post_detail_underline"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -80,19 +88,20 @@
         android:padding="10dp">
 
         <EditText
-            android:id="@+id/writecomment"
+            android:id="@+id/et_write_comment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="9"
             android:hint="댓글을 입력하세요" />
 
         <ImageButton
-            android:id="@+id/sendcomment"
+            android:id="@+id/btn_send_comment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            android:src="@drawable/ic_baseline_send_24" />
+            android:src="@drawable/ic_baseline_send_24"
+            android:contentDescription="댓글입력" />
 
 
     </LinearLayout>
