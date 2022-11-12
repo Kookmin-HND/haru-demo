@@ -20,7 +20,7 @@ class SnsRetrofitManager {
     }
 
     private val snsService: SnsService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(SnsService::class.java)
+        RetrofitClient.getClient()?.create(SnsService::class.java)
 
     //SNS에서 게시물을 호출하는 함수
     fun getPosts(
@@ -63,6 +63,7 @@ class SnsRetrofitManager {
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    average = ""
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }
