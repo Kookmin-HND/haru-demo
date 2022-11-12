@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { User } from "../entity/user";
 import { Equal } from "typeorm";
 import bcrypt from "bcrypt"; // hashing 처리를 위한 라이브러리
@@ -55,13 +55,8 @@ router.post("/login", async (req: Request, res: Response, next) => {
           console.error(loginError);
           return res.status(400).json(loginError);
         }
-        const token = jwt.sign(
-          { email: user.email },
-          process.env.JWT_KEY as Secret
-        );
-        return res
-          .cookie("token", token, { httpOnly: true })
-          .json({ message: "토큰 발급 완료" });
+        const token = jwt.sign({ email: user.email }, process.env.JWT_KEY as Secret);
+        return res.cookie("token", token, { httpOnly: true }).json({ message: "토큰 발급 완료" });
       });
     })(req, res);
   } catch (error) {
@@ -70,49 +65,44 @@ router.post("/login", async (req: Request, res: Response, next) => {
 });
 
 // user 회원가입
-router.post(
-  "/signup",
-  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-    let { email, password, name } = req.body;
+router.post("/signup", async function (req: Request<{}, {}, UserSignBody>, res: Response) {
+  let { email, password, name } = req.body;
 
-    // email, password, name 중 입력되지 않은 것을 확인
-    if (!email || !password || !name) {
-      console.log("emailm password, name 하나가 비었다.");
-      return res.status(400).send("email, password, name을 다시 확인해주세요.");
-    }
-
-    // email 중복 확인을 위한 변수
-    const overlap_check = await myDataSource
-      .getRepository(User)
-      .findOneBy({ email: Equal(email) });
-
-    if (overlap_check) {
-      // overlap_check가 null이 아니면 중복
-      console.log("email 중복");
-      return res.status(400).send("중복된 email 입니다.");
-    }
-
-    // password hashing 처리
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
-
-      bcrypt.hash(password, salt, async (err, hash) => {
-        if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
-        password = hash;
-
-        const result = await myDataSource.getRepository(User).create({
-          email: email,
-          password: password,
-          name: name,
-        });
-
-        await myDataSource.getRepository(User).save(result);
-        console.log("signup success");
-        return res.send(result);
-      });
-    });
+  // email, password, name 중 입력되지 않은 것을 확인
+  if (!email || !password || !name) {
+    console.log("emailm password, name 하나가 비었다.");
+    return res.status(400).send("email, password, name을 다시 확인해주세요.");
   }
-);
+
+  // email 중복 확인을 위한 변수
+  const overlap_check = await DB.getRepository(User).findOneBy({ email: Equal(email) });
+
+  if (overlap_check) {
+    // overlap_check가 null이 아니면 중복
+    console.log("email 중복");
+    return res.status(400).send("중복된 email 입니다.");
+  }
+
+  // password hashing 처리
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+
+    bcrypt.hash(password, salt, async (err, hash) => {
+      if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+      password = hash;
+
+      const result = await DB.getRepository(User).create({
+        email: email,
+        password: password,
+        name: name,
+      });
+
+      await DB.getRepository(User).save(result);
+      console.log("signup success");
+      return res.send(result);
+    });
+  });
+});
 
 // user 정보수정
 // router.patch(

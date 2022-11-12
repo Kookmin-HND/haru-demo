@@ -1,8 +1,8 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Post } from "../entity/post";
-import { LessThan, MoreThan } from "typeorm";
+import { Equal, LessThan, MoreThan } from "typeorm";
 import { awsUpload } from "../../config/multerConfig";
 import { ImageFile } from "../entity/imageFile";
 
@@ -35,7 +35,7 @@ router.post("/upload", awsUpload.array("img"), async (req: Request, res: Respons
 router.get("/recent/:postId", async (req: Request<PostParams>, res: Response) => {
   //마지막으로 읽은 postId를 바탕으로 이후 게시물 50개를 가져온다
   const readedPostId = Number(req.params.postId);
-  const result = await myDataSource.getRepository(Post).find({
+  const result = await DB.getRepository(Post).find({
     where: { id: LessThan(readedPostId) },
     take: 50,
     order: { id: "DESC" },
@@ -52,13 +52,24 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 
   try {
     //postId로 게시물 하나의 데이터를 가져온다
-    const result = await myDataSource.getRepository(Post).findOneOrFail({
+    const result = await DB.getRepository(Post).findOneOrFail({
       where: { id: postId },
     });
     return res.json(result);
   } catch {
     return res.status(400).send("게시물이 존재하지 않습니다.");
   }
+});
+
+//게시물 하나가 갖고 있는 이미지 url 조회
+router.get("/:postId/images", async (req: Request<PostParams>, res: Response) => {
+  const postId = Number(req.params.postId);
+
+  //postId로 게시물 하나의 데이터를 가져온다
+  const result = await DB.getRepository(ImageFile).find({
+    where: { post: Equal(postId) },
+  });
+  return res.json(result);
 });
 
 //게시물 입력 이미지 추가
@@ -76,13 +87,13 @@ router.post("/:email", awsUpload.array("images"), async (req: Request, res: Resp
   });
 
   const imageFileList: ImageFile[] = [];
-  const post = myDataSource.getRepository(Post).create({ title, content, writer });
-  const result = await myDataSource.getRepository(Post).save(post);
+  const post = DB.getRepository(Post).create({ title, content, writer });
+  const result = await DB.getRepository(Post).save(post);
 
   locationList.forEach((item) => {
-    imageFileList.push(myDataSource.getRepository(ImageFile).create({ post, url: item }));
+    imageFileList.push(DB.getRepository(ImageFile).create({ post, url: item }));
   });
-  await myDataSource.getRepository(ImageFile).save(imageFileList);
+  await DB.getRepository(ImageFile).save(imageFileList);
   // 업로드한 이미지 파일 url 전달
   return res.json({ ...result, locationList });
 });
@@ -90,7 +101,7 @@ router.post("/:email", awsUpload.array("images"), async (req: Request, res: Resp
 //게시물 삭제요청
 router.delete("/:postId", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
-  const result = await myDataSource.getRepository(Post).delete(postId);
+  const result = await DB.getRepository(Post).delete(postId);
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected) return res.status(400).send("게시물 삭제에 실패했습니다.");
@@ -104,7 +115,7 @@ router.patch("/:postId", async (req: Request<PostParams>, res: Response) => {
   const content: string = req.body.content;
 
   // id가 postId에 해당하는 게시글의 content 수정
-  const result = await myDataSource.getRepository(Post).update({ id: postId }, { content });
+  const result = await DB.getRepository(Post).update({ id: postId }, { content });
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected) return res.status(400).send("게시물 수정에 실패했습니다.");
