@@ -29,10 +29,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
 class SnsAddPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsAddPostBinding;
+
 
     //어플리케이션 갤러리 접근 권한 확인
     private val permissionList = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -52,6 +55,7 @@ class SnsAddPostActivity : AppCompatActivity() {
 
     private var imagesList = ArrayList<Uri>()
     private val adapter = SnsPostImagesRecyclerViewAdapter(imagesList, this)
+    private val tmpFileList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,9 @@ class SnsAddPostActivity : AppCompatActivity() {
                 val realPath = createCopyAndReturnRealPath(imageUri)
                 if(realPath.isEmpty()) return@setOnClickListener
                 val file = File(realPath)
+
+                //임시파일을 삭제하기 위해 리스트에 저장
+                tmpFileList.add(realPath)
                 Log.d(TAG, "SnsAddPostActivity ${realPath} - onCreate() called")
                 val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 imagesMultipartBodyList.add(
@@ -93,6 +100,7 @@ class SnsAddPostActivity : AppCompatActivity() {
                     )
                 )
             }
+
 
             Log.d(TAG, "SnsAddPostActivity ${imagesMultipartBodyList} - onCreate() called")
 
@@ -107,6 +115,15 @@ class SnsAddPostActivity : AppCompatActivity() {
                         RESPONSE_STATUS.OKAY -> {
                             Log.d("로그", "SnsAddPostActivity - onCreate() called")
                             Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                            //사진을 업로드하면서 생기는 임시 캐시 파일 삭제
+                            for(filePath in tmpFileList){
+                                try{
+                                    Files.delete(Paths.get(filePath))
+                                } catch (e: IOException){
+                                    Toast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                             finish()
                         }
                         RESPONSE_STATUS.FAIL -> {
@@ -120,6 +137,10 @@ class SnsAddPostActivity : AppCompatActivity() {
                         }
                     }
                 })
+
+
+
+
         }
 
         binding.addPolicy.setOnClickListener {
