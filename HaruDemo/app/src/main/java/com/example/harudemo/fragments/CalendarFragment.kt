@@ -38,11 +38,6 @@ class CalendarFragment: Fragment(){
         val nWeek: Int = cal.get(Calendar.DAY_OF_WEEK)
 
         maindata.week_content = nWeek-1
-
-        maindata.contents[9][2] = "예비군"
-        maindata.contents[9][15] = "민재형한테 돈갚기"
-        maindata.contents[10][17] = "알바비 들어오는 날"
-        maindata.contents[10][20] = "과제 마감"
     }
 
     override fun onAttach(context: Context) {

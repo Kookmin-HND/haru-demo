@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private var alarmManager: AlarmManager? = null
     private var pendingIntent: PendingIntent? = null
 
+    //todoinputactivty에서 메인엑티비티의 함수를 다루기 위한
+    //instance 생성
     init{
         instance = this
     }

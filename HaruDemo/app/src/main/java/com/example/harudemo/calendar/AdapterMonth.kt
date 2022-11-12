@@ -1,6 +1,7 @@
 package com.example.harudemo.calendar
 
 import android.text.style.TtsSpan.TextBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.fragments.maindata
+import com.example.harudemo.todo.TodoData
 import kotlinx.android.synthetic.main.list_item_month.view.*
 import java.util.*
 
@@ -43,7 +45,24 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         var contentlist: MutableList<String> = MutableList(6*7) {""}
         var dayList: MutableList<Date> = MutableList(6 * 7) { Date() }
 
-        var cnt = 0
+        var cnt = 1
+
+        maindata.contents = Array(30){Array(13){Array(32){""} }}
+
+        Log.d("월",tempMonth.toString())
+        var sectiondata = TodoData.getTodos()
+
+        for (section in sectiondata){
+            for(todo in section.todoList){
+                var content = todo.content
+                var date = todo.date
+                var splitdate = date.split("-")
+                val year = splitdate[0].toInt()
+                val month = splitdate[1].toInt()
+                val day = splitdate[2].toInt()
+                maindata.contents[year-2022][month-1][day] += content+"\n"
+            }
+        }
 
         //달력의 아이템마다 값을 입력
         for(i in 0..5) {
@@ -52,7 +71,8 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
                 dayList[i * 7 + k] = calendar.time
 
                 if(calendar.time.month == tempMonth){
-                    contentlist[i*7+k] = maindata.contents[tempMonth][cnt]
+                    val year = calendar.get(Calendar.YEAR)
+                    contentlist[i*7+k] = maindata.contents[year-2022][tempMonth][cnt]
                     cnt += 1
                 }
             }
