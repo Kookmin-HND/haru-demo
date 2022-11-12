@@ -72,6 +72,8 @@
         <entry key="app/src/main/res/layout/sns_comment_item.xml" value="0.2515625" />
         <entry key="app/src/main/res/layout/sns_image_item.xml" value="0.4276041666666667" />
         <entry key="app/src/main/res/layout/sns_post_image_item.xml" value="0.23697916666666666" />
+        <entry key="app/src/main/res/layout/sns_post_recyclerview_footer.xml" value="0.4125" />
+        <entry key="app/src/main/res/layout/sns_post_recyclerview_header.xml" value="0.335" />
         <entry key="app/src/main/res/layout/test_viewpager_frame1.xml" value="0.4114583333333333" />
         <entry key="app/src/main/res/layout/test_viewpager_frame2.xml" value="0.4125" />
         <entry key="app/src/main/res/layout/test_viewpager_frame3.xml" value="0.4125" />

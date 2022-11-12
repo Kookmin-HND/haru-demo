@@ -25,6 +25,7 @@ import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.fragment_sns.*
+import kotlinx.android.synthetic.main.sns_post_recyclerview_footer.*
 
 class SnsFragment : Fragment() {
     private var mBinding: FragmentSnsBinding? = null
@@ -142,6 +143,11 @@ class SnsFragment : Fragment() {
 
     // 게시물 추가 로딩을 위한 API 호출
     private fun infiniteScrollPostApiCall() {
+        if (lastPostId == 1) {
+            sns_post_recycler_view_progress_bar.visibility = View.GONE
+            CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
         SnsRetrofitManager.instance.getPosts(
             lastPostId,
             completion = { responseStatus, responseDataArrayList ->
@@ -157,10 +163,12 @@ class SnsFragment : Fragment() {
                         binding.snsPostRecyclerView.adapter?.notifyItemInserted(this.snsPostList.size)
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             })
@@ -170,6 +178,7 @@ class SnsFragment : Fragment() {
     // 새로고침을 위한 API 호출
     private fun refreshPostApiCall() {
         lastPostId = Int.MAX_VALUE
+
         SnsRetrofitManager.instance.getPosts(
             lastPostId,
             completion = { responseStatus, responseDataArrayList ->
@@ -186,10 +195,12 @@ class SnsFragment : Fragment() {
                         binding.snsSwipeRefresh.isRefreshing = false
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             })
@@ -203,7 +214,7 @@ class SnsFragment : Fragment() {
 //        binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
 
-    fun postScrolltoTop(){
+    fun postScrolltoTop() {
         binding.snsPostRecyclerView.scrollToPosition(7);
         binding.snsPostRecyclerView.smoothScrollToPosition(0);
     }
