@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { Equal } from "typeorm";
 import DB from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { TodoLog } from "../entity/todo-log";
@@ -229,7 +228,7 @@ router.patch(
     if (dates && dates.length) {
       result.push(
         await DB.getRepository(TodoLog).delete({
-          todoId: Equal(id),
+          todoId: id,
         })
       );
       console.log(dates);
@@ -264,8 +263,8 @@ router.patch(
 
     const result = await DB.getRepository(TodoLog).update(
       {
-        todoId: Equal(todoId),
-        date: Equal(date),
+        todoId,
+        date,
       },
       {
         completed,
@@ -289,7 +288,7 @@ router.delete(
 
     const result = await DB.getRepository(Todo).delete(id);
     await DB.getRepository(TodoLog).delete({
-      todoId: Equal(id),
+      todoId: id,
     });
     return res.json(result);
   }
