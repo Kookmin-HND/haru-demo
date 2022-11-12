@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#D8D8D8">
+    android:background="@color/background"
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/fragments_frame"
@@ -34,6 +34,7 @@
         android:layout_centerHorizontal="true"
         android:background="#fff"
         app:itemIconSize="30sp"
+        app:itemIconTint="@drawable/bottom_nav_bar_color"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>

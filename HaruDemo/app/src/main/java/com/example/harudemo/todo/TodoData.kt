@@ -25,15 +25,13 @@ object TodoData {
         return todosByFolder[folder]
     }
 
-    // TodoData가 이전과 다른 폴더를 가진다면 이를 변경
-    private fun changeFolder(todo: Todo, folder: String) {
-        todosByFolder[todo.folder]?.removeIf { it.id.toInt() == todo.id.toInt() }
-        if (folder in todosByFolder) {
-            todosByFolder[folder]?.add(todo)
-        } else {
-            todosByFolder[folder] = arrayListOf(todo)
+    // 데이터 삭제 (todos, todosByFolder)에서 모두 삭제
+    fun delete(todo: Todo) {
+        todos.remove(todo)
+        todosByFolder[todo.folder]?.remove(todo)
+        if (todosByFolder[todo.folder]?.isEmpty() == true) {
+            todosByFolder.remove(todo.folder)
         }
-        todo.folder = folder
     }
 
     // 데이터에 접근해서 입력받은 데이터로 변경
@@ -44,31 +42,16 @@ object TodoData {
         date: String? = null,
         completed: Boolean? = null
     ) {
-        val updated = todosByFolder[todo.folder]?.find { it.id.toInt() == todo.id.toInt() }
-        if (folder != null) {
-            if (updated?.folder != folder) {
-                changeFolder(todo, folder)
-            }
-            updated?.folder = folder
-        }
-        if (content != null) {
-            updated?.content = content
-        }
-        if (date != null) {
-            updated?.date = date
-        }
-        if (completed != null) {
-            updated?.completed = completed
-        }
-    }
-
-    // 데이터 삭제 (todos, todosByFolder)에서 모두 삭제
-    fun delete(todo: Todo) {
-        todos.removeIf { it.id.toInt() == todo.id.toInt() }
-        todosByFolder[todo.folder]?.removeIf { it.id.toInt() == todo.id.toInt() }
-        if (todosByFolder[todo.folder]?.isEmpty() == true) {
-            todosByFolder.remove(todo.folder)
-        }
+        val newer = Todo(
+            todo.id,
+            todo.writer,
+            folder ?: todo.folder,
+            content ?: todo.content,
+            date ?: todo.date,
+            completed ?: todo.completed
+        )
+        delete(todo)
+        add(newer)
     }
 
     fun getTodosByFolder(folderName: String): List<Section> {

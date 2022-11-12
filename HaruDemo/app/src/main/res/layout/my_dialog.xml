@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="300dp"
-    android:layout_height="wrap_content">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_margin="8dp"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/contv"
             android:layout_width="match_parent"
             android:layout_height="500dp"
+            android:text="텍스트"
             android:textAlignment="center"
-            android:textColor="#000000"
-            android:text="텍스트"/>
+            android:textColor="#000000" />
 
         <Button
             android:id="@+id/ok"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:text="확인"/>
+            android:text="확인" />
 
 
     </LinearLayout>

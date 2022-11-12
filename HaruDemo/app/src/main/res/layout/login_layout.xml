@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_marginStart="24dp"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="24dp"
-
+    android:layout_marginBottom="8dp"
+    android:background="@color/background"
     android:orientation="vertical"
-    app:layout_constraintEnd_toStartOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toEndOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintEnd_toStartOf="parent"
+    app:layout_constraintStart_toEndOf="parent">
 
 
     <TextView
         android:id="@+id/LoginHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
         android:layout_gravity="center"
-        android:textSize="40sp"
-        android:textStyle="bold"
+        android:layout_marginTop="100dp"
+        android:text="Login"
         android:textColor="@color/skyBlue"
-        android:layout_marginTop="100dp"/>
+        android:textSize="40sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/EmailLayout"
@@ -38,10 +38,10 @@
             android:id="@+id/userEmailEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:hint="E-Mail"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:hint="E-Mail" />
+            android:textSize="12sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,10 +56,10 @@
             android:id="@+id/userPwEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:textSize="12sp"
             android:hint="PassWord"
-            android:maxLines="1" />
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textSize="12sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,21 +67,18 @@
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그인"
         android:layout_marginTop="20dp"
-        android:textColor="@color/white"
         android:backgroundTint="@color/gray"
-        />
+        android:text="로그인"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/signUpBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray"
         android:text="회원가입"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/gray"/>
-
-
+        android:textColor="@color/white" />
 
 
 </LinearLayout>

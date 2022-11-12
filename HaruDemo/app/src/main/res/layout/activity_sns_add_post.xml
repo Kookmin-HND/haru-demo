@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -54,8 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:hint="제목을 입력해 주세요"
                 android:selectAllOnFocus="true"
-                android:hint="제목을 입력해주세요!"
                 android:textColor="#938D8D"
                 android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_height="400dp"
                 android:background="#00000000"
                 android:gravity="top"
-                android:hint="글 내용을 입력해주세요!"
+                android:hint="내용을 입력해주세요"
                 android:textColor="#938D8D"
                 android:textSize="17dp" />
             <androidx.recyclerview.widget.RecyclerView

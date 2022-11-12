@@ -24,10 +24,7 @@ export class Todo {
   content: string;
 
   @Column({ nullable: false })
-  date: string;
-
-  @Column({ nullable: false })
-  completed: boolean;
+  days: string; // boolean[]
 
   @CreateDateColumn({
     type: "timestamp",
