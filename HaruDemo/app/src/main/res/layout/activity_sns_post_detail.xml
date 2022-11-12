@@ -39,8 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="20dp"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/sns_post_detail_writer"
@@ -71,12 +71,37 @@
             android:layout_marginVertical="10dp"
             android:background="@color/gray" />
 
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_gravity="center">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/sns_image_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:scaleType="fitXY" />
+
+            <me.relex.circleindicator.CircleIndicator3
+                android:id="@+id/sns_image_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp" />
+
+        </FrameLayout>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sns_post_comments_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sns_post_detail_underline"
-            />
+            android:layout_below="@id/sns_post_detail_underline" />
     </LinearLayout>
 
     <LinearLayout
@@ -100,8 +125,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            android:src="@drawable/ic_baseline_send_24"
-            android:contentDescription="댓글입력" />
+            android:contentDescription="댓글입력"
+            android:src="@drawable/ic_baseline_send_24" />
 
 
     </LinearLayout>

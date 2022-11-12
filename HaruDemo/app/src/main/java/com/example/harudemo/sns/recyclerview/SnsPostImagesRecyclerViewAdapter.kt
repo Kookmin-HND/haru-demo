@@ -1,22 +1,15 @@
 package com.example.harudemo.sns.recyclerview
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
-import com.example.harudemo.model.SnsComment
-import com.example.harudemo.model.SnsPost
-import com.example.harudemo.sns.SnsAddPostActivity
-import com.example.harudemo.sns.SnsPostDetailActivity
-import kotlinx.android.synthetic.main.sns_image_item.view.*
+import kotlinx.android.synthetic.main.sns_post_image_item.view.*
 
 //SnsPost 리사이클러뷰 어댑터
 class SnsPostImagesRecyclerViewAdapter(private val items: ArrayList<Uri>, val context:Context) : RecyclerView.Adapter<SnsPostImagesRecyclerViewAdapter.ViewHolder>() {
@@ -26,7 +19,7 @@ class SnsPostImagesRecyclerViewAdapter(private val items: ArrayList<Uri>, val co
         return ViewHolder(
             LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.sns_image_item, parent, false)
+                .inflate(R.layout.sns_post_image_item, parent, false)
         )
     }
 
