@@ -5,34 +5,39 @@ import {
   CreateDateColumn,
   Generated,
   UpdateDateColumn,
-  OneToMany,
-  JoinTable,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
-import { Comment } from "./comment";
+import { Post } from "./post";
 
 //필요한 데이터베이스 스키마 entity에 생성
-
 @Entity()
-export class Post {
+export class Comment {
   //id : auto Increment
   @PrimaryGeneratedColumn()
   id: number;
+
+  //게시물이 삭제되면 댓글도 삭제되도록 cascade
+  @ManyToOne(() => Post, (post) => post.comments, {
+    onDelete: "CASCADE",
+    nullable: false,
+  })
+  @JoinColumn()
+  post: Post;
 
   @Column({ nullable: false })
   writer: string;
 
   @Column({ nullable: false })
-  title: string;
-
-  @Column({ nullable: false })
   content: string;
 
-  //댓글과 일대다 연결, 게시물이 삭제되면 댓글도 삭제되도록 cascade
-  @OneToMany(() => Comment, (comment) => comment.post, {
-    cascade: true,
-  })
-  @JoinTable()
-  comments: Comment[];
+  //대댓글 기능을 위한 부모의 comment id 추가
+  @Column({ default: -1 })
+  parentCommentId: number;
+
+  //삭제된 댓글인지 표기하기 위한 컬럼
+  @Column({ default: false })
+  deleted: boolean;
 
   @CreateDateColumn({
     type: "timestamp",

@@ -22,9 +22,6 @@ export class User {
   @Column()
   name: string;
 
-  @Column() // hashing을 하기 위해 password에 더해지는 값
-  user_salt: string;
-
   @CreateDateColumn()
   createAt: Date;
 }
