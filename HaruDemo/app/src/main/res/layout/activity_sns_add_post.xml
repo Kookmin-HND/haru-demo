@@ -44,58 +44,65 @@
                 android:src="@drawable/ic_baseline_check_24" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/sns_add_post_write_layout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/sns_add_post_add_cancel_layout"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp">
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/add_post_title"
+
+            <LinearLayout
+                android:id="@+id/sns_add_post_write_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="제목을 입력해 주세요"
-                android:selectAllOnFocus="true"
-                android:textColor="#938D8D"
-                android:textStyle="bold" />
+                android:layout_below="@id/sns_add_post_add_cancel_layout"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
-            <EditText
-                android:id="@+id/add_post_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:gravity="top"
-                android:hint="내용을 입력해주세요"
-                android:minHeight="130dp"
-                android:padding="3dp"
-                android:textColor="#938D8D"
-                android:textSize="17dp" />
+                <EditText
+                    android:id="@+id/add_post_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="제목을 입력해 주세요"
+                    android:selectAllOnFocus="true"
+                    android:textColor="#938D8D"
+                    android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/iv_added_multiple_images_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                <EditText
+                    android:id="@+id/add_post_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:gravity="top"
+                    android:hint="내용을 입력해주세요"
+                    android:minHeight="130dp"
+                    android:padding="3dp"
+                    android:textColor="#938D8D"
+                    android:textSize="17dp" />
 
-            <Button
-                android:id="@+id/add_policy"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_marginLeft="227dp"
-                android:backgroundTint="#EFEFEF"
-                android:gravity="center_horizontal"
-                android:text="커뮤니티 이용규칙 전체 보기 >"
-                android:textSize="8dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/iv_added_multiple_images_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="하루를 이용할때는 바른말 고운말을 사용하며 사생활 노출 및 이용자에게 피해가 가지 않도록 조심합니다 ^0^" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/add_policy"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="227dp"
+                    android:backgroundTint="#EFEFEF"
+                    android:gravity="center_horizontal"
+                    android:text="커뮤니티 이용규칙 전체 보기 >"
+                    android:textSize="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="100dp"
+                    android:text="하루를 이용할때는 바른말 고운말을 사용하며 사생활 노출 및 이용자에게 피해가 가지 않도록 조심합니다 ^0^" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
