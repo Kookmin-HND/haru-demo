@@ -206,6 +206,23 @@ class TodoInputActivity : AppCompatActivity() {
                     TodoFragment.folderListAdapter.notifyDataSetChanged()
                 })
             }
+
+            for(data in datesList) {
+                var splitdata = data.split("-")
+
+                val calendar: Calendar = Calendar.getInstance().apply { // 1
+                    timeInMillis = System.currentTimeMillis()
+                    set(Calendar.YEAR, splitdata[0].toInt())
+                    set(Calendar.MONTH, splitdata[1].toInt()-1)
+                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
+                    set(Calendar.AM_PM, Calendar.AM)
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                }
+
+                MainActivity.getInstance()?.addAlarm(calendar)
+            }
+
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()
         }
