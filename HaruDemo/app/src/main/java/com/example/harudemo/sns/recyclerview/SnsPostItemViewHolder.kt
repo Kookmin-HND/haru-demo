@@ -25,10 +25,16 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val snsPostPreviewImageThreeSecond = itemView.sns_post_preview_image_three_second
     private val snsPostPreviewImageThreeThird = itemView.sns_post_preview_image_three_third
 
+    // 이미지가 더 있다는 걸 알려주는 텍스트뷰
+    private val snsPostPreviewImageCountMore = itemView.sns_post_preview_image_count_more
+
+
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
         snsPostCreatedAt.text = snsPostItem.createdAt
         snsPostContent.text = snsPostItem.content
+
+        snsPostPreviewImageCountMore.visibility = View.GONE
 
         //이미지의 개수에 따라 미리보기 다르게 표현
         if (snsPostItem.postImageList.isEmpty()) {//이미지가 없는 게시글인경우
@@ -80,6 +86,14 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                 .load(snsPostItem.postImageList[2])
                 .placeholder(R.drawable.ic_baseline_account_circle_24)
                 .into(snsPostPreviewImageThreeThird)
+
+
+            if (snsPostItem.postImageList.size > 3) {
+                snsPostPreviewImageCountMore.visibility = View.VISIBLE
+                snsPostPreviewImageCountMore.text =
+                    "+" + (snsPostItem.postImageList.size - 3).toString()
+            }
+
         }
         //프로필 이미지 생성
         Glide.with(App.instance)

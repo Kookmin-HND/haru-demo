@@ -132,12 +132,28 @@
                             android:layout_height="0dp"
                             android:layout_weight="1"
                             android:scaleType="centerCrop" />
-                        <ImageView
-                            android:id="@+id/sns_post_preview_image_three_third"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:scaleType="centerCrop" />
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                >
+                                <ImageView
+                                    android:id="@+id/sns_post_preview_image_three_third"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop" />
+                                <TextView
+                                    android:id="@+id/sns_post_preview_image_count_more"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="#66000000"
+                                    android:text="+1"
+                                    android:textColor="@color/white"
+                                    android:textSize="22sp"
+                                    android:gravity="center"
+                                    />
+                            </FrameLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
