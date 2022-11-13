@@ -31,19 +31,19 @@ router.post("/upload", awsUpload.array("img"), async (req: Request, res: Respons
   res.json({ locationList });
 });
 
-//postid 이후 최근 게시물 50개 정보 sns fragment에서 보여지는 정보
+//postid 이후 최근 게시물 20개 정보 sns fragment에서 보여지는 정보
 router.get("/recent/:postId", async (req: Request<PostParams>, res: Response) => {
   //마지막으로 읽은 postId를 바탕으로 이후 게시물 50개를 가져온다
   const readedPostId = Number(req.params.postId);
 
-  //이미지 정보 조인해서 불러오기
+  //이미지, 코멘트 정보 조인해서 불러오기
   const result = await DB.getRepository(Post)
     .createQueryBuilder("post")
     .where("post.id <= :id", { id: readedPostId })
     .orderBy({ "post.id": "DESC" })
     .leftJoinAndSelect("post.imageFiles", "imageFiles.url")
     .leftJoinAndSelect("post.comments", "comment.post")
-    .take(50)
+    .take(20)
     .getMany();
 
   if (!result.length) return res.status(400).send("게시물이 존재하지 않습니다.");

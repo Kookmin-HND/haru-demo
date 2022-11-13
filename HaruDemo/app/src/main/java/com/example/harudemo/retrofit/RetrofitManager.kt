@@ -22,55 +22,59 @@ class RetrofitManager {
         RetrofitClient.getClient()?.create(TodoService::class.java)
 
     //SNS에서 게시물을 호출하는 함수
-    fun getPosts(id:Int,
-        completion: (RESPONSE_STATUS, ArrayList<SnsPost>?) -> Unit
-    ) {
-
-        val call = snsService?.getPosts(id) ?: return
-        call.enqueue(object : retrofit2.Callback<JsonElement> {
-            //응답 실패 시
-            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                Log.d(TAG, "RetrofitManager - onFailure() called")
-                completion(RESPONSE_STATUS.FAIL, null)
-            }
-
-            //응답 성공 시
-            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                Log.d(TAG, "RetrofitManager - onResponse() called / response : ${response.body()}")
-
-                when (response.code()) {
-                    200 -> {
-                        response.body()?.let {
-                            val parsedSnsPostDataArray = ArrayList<SnsPost>()
-                            val results = it.asJsonArray
-
-                            // 데이터가 있다면
-                            results.forEach { resultItem ->
-                                val resultItemObject = resultItem.asJsonObject
-                                val postId = resultItemObject.get("id").asInt
-                                val writer = resultItemObject.get("writer").asString
-                                val content = resultItemObject.get("content").asString + "====" + postId
-                                val createdAt = resultItemObject.get("createdAt").asString
-                                val updatedAt = resultItemObject.get("updatedAt").asString
-
-                                val snsPostItem = SnsPost(
-                                    id = postId,
-                                    writer = writer,
-                                    content = content,
-                                    createdAt = createdAt,
-                                    updatedAt = updatedAt,
-                                    writerPhoto = "",
-                                    average = "",
-                                )
-                                parsedSnsPostDataArray.add(snsPostItem)
-                            }
-                            completion(RESPONSE_STATUS.OKAY, parsedSnsPostDataArray)
-                        }
-                    }
-                }
-            }
-        })
-    }
+//    fun getPosts(id:Int,
+//        completion: (RESPONSE_STATUS, ArrayList<SnsPost>?) -> Unit
+//    ) {
+//
+//        val call = snsService?.getPosts(id) ?: return
+//        call.enqueue(object : retrofit2.Callback<JsonElement> {
+//            //응답 실패 시
+//            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+//                Log.d(TAG, "RetrofitManager - onFailure() called")
+//                completion(RESPONSE_STATUS.FAIL, null)
+//            }
+//
+//            //응답 성공 시
+//            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+//                Log.d(TAG, "RetrofitManager - onResponse() called / response : ${response.body()}")
+//
+//                when (response.code()) {
+//                    200 -> {
+//                        response.body()?.let {
+//                            val parsedSnsPostDataArray = ArrayList<SnsPost>()
+//                            val results = it.asJsonArray
+//
+//                            // 데이터가 있다면
+//                            results.forEach { resultItem ->
+//                                val resultItemObject = resultItem.asJsonObject
+//                                val postId = resultItemObject.get("id").asInt
+//                                val writer = resultItemObject.get("writer").asString
+//                                val content = resultItemObject.get("content").asString + "====" + postId
+//                                val createdAt = resultItemObject.get("createdAt").asString
+//                                val updatedAt = resultItemObject.get("updatedAt").asString
+//
+//
+//
+//
+//                                val snsPostItem = SnsPost(
+//                                    id = postId,
+//                                    writer = writer,
+//                                    content = content,
+//                                    createdAt = createdAt,
+//                                    updatedAt = updatedAt,
+//                                    writerPhoto = "",
+//
+//                                    average = "",
+//                                )
+//                                parsedSnsPostDataArray.add(snsPostItem)
+//                            }
+//                            completion(RESPONSE_STATUS.OKAY, parsedSnsPostDataArray)
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     // DB에서 TodoData를 불러온다.
     fun getTodos(writer: String, completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit) {

@@ -54,6 +54,14 @@ class SnsRetrofitManager {
                                     resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
+                                val postImageFiles = resultItemObject.get("imageFiles").asJsonArray
+
+                                val postImageList = ArrayList<String>()
+
+                                //이미지 url을 배열에 넣기
+                                postImageFiles.forEach{ imageFile->
+                                    postImageList.add(imageFile.asJsonObject.get("url").asString)
+                                }
 
                                 val snsPostItem = SnsPost(
                                     id = postId,
@@ -62,6 +70,7 @@ class SnsRetrofitManager {
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    postImageList = postImageList,
                                     average = ""
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
