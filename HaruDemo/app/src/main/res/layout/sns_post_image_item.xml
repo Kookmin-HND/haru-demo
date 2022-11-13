@@ -6,7 +6,8 @@
     <ImageView
         android:id="@+id/sns_post_upload_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         >
     </ImageView>
 </androidx.cardview.widget.CardView>

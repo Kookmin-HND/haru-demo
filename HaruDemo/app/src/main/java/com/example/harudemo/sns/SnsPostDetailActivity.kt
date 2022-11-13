@@ -31,19 +31,20 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
     // 코멘트 데이터
     private var snsCommentList = ArrayList<SnsComment>()
+
     // 이미지 데이터
     private var snsImagesList = ArrayList<SnsImage>()
 
 
-    private val MIN_SCALE = 0.99f // 뷰가 몇퍼센트로 줄어들 것인지
-    private val MIN_ALPHA = 0.99f // 어두워지는 정도
+    private val MIN_SCALE = 1f // 뷰가 몇퍼센트로 줄어들 것인지
+    private val MIN_ALPHA = 0.97f // 어두워지는 정도
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.snsPostDetailCancelButton.setOnClickListener{
+        binding.snsPostDetailCancelButton.setOnClickListener {
             finish()
         }
 
@@ -57,7 +58,9 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
         //comment adapter 연결
         binding.snsPostCommentsRecyclerview.adapter = SnsCommentRecyclerViewAdapter()
-        (binding.snsPostCommentsRecyclerview.adapter as SnsCommentRecyclerViewAdapter).submitList(this.snsCommentList)
+        (binding.snsPostCommentsRecyclerview.adapter as SnsCommentRecyclerViewAdapter).submitList(
+            this.snsCommentList
+        )
         //댓글 불러오기
         commentApiCall(snsPostId)
 
@@ -78,13 +81,13 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsImageViewpager.setPageTransformer(ZoomOutPageTransformer()) //애니메이션 적용
 
 
-        sns_post_detail_cancel_button.setOnClickListener{
+        sns_post_detail_cancel_button.setOnClickListener {
             finish()
         }
 
         //일반 댓글 입력
         binding.btnSendComment.setOnClickListener {
-            if(snsPostId == -1) return@setOnClickListener
+            if (snsPostId == -1) return@setOnClickListener
 
             val comment = binding.etWriteComment.text.toString()
             SnsRetrofitManager.instance.postComment(
@@ -96,7 +99,8 @@ class SnsPostDetailActivity : AppCompatActivity() {
                     when (responseStatus) {
                         //API 호출 성공
                         RESPONSE_STATUS.OKAY -> {
-                            CustomToast.makeText(App.instance, "댓글 입력에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "댓글 입력에 성공했습니다.", Toast.LENGTH_SHORT)
+                                .show()
 
                             //API 재호출
                             commentApiCall(snsPostId)
@@ -104,17 +108,19 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             binding.snsPostCommentsRecyclerview.smoothScrollToPosition(100)
                         }
                         RESPONSE_STATUS.FAIL -> {
-                            CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                                .show()
                         }
                         RESPONSE_STATUS.NO_CONTENT -> {
-                            CustomToast.makeText(App.instance, "댓글이 없습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "댓글이 없습니다.", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 })
         }
     }
 
-    private fun commentApiCall(postId: Int){
+    private fun commentApiCall(postId: Int) {
         SnsRetrofitManager.instance.getComments(
             postId,
             completion = { responseStatus, responseDataArrayList ->
@@ -128,32 +134,35 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         binding.snsPostCommentsRecyclerview.adapter?.notifyItemInserted(this.snsCommentList.size)
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
-                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
         )
     }
 
-
-    private fun imageApiCall(postId: Int){
+    private fun imageApiCall(postId: Int) {
         SnsRetrofitManager.instance.getImages(
             postId,
-            completion = {responseStatus, responseDataArrayList ->
-                when (responseStatus){
+            completion = { responseStatus, responseDataArrayList ->
+                when (responseStatus) {
                     RESPONSE_STATUS.OKAY -> {
                         responseDataArrayList!!.forEach {
                             this.snsImagesList.add(it)
                         }
                         binding.snsImageViewpager.adapter?.notifyItemInserted(this.snsImagesList.size)
-                        // indicator 지정
-                        binding.snsImageIndicator.createIndicators(this.snsImagesList.size,0)
+                        // 사진 개수가 2개 이상이면 indicator 지정
+                        if (this.snsImagesList.size >= 2)
+                            binding.snsImageIndicator.createIndicators(this.snsImagesList.size, 0)
                     }
                     RESPONSE_STATUS.FAIL -> {
-                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     RESPONSE_STATUS.NO_CONTENT -> {
 //                        CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
@@ -163,7 +172,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
             }
         )
     }
-
 
 
     inner class ZoomOutPageTransformer : ViewPager2.PageTransformer {
