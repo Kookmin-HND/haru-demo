@@ -77,9 +77,13 @@ class SnsAddPostActivity : AppCompatActivity() {
         //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
             val title =
-                binding.addPostTitle.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                binding.addPostTitle.text.toString()
+                    .trim()
+                    .toRequestBody("text/plain".toMediaTypeOrNull())
             val content =
-                binding.addPostText.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                binding.addPostText.text.toString()
+                    .trim()
+                    .toRequestBody("text/plain".toMediaTypeOrNull())
 
             val imagesMultipartBodyList = ArrayList<MultipartBody.Part>()
 

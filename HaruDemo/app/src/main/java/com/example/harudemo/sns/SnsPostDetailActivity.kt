@@ -89,7 +89,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.btnSendComment.setOnClickListener {
             if (snsPostId == -1) return@setOnClickListener
 
-            val comment = binding.etWriteComment.text.toString()
+            val comment = binding.etWriteComment.text.trim().toString()
             SnsRetrofitManager.instance.postComment(
                 "LMJ",
                 snsPostId,
