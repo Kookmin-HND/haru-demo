@@ -37,7 +37,6 @@ import java.nio.file.Paths
 class SnsAddPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsAddPostBinding;
 
-
     //어플리케이션 갤러리 접근 권한 확인
     private val permissionList = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     private val checkPermission =
@@ -63,7 +62,7 @@ class SnsAddPostActivity : AppCompatActivity() {
         binding = ActivitySnsAddPostBinding.inflate(layoutInflater);
         setContentView(binding.root)
 
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.ivAddedMultipleImagesRecyclerview.layoutManager = layoutManager
         binding.ivAddedMultipleImagesRecyclerview.adapter = adapter
 
@@ -148,24 +147,9 @@ class SnsAddPostActivity : AppCompatActivity() {
             CustomToast.makeText(applicationContext, "전체전체", Toast.LENGTH_SHORT).show();
         }
 
-
-        //갤러리에서 이미지 불러오기 선택
-        binding.addimage.setOnClickListener {
-            checkPermission.launch(permissionList)
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(intent, 200)
-        }
-
-
-
         // 바텀 메뉴를 클릭해서 갤러리로 이동
         binding.snsAddBottomNav.setOnItemSelectedListener {
             if(it.itemId == R.id.sns_add_image_nav_menu){
-                Toast.makeText(App.instance, "hello", Toast.LENGTH_SHORT).show()
-
                 checkPermission.launch(permissionList)
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -175,8 +159,6 @@ class SnsAddPostActivity : AppCompatActivity() {
             }
             true
         }
-
-
 
     }
 

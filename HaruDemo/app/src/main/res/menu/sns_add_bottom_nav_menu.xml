@@ -6,8 +6,19 @@
         android:icon="@drawable/ic_baseline_photo_camera_24"
         />
     <item
-        android:id="@+id/menu_calendar"
-        android:title="calendar"
-        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
         />
 </menu>

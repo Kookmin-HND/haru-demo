@@ -11,7 +11,7 @@ import com.example.harudemo.App
 import com.example.harudemo.R
 import kotlinx.android.synthetic.main.sns_post_image_item.view.*
 
-//SnsPost 리사이클러뷰 어댑터
+//SnsPost add 리사이클러뷰 어댑터
 class SnsPostImagesRecyclerViewAdapter(private val items: ArrayList<Uri>, val context:Context) : RecyclerView.Adapter<SnsPostImagesRecyclerViewAdapter.ViewHolder>() {
     override fun getItemCount(): Int = items.size
 
@@ -19,7 +19,7 @@ class SnsPostImagesRecyclerViewAdapter(private val items: ArrayList<Uri>, val co
         return ViewHolder(
             LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.sns_post_image_item, parent, false)
+                .inflate(R.layout.sns_post_add_image_item, parent, false)
         )
     }
 
