@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.App
+import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivitySnsAddPostBinding
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsPostImagesRecyclerViewAdapter
@@ -157,6 +158,26 @@ class SnsAddPostActivity : AppCompatActivity() {
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(intent, 200)
         }
+
+
+
+        // 바텀 메뉴를 클릭해서 갤러리로 이동
+        binding.snsAddBottomNav.setOnItemSelectedListener {
+            if(it.itemId == R.id.sns_add_image_nav_menu){
+                Toast.makeText(App.instance, "hello", Toast.LENGTH_SHORT).show()
+
+                checkPermission.launch(permissionList)
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(intent, 200)
+            }
+            true
+        }
+
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
