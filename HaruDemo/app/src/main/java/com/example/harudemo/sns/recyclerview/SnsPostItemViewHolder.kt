@@ -32,7 +32,8 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
         snsPostCreatedAt.text = snsPostItem.createdAt
-        snsPostContent.text = snsPostItem.content
+        //미리보기할 때는 개행 제거
+        snsPostContent.text = snsPostItem.content?.replace("\n", " ")
 
         snsPostPreviewImageCountMore.visibility = View.GONE
 
