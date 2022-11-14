@@ -159,6 +159,11 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         // 사진 개수가 2개 이상이면 indicator 지정
                         if (this.snsImagesList.size >= 2)
                             binding.snsImageIndicator.createIndicators(this.snsImagesList.size, 0)
+                        else if (this.snsImagesList.size == 0) {
+                            //이미지가 없으면 frame layout가 안보이게 함
+                            binding.snsPostDetailImagesFrameLayout.visibility = View.GONE
+                        }
+
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
