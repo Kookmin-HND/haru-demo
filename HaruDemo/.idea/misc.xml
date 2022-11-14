@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_align_vertical_bottom_24.xml" value="0.221" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_circle_up_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.221" />
+        <entry key="app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/ic_baseline_check_box_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_dehaze_24.xml" value="0.2485" />
@@ -22,17 +23,22 @@
         <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.21" />
         <entry key="app/src/main/res/drawable/ic_baseline_photo_camera_24.xml" value="0.231" />
         <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.21" />
+        <entry key="app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/ic_baseline_tag_faces_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_home_black_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_toggle_selected.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/ic_toggle_unselected.xml" value="0.2385" />
+        <entry key="app/src/main/res/drawable/month_onxml.xml" value="0.186" />
+        <entry key="app/src/main/res/drawable/sns_comment_vector_asset.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/sns_direct_message.xml" value="0.1965" />
         <entry key="app/src/main/res/drawable/sns_friends.xml" value="0.3075" />
         <entry key="app/src/main/res/drawable/sns_post_add.xml" value="0.3075" />
         <entry key="app/src/main/res/drawable/sns_post_textlines.xml" value="0.241" />
         <entry key="app/src/main/res/drawable/statistics_wrapbox.xml" value="0.172" />
         <entry key="app/src/main/res/drawable/textlines.xml" value="0.1725" />
+        <entry key="app/src/main/res/drawable/todo_day_selector.xml" value="0.186" />
+        <entry key="app/src/main/res/drawable/todo_duration_text_background.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/week_offxml.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/week_onxml.xml" value="0.2385" />
         <entry key="app/src/main/res/layout-w1240dp/activity_sns_add_post.xml" value="0.34375" />

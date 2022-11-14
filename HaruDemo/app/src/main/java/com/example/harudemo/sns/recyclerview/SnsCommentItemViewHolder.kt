@@ -47,7 +47,7 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 //좋아요 개수 업데이트
                 snsCommentLikesNumberTv.text = "1"
             }else{
-                val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(0)
+                val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(1000)
                 animator.addUpdateListener { animation ->
                     snsCommentLottieHeart.setProgress(animation.getAnimatedValue() as Float)
                 }
