@@ -18,6 +18,38 @@ class TodoRetrofitManager {
     private val todoService: TodoService? =
         RetrofitClient.getClient()?.create(TodoService::class.java)
 
+    // DB에 TodoData를 추가한다.
+    fun addTodo(
+        writer: String,
+        folder: String,
+        content: String,
+        dates: List<String>,
+        days: List<Boolean>,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+        val call =
+            todoService?.addTodos(writer, PostRequestBodyParams(folder, content, dates, days))
+                ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+        })
+    }
+
     // 사용자의 모든 todo를 반환한다.
     // completed 값에 따라 완료여부 값들을 필터링한다.
     fun getTodos(
@@ -148,38 +180,6 @@ class TodoRetrofitManager {
             override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
-        })
-    }
-
-    // DB에 TodoData를 추가한다.
-    fun addTodo(
-        writer: String,
-        folder: String,
-        content: String,
-        dates: List<String>,
-        days: List<Boolean>,
-        completion: (RESPONSE_STATUS, JsonArray?) -> Unit
-    ) {
-        val call =
-            todoService?.addTodos(writer, PostRequestBodyParams(folder, content, dates, days))
-                ?: return
-
-        call.enqueue(object : retrofit2.Callback<JsonElement> {
-            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                when (response.code()) {
-                    200 -> {
-                        completion(RESPONSE_STATUS.OKAY, response.body()?.asJsonArray)
-                    }
-                    400 -> {
-                        Log.d("[debug]", response.body().toString())
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                completion(RESPONSE_STATUS.FAIL, null)
-            }
-
         })
     }
 

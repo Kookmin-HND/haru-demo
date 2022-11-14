@@ -6,6 +6,68 @@ import { TodoLog } from "../entity/todo-log";
 export const path = "/todos";
 export const router = Router();
 
+// 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
+router.post(
+  "/:email",
+  async (
+    req: Request<
+      { email: string },
+      {},
+      { folder: string; content: string; dates: string[]; days: boolean[] }
+    >,
+    res: Response
+  ) => {
+    // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
+    const writer = req.params.email;
+
+    const { folder, content, dates, days } = req.body;
+
+    // 혹시 입력으로부터 빠져있는 값이 있는지 확인한다.
+    if (
+      !folder ||
+      !content ||
+      !dates ||
+      (dates && !dates.length) ||
+      !days ||
+      (days && !days.length)
+    ) {
+      return res
+        .status(400)
+        .send("folder, content, dates, days 중 하나의 값이 없습니다.");
+    }
+
+    const result: { todo: Todo | null; logs: TodoLog[] } = {
+      todo: null,
+      logs: [],
+    };
+    // 입력 값에 따른 데이터를 생성한다.
+    const todo = DB.getRepository(Todo).create({
+      writer,
+      folder,
+      content,
+      days: JSON.stringify(days),
+    });
+    // 위에서 생성한 todo 데이터를 table에 저장한다.
+    await DB.getRepository(Todo).save(todo);
+    result.todo = todo;
+
+    // TodoLog에 기록을 추가한다.
+    const logs: TodoLog[] = [];
+    for (const date of dates) {
+      logs.push(
+        DB.getRepository(TodoLog).create({
+          todoId: todo.id,
+          date,
+          completed: false,
+        })
+      );
+    }
+    await DB.getRepository(TodoLog).save(logs);
+    result.logs = logs;
+    return res.json(result);
+  }
+);
+
 // 사용자의 모든 todo를 반환한다.
 // completed 값에 따라 완료여부 값들을 필터링한다.
 router.get(
@@ -46,7 +108,7 @@ router.get(
   "/:email/all",
   async (
     req: Request<{ email: string }>,
-    res: Response<{ [key: number]: { todo: Todo; todoLogs: TodoLog[] } }>
+    res: Response<{ [key: number]: { todo: Todo; logs: TodoLog[] } }>
   ) => {
     const writer = req.params.email;
 
@@ -54,13 +116,13 @@ router.get(
       writer: writer,
     });
 
-    const todosMap: { [key: number]: { todo: Todo; todoLogs: TodoLog[] } } = {};
+    const todosMap: { [key: number]: { todo: Todo; logs: TodoLog[] } } = {};
     for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
+      const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
       });
 
-      todosMap[todo.id] = { todo, todoLogs };
+      todosMap[todo.id] = { todo, logs };
     }
 
     return res.json(todosMap);
@@ -85,11 +147,11 @@ router.get(
 
     const result: Todo[] = [];
     for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
+      const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
         completed,
       });
-      if (todoLogs.length) {
+      if (logs.length) {
         result.push(todo);
       }
     }
@@ -114,75 +176,16 @@ router.get(
 
     const result: Todo[] = [];
     for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
+      const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
         date: date,
         completed,
       });
-      if (todoLogs.length) {
+      if (logs.length) {
         result.push(todo);
       }
     }
 
-    return res.json(result);
-  }
-);
-
-// 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
-router.post(
-  "/:email",
-  async (
-    req: Request<
-      { email: string },
-      {},
-      { folder: string; content: string; dates: string[]; days: boolean[] }
-    >,
-    res: Response
-  ) => {
-    // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
-    const writer = req.params.email;
-
-    const { folder, content, dates, days } = req.body;
-
-    // 혹시 입력으로부터 빠져있는 값이 있는지 확인한다.
-    if (
-      !folder ||
-      !content ||
-      !dates ||
-      (dates && !dates.length) ||
-      !days ||
-      (days && !days.length)
-    ) {
-      return res
-        .status(400)
-        .send("folder, content, dates, days 중 하나의 값이 없습니다.");
-    }
-
-    const result: any[] = [];
-    // 입력 값에 따른 데이터를 생성한다.
-    const todo = DB.getRepository(Todo).create({
-      writer,
-      folder,
-      content,
-      days: JSON.stringify(days),
-    });
-    // 위에서 생성한 todo 데이터를 table에 저장한다.
-    await DB.getRepository(Todo).save(todo);
-    result.push(todo);
-
-    // TodoLog에 기록을 추가한다.
-    const logs: TodoLog[] = [];
-    for (const date of dates) {
-      logs.push(
-        DB.getRepository(TodoLog).create({
-          todoId: todo.id,
-          date,
-          completed: false,
-        })
-      );
-    }
-    await DB.getRepository(TodoLog).save(logs);
-    result.push(...logs);
     return res.json(result);
   }
 );
