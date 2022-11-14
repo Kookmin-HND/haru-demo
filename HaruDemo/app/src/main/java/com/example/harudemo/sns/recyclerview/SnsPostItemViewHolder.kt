@@ -28,12 +28,21 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     // 이미지가 더 있다는 걸 알려주는 텍스트뷰
     private val snsPostPreviewImageCountMore = itemView.sns_post_preview_image_count_more
 
+    //comment number
+    private val snsPostCommentNumber = itemView.sns_post_comment_number
+
 
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
         snsPostCreatedAt.text = snsPostItem.createdAt
         //미리보기할 때는 개행 제거
         snsPostContent.text = snsPostItem.content?.replace("\n", " ")
+
+        //comment number
+        if(snsPostItem.commentNumber > 0)
+            snsPostCommentNumber.text = snsPostItem.commentNumber.toString()
+        else if(snsPostItem.commentNumber == 0)
+            snsPostCommentNumber.text = ""
 
         snsPostPreviewImageCountMore.visibility = View.GONE
 
