@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Post } from "../entity/post";
 import { MoreThan } from "typeorm";
 
@@ -17,7 +17,7 @@ router.get(
   async (req: Request<PostParams>, res: Response) => {
     //마지막으로 읽은 postId를 바탕으로 이후 게시물 50개를 가져온다
     const readedPostId = Number(req.params.postId);
-    const result = await myDataSource.getRepository(Post).find({
+    const result = await DB.getRepository(Post).find({
       where: { id: MoreThan(readedPostId) },
       take: 50,
       order: { id: "DESC" },
@@ -36,7 +36,7 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 
   try {
     //postId로 게시물 하나의 데이터를 가져온다
-    const result = await myDataSource.getRepository(Post).findOneOrFail({
+    const result = await DB.getRepository(Post).findOneOrFail({
       where: { id: postId },
     });
     return res.json(result);
@@ -48,8 +48,8 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 //게시물 입력
 router.post("/", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-  const post = myDataSource.getRepository(Post).create(req.body);
-  const result = await myDataSource.getRepository(Post).save(post);
+  const post = DB.getRepository(Post).create(req.body);
+  const result = await DB.getRepository(Post).save(post);
 
   return res.json(result);
 });
@@ -57,7 +57,7 @@ router.post("/", async (req: Request, res: Response) => {
 //게시물 삭제요청
 router.delete("/:postId", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
-  const result = await myDataSource.getRepository(Post).delete(postId);
+  const result = await DB.getRepository(Post).delete(postId);
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected)
@@ -72,9 +72,10 @@ router.patch("/:postId", async (req: Request<PostParams>, res: Response) => {
   const content: string = req.body.content;
 
   // id가 postId에 해당하는 게시글의 content 수정
-  const result = await myDataSource
-    .getRepository(Post)
-    .update({ id: postId }, { content });
+  const result = await DB.getRepository(Post).update(
+    { id: postId },
+    { content }
+  );
 
   //affected : 0 실패, affected : 1 성공
   if (!result.affected)

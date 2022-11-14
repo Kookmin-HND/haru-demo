@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Equal } from "typeorm";
-import myDataSource from "../app-data-source";
+import DB from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { User } from "../entity/user";
 
@@ -31,7 +31,7 @@ router.get(
     const writer = req.params.email;
 
     // 이 사용자가 작성한 모든 todo를 가져온다.
-    const todos = await myDataSource.getRepository(Todo).findBy({
+    const todos = await DB.getRepository(Todo).findBy({
       writer: Equal(writer),
     });
 
@@ -62,7 +62,7 @@ router.post(
     const result: Todo[] = [];
     for (const date of dates) {
       // 입력 값에 따른 데이터를 생성한다.
-      const todo = await myDataSource.getRepository(Todo).create({
+      const todo = await DB.getRepository(Todo).create({
         writer,
         folder,
         content,
@@ -71,7 +71,7 @@ router.post(
       });
 
       // 위에서 생성한 todo 데이터를 table에 저장한다.
-      await myDataSource.getRepository(Todo).save(todo);
+      await DB.getRepository(Todo).save(todo);
       result.push(todo);
     }
     return res.json(result);
@@ -106,7 +106,7 @@ router.patch(
     }
 
     // todo 데이터를 업데이트 한다.
-    const result = await myDataSource.getRepository(Todo).update(id, {
+    const result = await DB.getRepository(Todo).update(id, {
       folder,
       content,
       date,
@@ -125,6 +125,6 @@ router.delete("/", async (req: Request, res: Response) => {
     return res.status(400).send("id가 존재하지 않습니다");
   }
 
-  const result = await myDataSource.getRepository(Todo).delete(id);
+  const result = await DB.getRepository(Todo).delete(id);
   return res.json(result);
 });

@@ -1,14 +1,13 @@
 import "./env.ts";
 import express, { Request, Response, NextFunction } from "express";
-import myDataSource from "./app-data-source";
+import DB from "./app-data-source";
 import router from "./routes";
 import passport from "passport";
 import passportOpt from "./passport";
 import cookies from "cookie-parser";
 
 // establish database connection
-myDataSource
-  .initialize()
+DB.initialize()
   .then(() => {
     console.log("Data Source has been initialized!");
   })
