@@ -22,6 +22,7 @@ import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
+import java.net.URI
 import java.security.PrivateKey
 import java.time.LocalDate
 import java.util.*
@@ -34,10 +35,18 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
     private var logs: ArrayList<TodoLog> = arrayListOf()
     var section: Section? = null
         set(value) {
-            logs.clear()
-            for (todo in section?.todoList!!) {
-                val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
-                todoLogs?.first()?.let { logs.add(it) }
+            if (section == null) {
+                field = value
+                logs.clear()
+                for (todo in section?.todoList!!) {
+                    // TODO: API 수정(Section에다가 todoLog까지 담아서 같이 보내줌.)
+                    Runnable {
+                        val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
+                        todoLogs?.first()?.let { logs.add(it) }
+                    }
+                }
+                this@TodoListSectionAdapter.notifyItemInserted(field?.todoList?.size!!)
+                return
             }
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 val older = field
@@ -64,6 +73,11 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
                 }
             })
             field = value
+            logs.clear()
+            for (todo in field?.todoList!!) {
+                val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
+                todoLogs?.first()?.let { logs.add(it) }
+            }
             result.dispatchUpdatesTo(this)
         }
 
@@ -79,6 +93,8 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
+            section?.todoList?.toString()?.let { Log.d("[debug]", it) }
+            Log.d("[debug]", logs.toString())
             if (logs[position].completed) {
                 itemBinding.btnCheckTodo.isChecked = true
                 itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -108,8 +124,7 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시 삭제한다.
                 TodoData.API.delete(todo.id, {
-                    section = Section(section?.sectionTitle!!,
-                        section?.todoList?.filter { it != todo } as ArrayList<Todo>)
+                    section?.todoList = section?.todoList?.filter { it != todo } as ArrayList<Todo>
                 })
             }
         }

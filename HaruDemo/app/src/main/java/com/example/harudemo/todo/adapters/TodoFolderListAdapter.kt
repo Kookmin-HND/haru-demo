@@ -86,8 +86,6 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
             })
             folderList = it.keys.toList()
             folderMap = it
-            Log.d("[debug]", folderList.toString())
-            Log.d("[debug]", folderMap.toString())
             result.dispatchUpdatesTo(this)
         }, {
             CustomToast.makeText(activity, "목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()

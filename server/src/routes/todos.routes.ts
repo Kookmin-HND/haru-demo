@@ -6,7 +6,6 @@ import { TodoLog } from "../entity/todo-log";
 export const path = "/todos";
 export const router = Router();
 
-// FIXME: GET 요청은 body로 동적 변수를 받을 수 없고, query를 통해 받아야 한다.
 // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
 router.post(
   "/:email",
@@ -75,7 +74,7 @@ router.get(
   "/:email",
   async (
     req: Request<{ email: string }, {}, {}, { completed: boolean }>,
-    res: Response<Todo[]>
+    res: Response<{ [key: number]: { todo: Todo; logs: TodoLog[] } }>
   ) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const { email: writer } = req.params;
@@ -87,7 +86,7 @@ router.get(
     });
 
     // completed의 값이 일치하는 todo를 가져온다.
-    const result: Todo[] = [];
+    const result: { [key: number]: { todo: Todo; logs: TodoLog[] } } = [];
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
@@ -95,38 +94,11 @@ router.get(
       });
 
       if (logs.length) {
-        result.push(todo);
+        result[todo.id] = { todo, logs };
       }
     }
-
     // 이 사용자가 가지고 있는 조건이 일치하는 모든 todo를 반환한다.
     return res.json(result);
-  }
-);
-
-// 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
-router.get(
-  "/:email/all",
-  async (
-    req: Request<{ email: string }>,
-    res: Response<{ [key: number]: { todo: Todo; logs: TodoLog[] } }>
-  ) => {
-    const writer = req.params.email;
-
-    const todos = await DB.getRepository(Todo).findBy({
-      writer,
-    });
-
-    const todosMap: { [key: number]: { todo: Todo; logs: TodoLog[] } } = {};
-    for (const todo of todos) {
-      const logs = await DB.getRepository(TodoLog).findBy({
-        todoId: todo.id,
-      });
-
-      todosMap[todo.id] = { todo, logs };
-    }
-
-    return res.json(todosMap);
   }
 );
 
@@ -137,12 +109,14 @@ router.get(
     req: Request<{ todoId: number; completed: boolean }, {}, {}>,
     res: Response<TodoLog[]>
   ) => {
+    console.log("HERE");
     const { todoId, completed } = req.params;
 
     const logs = await DB.getRepository(TodoLog).findBy({
       todoId,
       completed,
     });
+    console.log(logs);
 
     return res.json(logs);
   }
@@ -169,7 +143,7 @@ router.get(
   "/:email/folder",
   async (
     req: Request<{ email: string }, {}, {}, { completed: boolean }>,
-    res: Response<{ [key: string]: Todo[] }>
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[][] } }>
   ) => {
     const { email: writer } = req.params;
     const { completed } = req.query;
@@ -178,21 +152,22 @@ router.get(
       writer,
     });
 
-    const todosMap: { [key: string]: Todo[] } = {};
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[][] } } = {};
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
         completed,
       });
       if (logs.length) {
-        if (todo.folder in todosMap) {
-          todosMap[todo.folder].push(todo);
+        if (todo.folder in result) {
+          result[todo.folder].todos.push(todo);
+          result[todo.folder].logs.push(logs);
         } else {
-          todosMap[todo.folder] = [todo];
+          result[todo.folder] = { todos: [todo], logs: [logs] };
         }
       }
     }
-    return res.json(todosMap);
+    return res.json(result);
   }
 );
 
@@ -207,7 +182,7 @@ router.get(
       {},
       { completed: boolean }
     >,
-    res: Response<Todo[]>
+    res: Response<{ todos: Todo[]; logs: TodoLog[][] }>
   ) => {
     const { email: writer, folder } = req.params;
     const { completed } = req.query;
@@ -217,14 +192,18 @@ router.get(
       folder,
     });
 
-    const result: Todo[] = [];
+    const result: { todos: Todo[]; logs: TodoLog[][] } = {
+      todos: [],
+      logs: [],
+    };
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
         completed,
       });
       if (logs.length) {
-        result.push(todo);
+        result.todos.push(todo);
+        result.logs.push(logs);
       }
     }
     return res.json(result);
@@ -241,30 +220,30 @@ router.get(
       {},
       { completed: boolean; dates: string[] }
     >,
-    res: Response<{ [key: string]: Todo[] }>
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[] } }>
   ) => {
     const { email: writer } = req.params;
     const { completed, dates } = req.query;
 
-    const todosMap: { [key: string]: Todo[] } = {};
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[] } } = {};
     for (const date of dates) {
       const logs = await DB.getRepository(TodoLog).findBy({
         date,
         completed,
       });
 
-      todosMap[date] = [];
+      result[date].logs = logs;
+      result[date].todos = [];
       for (const log of logs) {
-        const todos = await DB.getRepository(Todo).findBy({
+        const todo = await DB.getRepository(Todo).findOneBy({
           writer,
           id: log.todoId,
         });
-
-        todosMap[date].push(...todos);
+        if (todo) result[date].todos.push(todo);
       }
     }
 
-    return res.json(todosMap);
+    return res.json(result);
   }
 );
 
@@ -279,7 +258,7 @@ router.get(
       {},
       { completed: boolean }
     >,
-    res: Response<Todo[]>
+    res: Response<{ todos: Todo[]; logs: TodoLog[] }>
   ) => {
     const { email: writer, date } = req.params;
     const { completed } = req.query;
@@ -288,15 +267,16 @@ router.get(
       writer: writer,
     });
 
-    const result: Todo[] = [];
+    const result: { todos: Todo[]; logs: TodoLog[] } = { todos: [], logs: [] };
     for (const todo of todos) {
-      const logs = await DB.getRepository(TodoLog).findBy({
+      const log = await DB.getRepository(TodoLog).findOneBy({
         todoId: todo.id,
         date: date,
         completed,
       });
-      if (logs.length) {
-        result.push(todo);
+      if (log) {
+        result.todos.push(todo);
+        result.logs.push(log);
       }
     }
 
@@ -348,7 +328,6 @@ router.patch(
           todoId: id,
         })
       );
-      console.log(dates);
       for (const date of dates) {
         console.log(date);
         result.push(

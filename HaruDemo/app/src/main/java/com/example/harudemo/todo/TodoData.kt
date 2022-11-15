@@ -83,18 +83,9 @@ object TodoData {
         fun getLogs(
             todoId: Number,
             completed: Boolean,
-            okayCallback: (ArrayList<TodoLog>) -> Unit = {},
-            failCallback: () -> Unit = {},
-            noContentCallback: () -> Unit = {},
         ): Response<ArrayList<TodoLog>>? {
             return TodoRetrofitManager.instance.getLogs(
-                todoId, completed, completion = { responseStatus, todoLogs ->
-                    when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> todoLogs?.let(okayCallback)
-                        RESPONSE_STATUS.FAIL -> failCallback()
-                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
-                    }
-                }
+                todoId, completed
             )
         }
 

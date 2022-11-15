@@ -40,16 +40,12 @@ class TodoRetrofitManager {
                     200 -> {
                         completion(RESPONSE_STATUS.OKAY, response.body())
                     }
-                    400 -> {
-                        Log.d("[debug]", response.body().toString())
-                    }
                 }
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
-
         })
     }
 
@@ -130,7 +126,6 @@ class TodoRetrofitManager {
     fun getLogs(
         todoId: Number,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, ArrayList<TodoLog>?) -> Unit
     ): Response<ArrayList<TodoLog>>? {
         val call = todoService?.getLogs(todoId, completed)
         return call?.execute()
