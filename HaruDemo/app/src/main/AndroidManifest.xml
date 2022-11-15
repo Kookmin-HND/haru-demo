@@ -34,8 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".sns.SnsAddPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing" />
+            android:exported="false" />
         <activity
             android:name=".sns.SnsDirectMessageActivity"
             android:exported="false"

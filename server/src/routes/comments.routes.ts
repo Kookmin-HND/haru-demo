@@ -35,35 +35,27 @@ router.post("/:email", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
   const writer = req.params.email;
 
-  const post = DB.getRepository(Comment).create({
-    ...req.body,
-    post: req.body.postId,
-    writer,
-  });
+  const post = DB.getRepository(Comment).create({ ...req.body, post: req.body.postId, writer });
   const result = await DB.getRepository(Comment).save(post);
 
   return res.json(result);
 });
 
 //게시물 삭제요청 , deleted가 true라면 프론트에서 '삭제된 댓글입니다' 표시
-router.delete(
-  "/:commentId",
-  async (req: Request<CommentParams>, res: Response) => {
-    const commentId = Number(req.params.commentId);
-    const result = await DB.getRepository(Comment).update(
-      {
-        id: commentId,
-      },
-      { deleted: true }
-    );
+router.delete("/:commentId", async (req: Request<CommentParams>, res: Response) => {
+  const commentId = Number(req.params.commentId);
+  const result = await DB.getRepository(Comment).update(
+    {
+      id: commentId,
+    },
+    { deleted: true }
+  );
 
-    //affected : 0 실패, affected : 1 성공
-    if (!result.affected)
-      return res.status(400).send("댓글 삭제에 실패했습니다.");
+  //affected : 0 실패, affected : 1 성공
+  if (!result.affected) return res.status(400).send("댓글 삭제에 실패했습니다.");
 
-    return res.json(result);
-  }
-);
+  return res.json(result);
+});
 
 // //댓글 수정 -> 필요 없음
 // router.patch("/:commentId", async (req: Request, res: Response) => {

@@ -18,11 +18,11 @@ data class SnsPostRequestBodyParams(
 
 data class SnsCommentPostRequestBodyParams(
     @SerializedName("postId")
-    val postId : Int,
+    val postId: Int,
     @SerializedName("content")
     val content: String,
     @SerializedName("parentCommentId")
-    val parentCommentId : Int
+    val parentCommentId: Int
 )
 
 
@@ -30,25 +30,30 @@ interface SnsService {
     //url:    http://10.0.2.2/api/posts/recent/{postId}
     @GET(API.RECENT_POSTS)
     fun getPosts(
-        @Path("postId") id:Int
-    ) : Call<JsonElement>
-
-
-    @POST("${API.POSTS}/{email}")
-    fun postPost(
-        @Path("email") writer: String,
-        @Body requestBodyParams: SnsPostRequestBodyParams
+        @Path("postId") id: Int
     ): Call<JsonElement>
 
-    // 이미지 추가 버전
+
+//
+//    // 이미지 추가 버전
 //    @Multipart
 //    @POST("${API.POSTS}/{email}")
 //    fun postPost(
 //        @Path("email") writer: String,
-//        @Part images: ArrayList<MultipartBody.Part>?,
+//        @Part images: List<MultipartBody.Part>?,
 //        @Part("requestBodyParams") requestBodyParams: SnsPostRequestBodyParams
 //    ): Call<JsonElement>
 
+
+    // 이미지 추가 버전
+    @Multipart
+    @POST("${API.POSTS}/{email}")
+    fun postPost(
+        @Path("email") writer: String,
+        @Part("title") title: RequestBody,
+        @Part("content") content: RequestBody,
+        @Part images: List<MultipartBody.Part>?
+    ): Call<JsonElement>
 
 
     @POST("${API.COMMENTS}/{email}")
@@ -63,4 +68,10 @@ interface SnsService {
         @Path("postId") postId: Int,
     ): Call<JsonElement>
 
+
+    // 해당 postId가 갖고 있는 이미지 가져오는 api
+    @GET("${API.POSTS}/{postId}/images")
+    fun getImages(
+        @Path("postId") postId: Int,
+    ): Call<JsonElement>
 }

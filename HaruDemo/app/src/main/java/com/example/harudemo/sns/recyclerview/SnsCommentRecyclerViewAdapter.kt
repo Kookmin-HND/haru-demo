@@ -12,7 +12,7 @@ import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsPostDetailActivity
 
-//SnsPost 리사이클러뷰 어댑터
+//SnsComment 리사이클러뷰 어댑터
 class SnsCommentRecyclerViewAdapter : RecyclerView.Adapter<SnsCommentItemViewHolder>() {
     private var snsCommentList = ArrayList<SnsComment>()
 
