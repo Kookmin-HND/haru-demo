@@ -33,5 +33,8 @@ interface AuthService {
 
     @GET("${API.USERS}/info")
     fun getInfo() : Call<JsonElement>
+
+    @POST("${API.USERS}/logout")
+    fun postLogout() : Call<JsonElement>
 }
 

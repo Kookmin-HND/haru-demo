@@ -71,4 +71,23 @@ class AuthRetrofitManager {
             }
         })
     }
+
+    // token 삭제를 통한 로그아웃
+    fun logoutUser(completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
+        val call = authService?.postLogout() ?:return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement>{
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when(response.code()){
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                }
+            }
+        })
+    }
 }

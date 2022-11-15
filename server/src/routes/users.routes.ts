@@ -23,7 +23,7 @@ interface UserSignBody {
 //http://localhost:8000/api/users/ ~~
 
 // user 정보조회
-router.get("/info", async (req: Request<UserParams>, res: Response) => {
+router.get("/info", async (req: Request, res: Response) => {
   try {
     passport.authenticate("jwt", (jwtError, user, info) => {
       console.log(jwtError, user, info);
@@ -111,6 +111,23 @@ router.post(
     });
   }
 );
+
+// user 로그아웃
+router.post("/logout", async (req: Request, res: Response) => {
+  try {
+    passport.authenticate("jwt", (jwtError, user, info) => {
+      console.log(jwtError, user, info);
+      if (!user || jwtError) {
+        return res.status(400).send("로그인 상태가 아니다.");
+      }
+      res.clearCookie("token");
+      return res.json({ logout: "success" });
+    })(req, res);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ logout: "false" });
+  }
+});
 
 // user 정보수정
 // router.patch(
