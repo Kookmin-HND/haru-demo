@@ -119,7 +119,6 @@ class TodoInputActivity : AppCompatActivity() {
             // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
             binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
             binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
-
         }
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
@@ -207,6 +206,23 @@ class TodoInputActivity : AppCompatActivity() {
                     TodoFragment.folderListAdapter.notifyDataSetChanged()
                 })
             }
+
+            for(data in datesList) {
+                var splitdata = data.split("-")
+
+                val calendar: Calendar = Calendar.getInstance().apply { // 1
+                    timeInMillis = System.currentTimeMillis()
+                    set(Calendar.YEAR, splitdata[0].toInt())
+                    set(Calendar.MONTH, splitdata[1].toInt()-1)
+                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
+                    set(Calendar.AM_PM, Calendar.AM)
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                }
+
+                MainActivity.getInstance()?.addAlarm(calendar)
+            }
+
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()
         }
@@ -240,7 +256,7 @@ class TodoInputActivity : AppCompatActivity() {
 
     // 입력에 문제가 있는지 판별하는 함수
     private fun validation(text: String): Boolean {
-        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[a-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
+        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[\\sa-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
         return regex.matches(text)
     }
 

@@ -59,7 +59,7 @@ router.post("/login", async (req: Request, res: Response) => {
           { email: user.email },
           process.env.JWT_KEY as Secret
         );
-        return res.cookie("token", token, { httpOnly: true }).json(token);
+        return res.cookie("token", token, { httpOnly: true }).json(token);      
       });
     })(req, res);
   } catch (error) {
@@ -103,14 +103,12 @@ router.post(
           password: password,
           name: name,
         });
-
         await DB.getRepository(User).save(result);
         console.log("signup success");
         return res.json("회원가입 성공");
-      });
     });
-  }
-);
+  });
+});
 
 // user 로그아웃
 router.post("/logout", async (req: Request, res: Response) => {

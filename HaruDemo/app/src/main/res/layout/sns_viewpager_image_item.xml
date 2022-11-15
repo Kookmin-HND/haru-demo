@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/sns_viewpager_image_view"
+        android:text="1"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:textSize="50dp"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:background="#FFCDD2"
+
+        />
+
+</LinearLayout>

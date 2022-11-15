@@ -14,4 +14,11 @@
     <color name="todo_day_btn_clicked">#c7f9cc</color>
     <color name="todo_day_btn">#80ed99</color>
     <color name="orange">#ff9500</color>
+    <color name="black_coral">#5E6472</color>
+    <color name="light_gray">#CCCCCC</color>
+    <color name="gray_web">#7F7F7F</color>
+    <color name="rhythm">#646881</color>
+    <color name="charcoal">#364652</color>
+    <color name="background">#19BCC4C6</color>
+    <color name="text">#33333f</color>
 </resources>

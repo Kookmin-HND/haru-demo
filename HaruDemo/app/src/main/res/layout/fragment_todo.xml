@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -21,7 +22,8 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:menu="@menu/todo_top_app_bar_menu"
             app:title="하루"
-            app:titleTextColor="@color/white" />
+            app:titleTextAppearance="@style/ToolbarTitle" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -30,35 +32,42 @@
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="#808080" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_height="wrap_content">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_today"
+                    style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:fontFamily="@font/noto_sans_kr"
-                    android:text="오늘"
-                    android:textColor="@color/white" />
+                    android:padding="25dp"
+                    android:text="오늘" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_week"
+                    style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:fontFamily="@font/noto_sans_kr"
-                    android:text="일주일"
-                    android:textColor="@color/white" />
+                    android:padding="25dp"
+                    android:text="일주일" />
 
             </LinearLayout>
 
@@ -66,25 +75,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_all"
+                    style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:fontFamily="@font/noto_sans_kr"
-                    android:text="전체"
-                    android:textColor="@color/white" />
+                    android:padding="25dp"
+                    android:text="전체" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_completed"
+                    style="@style/TodoButton"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
-                    android:fontFamily="@font/noto_sans_kr"
-                    android:text="완료된 항목"
-                    android:textColor="@color/white" />
+                    android:padding="25dp"
+                    android:text="완료된 항목" />
 
             </LinearLayout>
 
@@ -92,20 +101,16 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="#808080" />
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_folder_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_folder_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/fragment_todo_folder_item" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/fragment_todo_folder_item" />
 
     </LinearLayout>
 
@@ -120,18 +125,13 @@
             android:id="@+id/btn_add_todo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:elevation="0dp"
-            android:outlineProvider="none" />
+            android:elevation="15dp"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_baseline_add_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="6dp"
-            android:text="+"
-            android:textColor="@color/white"
-            android:textSize="30sp" />
     </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

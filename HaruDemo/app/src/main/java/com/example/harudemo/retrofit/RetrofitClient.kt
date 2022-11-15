@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
     private var retrofitClient: Retrofit? = null
 
-    fun getClient(baseUrl: String): Retrofit? {
+    fun getClient(): Retrofit? {
 
         //okhttp 인스턴스 생성
         val client = OkHttpClient.Builder()
@@ -83,8 +83,8 @@ object RetrofitClient {
                 val response = chain.proceed(originalRequest)
                 Log.d("[debug]", response.toString())
                 Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
-
-                if (response.code != 200) {
+                Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
+                if(response.code != 200){
                     Handler(Looper.getMainLooper()).post {
                         CustomToast.makeText(
                             App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
@@ -107,7 +107,7 @@ object RetrofitClient {
 
         // 레트로핏 빌더를 통해 인스턴스 생성
         if (retrofitClient == null) {
-            retrofitClient = Retrofit.Builder().baseUrl(baseUrl)
+            retrofitClient = Retrofit.Builder().baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
                 .client(okHttpClient).build()

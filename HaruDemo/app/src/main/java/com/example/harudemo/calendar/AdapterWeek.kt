@@ -55,13 +55,13 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
     }
 
     //날짜를 클릭할 때마다 그 요일의 일정을 가져오기 위한 함수
-    fun changeadapter(holder: WeekView, tempMonth: Int, start: Int){
+    fun changeadapter(holder: WeekView, tempYear: Int, tempMonth: Int, start: Int){
         //리스트의 범위를 넘지 않으면
         if (start+maindata.week_content-1 < 32) {
             println(maindata.week_content)
 
             //그 날짜의 데이터를 리스트로 가져오고
-            var splitdata = maindata.contents[tempMonth][start + maindata.week_content - 1].split("\n")
+            var splitdata = maindata.contents[tempYear-2022][tempMonth][start + maindata.week_content].split("\n")
 
             var contentlist: MutableList<String> = MutableList(splitdata.size) { "" }
 
@@ -86,6 +86,7 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
         calendar.set(Calendar.DAY_OF_WEEK, 1)
         calendar.add(Calendar.DATE, position*7)
 
+        val tempYear = calendar.get(Calendar.YEAR)
         val tempMonth = calendar.get(Calendar.MONTH)
         holder.week_text.text = (tempMonth+1).toString()+"월 할 일"
 
@@ -109,7 +110,7 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
                     daylist[maindata.week_content].setBackgroundColor(Color.parseColor("#F0F0F0"))
                     daylist[i].setBackgroundColor(Color.parseColor("#FFFFFF"))
                     maindata.week_content = i
-                    changeadapter(holder, tempMonth, start)
+                    changeadapter(holder, tempYear, tempMonth, start)
                 }
             }
         }
