@@ -74,12 +74,12 @@ router.post(
 router.get(
   "/:email",
   async (
-    req: Request<{ email: string }, {}, { completed: boolean }>,
+    req: Request<{ email: string }, {}, {}, { completed: boolean }>,
     res: Response<Todo[]>
   ) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const { email: writer } = req.params;
-    const { completed } = req.body;
+    const { completed } = req.query;
 
     // 이 사용자가 작성한 모든 todo를 가져온다.
     const todos = await DB.getRepository(Todo).findBy({
@@ -168,11 +168,11 @@ router.get(
 router.get(
   "/:email/folder",
   async (
-    req: Request<{ email: string }, {}, { completed: boolean }>,
+    req: Request<{ email: string }, {}, {}, { completed: boolean }>,
     res: Response<{ [key: string]: Todo[] }>
   ) => {
     const { email: writer } = req.params;
-    const { completed } = req.body;
+    const { completed } = req.query;
 
     const todos = await DB.getRepository(Todo).findBy({
       writer,
@@ -201,11 +201,16 @@ router.get(
 router.get(
   "/:email/folder/:folder",
   async (
-    req: Request<{ email: string; folder: string }, {}, { completed: boolean }>,
+    req: Request<
+      { email: string; folder: string },
+      {},
+      {},
+      { completed: boolean }
+    >,
     res: Response<Todo[]>
   ) => {
     const { email: writer, folder } = req.params;
-    const { completed } = req.body;
+    const { completed } = req.query;
 
     const todos = await DB.getRepository(Todo).findBy({
       writer,
@@ -233,12 +238,13 @@ router.get(
     req: Request<
       { email: string },
       {},
+      {},
       { completed: boolean; dates: string[] }
     >,
     res: Response<{ [key: string]: Todo[] }>
   ) => {
     const { email: writer } = req.params;
-    const { completed, dates } = req.body;
+    const { completed, dates } = req.query;
 
     const todosMap: { [key: string]: Todo[] } = {};
     for (const date of dates) {
@@ -267,11 +273,16 @@ router.get(
 router.get(
   "/:email/date/:date",
   async (
-    req: Request<{ email: string; date: string }, {}, { completed: boolean }>,
+    req: Request<
+      { email: string; date: string },
+      {},
+      {},
+      { completed: boolean }
+    >,
     res: Response<Todo[]>
   ) => {
     const { email: writer, date } = req.params;
-    const { completed } = req.body;
+    const { completed } = req.query;
 
     const todos = await DB.getRepository(Todo).findBy({
       writer: writer,

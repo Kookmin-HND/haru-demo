@@ -60,7 +60,7 @@ class TodoRetrofitManager {
         completed: Boolean,
         completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
     ) {
-        val call = todoService?.getTodos(writer, GetRequestBodyParams(completed)) ?: return
+        val call = todoService?.getTodos(writer, completed) ?: return
         call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
             override fun onResponse(
                 call: Call<ArrayList<Todo>>, response: Response<ArrayList<Todo>>
@@ -152,7 +152,7 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
     ) {
         val call =
-            todoService?.getAllTodosByFolder(writer, GetRequestBodyParams(completed)) ?: return
+            todoService?.getAllTodosByFolder(writer, completed) ?: return
         call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
             override fun onResponse(
                 call: Call<HashMap<String, ArrayList<Todo>>>,
@@ -182,7 +182,7 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
     ) {
         val call =
-            todoService?.getTodosByFolder(writer, folder, GetRequestBodyParams(completed)) ?: return
+            todoService?.getTodosByFolder(writer, folder, completed) ?: return
         call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
             override fun onResponse(
                 call: Call<ArrayList<Todo>>,
@@ -211,7 +211,7 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
     ) {
         val call =
-            todoService?.getTodosByDateInDates(writer, GetRequestBodyParams(completed, dates))
+            todoService?.getTodosByDateInDates(writer, completed, dates)
                 ?: return
         call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
             override fun onResponse(
@@ -241,7 +241,7 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
     ) {
         val call =
-            todoService?.getTodosByDate(writer, date, GetRequestBodyParams(completed)) ?: return
+            todoService?.getTodosByDate(writer, date, completed) ?: return
         call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
             override fun onResponse(
                 call: Call<ArrayList<Todo>>,

@@ -10,14 +10,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.*
 
-data class GetRequestBodyParams(
-    @SerializedName("completed")
-    val completed: Boolean,
-
-    @SerializedName("dates")
-    val dates: List<String>? = null
-)
-
 data class PostRequestBodyParams(
     @SerializedName("folder")
     val folder: String,
@@ -67,7 +59,7 @@ data class DeleteRequestBodyParams(
 
 interface TodoService {
     // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}", hasBody = true)
+    @POST("${API.TODOS}/{email}")
     fun addTodos(
         @Path("email") writer: String,
         @Body requestBodyParams: PostRequestBodyParams
@@ -75,10 +67,10 @@ interface TodoService {
 
     // 사용자의 모든 todo를 반환한다.
     // completed 값에 따라 완료여부 값들을 필터링한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}", hasBody = true)
+    @GET("${API.TODOS}/{email}")
     fun getTodos(
         @Path("email") writer: String,
-        @Body params: GetRequestBodyParams
+        @Query("completed") completed: Boolean,
     ): Call<ArrayList<Todo>>
 
     // 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
@@ -100,36 +92,37 @@ interface TodoService {
 
     // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}/folder", hasBody = true)
+    @GET("${API.TODOS}/{email}/folder")
     fun getAllTodosByFolder(
         @Path("email") writer: String,
-        @Body params: GetRequestBodyParams
+        @Query("completed") completed: Boolean
     ): Call<HashMap<String, ArrayList<Todo>>>
 
     // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}/folder/{folder}", hasBody = true)
+    @GET("${API.TODOS}/{email}/folder/{folder}")
     fun getTodosByFolder(
         @Path("email") writer: String,
         @Path("folder") folder: String,
-        @Body params: GetRequestBodyParams
+        @Query("completed") completed: Boolean,
     ): Call<ArrayList<Todo>>
 
     // 사용자가 작성한 todo 중 dates 내 date가 일치하는 모든 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}/date", hasBody = true)
+    @GET("${API.TODOS}/{email}/date")
     fun getTodosByDateInDates(
         @Path("email") writer: String,
-        @Body params: GetRequestBodyParams
+        @Query("completed") completed: Boolean,
+        @Query("dates") dates: List<String>,
     ): Call<HashMap<String, ArrayList<Todo>>>
 
     // 사용자가 가지고 있는 todo를 받아온 dates로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
-    @HTTP(method = "GET", path = "${API.TODOS}/{email}/date/{date}", hasBody = true)
+    @GET("${API.TODOS}/{email}/date/{date}")
     fun getTodosByDate(
         @Path("email") writer: String,
         @Path("date") date: String,
-        @Body params: GetRequestBodyParams
+        @Query("completed") completed: Boolean
     ): Call<ArrayList<Todo>>
 
     // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.

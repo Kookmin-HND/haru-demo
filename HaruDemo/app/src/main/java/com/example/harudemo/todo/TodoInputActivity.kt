@@ -185,9 +185,11 @@ class TodoInputActivity : AppCompatActivity() {
 
             if (updated) {
                 // DB UPDATE
+                // TODO: Update API 사용 수정해야 함
                 val todo = intent.getSerializableExtra("todo") as Todo
             } else {
                 // DB에 데이터 추가
+                // TODO: days도 추가해주어야 함.
 //                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
 //
 //                })
