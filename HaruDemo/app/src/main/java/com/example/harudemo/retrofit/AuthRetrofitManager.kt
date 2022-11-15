@@ -21,6 +21,7 @@ class AuthRetrofitManager {
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 completion(RESPONSE_STATUS.FAIL, null)
+
             }
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
@@ -50,6 +51,24 @@ class AuthRetrofitManager {
                 }
             }
         })
+    }
 
+    // token을 기반으로 정보 검색
+    fun getInfo(completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
+        val call = authService?.getInfo() ?:return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement>{
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when(response.code()){
+                    200 -> {
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+                }
+            }
+        })
     }
 }

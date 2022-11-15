@@ -30,7 +30,8 @@ router.get("/info", async (req: Request<UserParams>, res: Response) => {
       if (!user || jwtError) {
         return res.status(400).send("re-login");
       }
-      user.password = "";
+      delete user.password;
+      console.log(user);
       return res.json(user);
     })(req, res);
   } catch (err) {

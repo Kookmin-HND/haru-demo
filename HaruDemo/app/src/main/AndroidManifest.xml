@@ -33,6 +33,8 @@
             android:name=".sns.SnsFriendsActivity"
             android:windowSoftInputMode="adjustNothing"
             android:exported="false" />
+
+        <!-- 메인 화면을 로그인 화면으로 변경  -->
         <activity
             android:name=".auth.LoginActivity"
             android:exported="true">

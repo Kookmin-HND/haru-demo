@@ -24,7 +24,6 @@ data class LoginRequestBodyParams(
     val password : String
 )
 
-
 interface AuthService {
     @POST("${API.USERS}/signup")
     fun postSignUp(@Body requestBodyParams: SignUpRequestBodyParams) : Call<JsonElement>

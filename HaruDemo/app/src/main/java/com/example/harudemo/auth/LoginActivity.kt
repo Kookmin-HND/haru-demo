@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
                         CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     RESPONSE_STATUS.FAIL ->{
                         Log.d(TAG, "${responseStatus} called")

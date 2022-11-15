@@ -4,16 +4,20 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
+import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.todo.adapters.SwipeHelperCallback
 import com.example.harudemo.todo.adapters.TodoListAdapter
 import com.example.harudemo.todo.adapters.TodoListSectionAdapter
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.text.Typography.section
@@ -53,6 +57,22 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.fragment_sns, snsFragment!!).commit()
                     binding?.fragmentSns?.visibility = View.VISIBLE
                     binding?.fragmentsFrame?.visibility = View.GONE
+
+//                    getInfo 테스트용
+//                    AuthRetrofitManager.instance.getInfo(completion = { responseStatus, jsonElement ->
+//                        when(responseStatus){
+//                            RESPONSE_STATUS.OKAY->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.FAIL ->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.NO_CONTENT -> {
+//
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_LONG).show()
+//                            }
+//                        }
+//                    })
                 }
                 R.id.menu_calendar -> {
                     calendarFragment = CalendarFragment.newInstance()
