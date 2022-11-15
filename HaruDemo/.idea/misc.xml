@@ -74,7 +74,10 @@
         <entry key="app/src/main/res/layout/login_layout.xml" value="0.11822916666666666" />
         <entry key="app/src/main/res/layout/my_dialog.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/progress_bar.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/signup_layout.xml" value="0.2515625" />
+
+        <entry key="app/src/main/res/layout/signup_layout.xml" value="0.5" />
+
+
         <entry key="app/src/main/res/layout/sns_comment_item.xml" value="0.2515625" />
         <entry key="app/src/main/res/layout/sns_image_item.xml" value="0.4276041666666667" />
         <entry key="app/src/main/res/layout/sns_post_add_image_item.xml" value="0.21927083333333333" />
@@ -84,6 +87,7 @@
         <entry key="app/src/main/res/layout/test_viewpager_frame1.xml" value="0.4114583333333333" />
         <entry key="app/src/main/res/layout/test_viewpager_frame2.xml" value="0.4125" />
         <entry key="app/src/main/res/layout/test_viewpager_frame3.xml" value="0.4125" />
+
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
         <entry key="app/src/main/res/menu/sns_add_bottom_nav_menu.xml" value="0.21927083333333333" />

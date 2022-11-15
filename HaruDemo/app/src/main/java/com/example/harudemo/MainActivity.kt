@@ -93,6 +93,22 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.fragment_sns, snsFragment!!).commit()
                     binding?.fragmentSns?.visibility = View.VISIBLE
                     binding?.fragmentsFrame?.visibility = View.GONE
+
+//                    getInfo 테스트용
+//                    AuthRetrofitManager.instance.getInfo(completion = { responseStatus, jsonElement ->
+//                        when(responseStatus){
+//                            RESPONSE_STATUS.OKAY->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.FAIL ->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.NO_CONTENT -> {
+//
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_LONG).show()
+//                            }
+//                        }
+//                    })
                 }
                 R.id.menu_calendar -> {
                     calendarFragment = CalendarFragment.newInstance()

@@ -15,7 +15,6 @@ interface UserParams {
 }
 
 interface UserSignBody {
-  id: Number | null;
   email: string;
   password: string;
   name: string;
@@ -24,15 +23,16 @@ interface UserSignBody {
 //http://localhost:8000/api/users/ ~~
 
 // user 정보조회
-router.get("/info", async (req: Request<UserParams>, res: Response) => {
+router.get("/info", async (req: Request, res: Response) => {
   try {
     passport.authenticate("jwt", (jwtError, user, info) => {
       console.log(jwtError, user, info);
       if (!user || jwtError) {
         return res.status(400).send("re-login");
       }
-      user.password = "";
-      return res.json({ user });
+      delete user.password;
+      console.log(user);
+      return res.json(user);
     })(req, res);
   } catch (err) {
     console.log(err);
@@ -41,7 +41,7 @@ router.get("/info", async (req: Request<UserParams>, res: Response) => {
 });
 
 //user login
-router.post("/login", async (req: Request, res: Response, next) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     passport.authenticate("local", (authError, user, info) => {
       console.log(authError, user, info);
@@ -55,8 +55,11 @@ router.post("/login", async (req: Request, res: Response, next) => {
           console.error(loginError);
           return res.status(400).json(loginError);
         }
-        const token = jwt.sign({ email: user.email }, process.env.JWT_KEY as Secret);
-        return res.cookie("token", token, { httpOnly: true }).json({ message: "토큰 발급 완료" });
+        const token = jwt.sign(
+          { email: user.email },
+          process.env.JWT_KEY as Secret
+        );
+        return res.cookie("token", token, { httpOnly: true }).json(token);      
       });
     })(req, res);
   } catch (error) {
@@ -65,43 +68,63 @@ router.post("/login", async (req: Request, res: Response, next) => {
 });
 
 // user 회원가입
-router.post("/signup", async function (req: Request<{}, {}, UserSignBody>, res: Response) {
-  let { email, password, name } = req.body;
+router.post(
+  "/signup",
+  async function (req: Request<{}, {}, UserSignBody>, res: Response) {
+    let { email, password, name } = req.body;
 
-  // email, password, name 중 입력되지 않은 것을 확인
-  if (!email || !password || !name) {
-    console.log("emailm password, name 하나가 비었다.");
-    return res.status(400).send("email, password, name을 다시 확인해주세요.");
-  }
+    // email, password, name 중 입력되지 않은 것을 확인
+    if (!email || !password || !name) {
+      console.log("emailm password, name 하나가 비었다.");
+      return res.status(400).send("email, password, name을 다시 확인해주세요.");
+    }
 
-  // email 중복 확인을 위한 변수
-  const overlap_check = await DB.getRepository(User).findOneBy({ email: Equal(email) });
+    // email 중복 확인을 위한 변수
+    const overlap_check = await DB.getRepository(User).findOneBy({
+      email: Equal(email),
+    });
 
-  if (overlap_check) {
-    // overlap_check가 null이 아니면 중복
-    console.log("email 중복");
-    return res.status(400).send("중복된 email 입니다.");
-  }
+    if (overlap_check) {
+      // overlap_check가 null이 아니면 중복
+      console.log("email 중복");
+      return res.status(400).send("중복된 email 입니다.");
+    }
 
-  // password hashing 처리
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
+    // password hashing 처리
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) return res.status(500).send("비밀번호 해쉬화에 실패");
 
-    bcrypt.hash(password, salt, async (err, hash) => {
-      if (err) return res.status(500).json("비밀번호 해쉬화에 실패");
-      password = hash;
+      bcrypt.hash(password, salt, async (err, hash) => {
+        if (err) return res.status(500).send("비밀번호 해쉬화에 실패");
+        password = hash;
 
-      const result = await DB.getRepository(User).create({
-        email: email,
-        password: password,
-        name: name,
-      });
-
-      await DB.getRepository(User).save(result);
-      console.log("signup success");
-      return res.send(result);
+        const result = await DB.getRepository(User).create({
+          email: email,
+          password: password,
+          name: name,
+        });
+        await DB.getRepository(User).save(result);
+        console.log("signup success");
+        return res.json("회원가입 성공");
     });
   });
+});
+
+// user 로그아웃
+router.post("/logout", async (req: Request, res: Response) => {
+  try {
+    passport.authenticate("jwt", (jwtError, user, info) => {
+      console.log(jwtError, user, info);
+      if (!user || jwtError) {
+        return res.status(400).send("로그인 상태가 아니다.");
+      }
+      res.clearCookie("token");
+      return res.json({ logout: "success" });
+    })(req, res);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ logout: "false" });
+  }
 });
 
 // user 정보수정

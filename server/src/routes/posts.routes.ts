@@ -66,6 +66,7 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
   }
 });
 
+
 //게시물 하나가 갖고 있는 이미지 url 조회
 router.get("/:postId/images", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);

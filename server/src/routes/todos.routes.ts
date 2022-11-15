@@ -30,7 +30,6 @@ router.get("/:email", async (req: Request<{ email: string }, {}, { completed: bo
       result.push(todo);
     }
   }
-
   // 이 사용자가 가지고 있는 조건이 일치하는 모든 todo를 반환한다.
   return res.json(result);
 });
@@ -100,7 +99,6 @@ router.get("/:email/date/:date", async (req: Request<{ email: string; date: stri
       result.push(todo);
     }
   }
-
   return res.json(result);
 });
 
@@ -236,8 +234,10 @@ router.delete("/", async (req: Request<{}, {}, { id: number }>, res: Response) =
   }
 
   const result = await DB.getRepository(Todo).delete(id);
+
   await DB.getRepository(TodoLog).delete({
     todoId: id,
   });
+
   return res.json(result);
 });
