@@ -46,15 +46,10 @@ class SnsFriendsActivity : AppCompatActivity() {
     }
 
     fun initRecyclerView(){
-        Log.d("1", "k")
         val adapter = SnsFriendsRecyclerViewAdapter()
-        Log.d("1", "kk")
         adapter.snsFriendsList = mDatas
-        Log.d("1", "kkk")
         binding.friendsView.adapter = adapter
-        Log.d("1", "kkkk")
         binding.friendsView.layoutManager=LinearLayoutManager(this)
-        Log.d("1", "kkkkk")
     }
 
     fun initializelist(){ //임의로 데이터 넣어서 만들어봄
