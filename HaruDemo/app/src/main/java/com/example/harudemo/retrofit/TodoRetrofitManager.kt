@@ -54,12 +54,13 @@ class TodoRetrofitManager {
     fun getTodos(
         writer: String,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
+        completion: (RESPONSE_STATUS, HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>?) -> Unit
     ) {
         val call = todoService?.getTodos(writer, completed) ?: return
-        call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
+        call.enqueue(object : retrofit2.Callback<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>> {
             override fun onResponse(
-                call: Call<ArrayList<Todo>>, response: Response<ArrayList<Todo>>
+                call: Call<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>,
+                response: Response<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>
             ) {
                 when (response.code()) {
                     200 -> {
@@ -69,89 +70,28 @@ class TodoRetrofitManager {
                 }
             }
 
-            override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>,
+                t: Throwable
+            ) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
-    }
-
-    // 사용자의 모든 데이터를 가져오기 (todo-log) 포함
-    fun getTodosAndTodoLogs(
-        writer: String,
-        completion: (RESPONSE_STATUS, Pair<Todo, ArrayList<TodoLog>>?) -> Unit
-    ) {
-        val call = todoService?.getTodosAndTodoLogs(writer) ?: return
-        call.enqueue(object : retrofit2.Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                when (response.code()) {
-                    200 -> {
-                        val body = response.body()
-                        if (body == null) {
-                            completion(RESPONSE_STATUS.FAIL, null)
-                        } else {
-                            val rawTodo = body.get("todo").asJsonObject
-                            val rawTodoLogs = body.get("todoLogs").asJsonArray
-
-                            val todo = Todo(
-                                rawTodo.get("id").asInt,
-                                rawTodo.get("writer").asString,
-                                rawTodo.get("folder").asString,
-                                rawTodo.get("content").asString
-                            )
-                            val todoLogs: ArrayList<TodoLog> = arrayListOf()
-                            for (log in rawTodoLogs) {
-                                val logObj = log.asJsonObject
-                                todoLogs.add(
-                                    TodoLog(
-                                        id = logObj.get("id").asInt,
-                                        todoId = logObj.get("todoId").asInt,
-                                        date = logObj.get("date").asString,
-                                        completed = logObj.get("completed").asBoolean
-                                    )
-                                )
-                            }
-                            completion(RESPONSE_STATUS.OKAY, Pair(todo, todoLogs))
-                        }
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                completion(RESPONSE_STATUS.FAIL, null)
-            }
-        })
-    }
-
-    // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
-    fun getLogs(
-        todoId: Number,
-        completed: Boolean,
-    ): Response<ArrayList<TodoLog>>? {
-        val call = todoService?.getLogs(todoId, completed)
-        return call?.execute()
-    }
-
-    // 사용자로부터 todoId를 입력받아, 해당 todo의 completed 상관없이 모두 반환한다.
-    fun getLogsAll(
-        todoId: Number,
-        completion: (RESPONSE_STATUS, ArrayList<TodoLog>?) -> Unit
-    ): Response<ArrayList<TodoLog>>? {
-        val call = todoService?.getLogsAll(todoId)
-        return call?.execute()
     }
 
     // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
     fun getAllTodosByFolder(
         writer: String,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
+        completion: (RESPONSE_STATUS, HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>?) -> Unit
     ) {
         val call =
             todoService?.getAllTodosByFolder(writer, completed) ?: return
-        call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
+        call.enqueue(object :
+            retrofit2.Callback<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>> {
             override fun onResponse(
-                call: Call<HashMap<String, ArrayList<Todo>>>,
-                response: Response<HashMap<String, ArrayList<Todo>>>
+                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>,
+                response: Response<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>
             ) {
                 when (response.code()) {
                     200 -> {
@@ -161,7 +101,10 @@ class TodoRetrofitManager {
                 }
             }
 
-            override fun onFailure(call: Call<HashMap<String, ArrayList<Todo>>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>,
+                t: Throwable
+            ) {
                 Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
@@ -174,14 +117,15 @@ class TodoRetrofitManager {
         writer: String,
         folder: String,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
+        completion: (RESPONSE_STATUS, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>?) -> Unit
     ) {
         val call =
             todoService?.getTodosByFolder(writer, folder, completed) ?: return
-        call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
+        call.enqueue(object :
+            retrofit2.Callback<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>> {
             override fun onResponse(
-                call: Call<ArrayList<Todo>>,
-                response: Response<ArrayList<Todo>>
+                call: Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>,
+                response: Response<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
             ) {
                 when (response.code()) {
                     200 -> {
@@ -191,7 +135,10 @@ class TodoRetrofitManager {
                 }
             }
 
-            override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>,
+                t: Throwable
+            ) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -203,15 +150,16 @@ class TodoRetrofitManager {
         writer: String,
         dates: List<String>,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
+        completion: (RESPONSE_STATUS, HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>?) -> Unit
     ) {
         val call =
             todoService?.getTodosByDateInDates(writer, completed, dates)
                 ?: return
-        call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
+        call.enqueue(object :
+            retrofit2.Callback<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>> {
             override fun onResponse(
-                call: Call<HashMap<String, ArrayList<Todo>>>,
-                response: Response<HashMap<String, ArrayList<Todo>>>
+                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>,
+                response: Response<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>
             ) {
                 when (response.code()) {
                     200 -> {
@@ -221,7 +169,10 @@ class TodoRetrofitManager {
                 }
             }
 
-            override fun onFailure(call: Call<HashMap<String, ArrayList<Todo>>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>,
+                t: Throwable
+            ) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -233,14 +184,14 @@ class TodoRetrofitManager {
         writer: String,
         date: String,
         completed: Boolean,
-        completion: (RESPONSE_STATUS, ArrayList<Todo>?) -> Unit
+        completion: (RESPONSE_STATUS, Pair<ArrayList<Todo>, ArrayList<TodoLog>>?) -> Unit
     ) {
         val call =
             todoService?.getTodosByDate(writer, date, completed) ?: return
-        call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
+        call.enqueue(object : retrofit2.Callback<Pair<ArrayList<Todo>, ArrayList<TodoLog>>> {
             override fun onResponse(
-                call: Call<ArrayList<Todo>>,
-                response: Response<ArrayList<Todo>>
+                call: Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>,
+                response: Response<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
             ) {
                 when (response.code()) {
                     200 -> {
@@ -250,7 +201,10 @@ class TodoRetrofitManager {
                 }
             }
 
-            override fun onFailure(call: Call<ArrayList<Todo>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>,
+                t: Throwable
+            ) {
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })

@@ -43,7 +43,7 @@ object TodoData {
         fun getTodos(
             writer: String,
             completed: Boolean,
-            okayCallback: (ArrayList<Todo>) -> Unit = {},
+            okayCallback: (HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {}
         ) {
@@ -60,59 +60,11 @@ object TodoData {
                 })
         }
 
-        // 사용자의 모든 데이터를 가져오기 (todo-log) 포함
-        fun getTodosAndTodoLogs(
-            writer: String,
-            okayCallback: (Pair<Todo, ArrayList<TodoLog>>) -> Unit = {},
-            failCallback: () -> Unit = {},
-            noContentCallback: () -> Unit = {},
-        ) {
-            TodoRetrofitManager.instance.getTodosAndTodoLogs(
-                writer,
-                completion = { responseStatus, pair ->
-                    when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> pair?.let(okayCallback)
-                        RESPONSE_STATUS.FAIL -> failCallback()
-                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
-                    }
-                })
-        }
-
-        // 이는 동기적으로 작동한다.
-        // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
-        fun getLogs(
-            todoId: Number,
-            completed: Boolean,
-        ): Response<ArrayList<TodoLog>>? {
-            return TodoRetrofitManager.instance.getLogs(
-                todoId, completed
-            )
-        }
-
-        // 이는 동기적으로 작동한다.
-        // 사용자로부터 todoId를 입력받아, 해당 todo의 completed와 상관없이 모두 반환한다.
-        fun getLogsAll(
-            todoId: Number,
-            okayCallback: (ArrayList<TodoLog>) -> Unit = {},
-            failCallback: () -> Unit = {},
-            noContentCallback: () -> Unit = {},
-        ): Response<ArrayList<TodoLog>>? {
-            return TodoRetrofitManager.instance.getLogsAll(
-                todoId,
-                completion = { responseStatus, todoLogs ->
-                    when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> todoLogs?.let(okayCallback)
-                        RESPONSE_STATUS.FAIL -> failCallback()
-                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
-                    }
-                })
-        }
-
         // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
         fun getAllTodosByFolder(
             writer: String,
             completed: Boolean,
-            okayCallback: (HashMap<String, ArrayList<Todo>>) -> Unit = {},
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {},
         ) {
@@ -135,7 +87,7 @@ object TodoData {
             writer: String,
             folder: String,
             completed: Boolean,
-            okayCallback: (response: ArrayList<Todo>) -> Unit = {},
+            okayCallback: (Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {},
         ) {
@@ -159,7 +111,7 @@ object TodoData {
             writer: String,
             dates: List<String>,
             completed: Boolean,
-            okayCallback: (HashMap<String, ArrayList<Todo>>) -> Unit = {},
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {},
         ) {
@@ -180,7 +132,7 @@ object TodoData {
             writer: String,
             date: String,
             completed: Boolean,
-            okayCallback: (response: ArrayList<Todo>) -> Unit = {},
+            okayCallback: (Pair<ArrayList<Todo>, ArrayList<TodoLog>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {},
         ) {

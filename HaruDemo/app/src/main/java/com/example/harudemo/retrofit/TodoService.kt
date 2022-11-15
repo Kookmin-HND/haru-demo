@@ -71,24 +71,7 @@ interface TodoService {
     fun getTodos(
         @Path("email") writer: String,
         @Query("completed") completed: Boolean,
-    ): Call<ArrayList<Todo>>
-
-    // 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
-    @GET("${API.TODOS}/{email}/all")
-    fun getTodosAndTodoLogs(@Path("email") writer: String): Call<JsonObject>
-
-    // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
-    @GET("${API.TODOS}/log/{todoId}/{completed}")
-    fun getLogs(
-        @Path("todoId") todoId: Number,
-        @Path("completed") completed: Boolean,
-    ): Call<ArrayList<TodoLog>>
-
-    // 사용자로부터 todoId를 입력받아, 해당 todo의 completed 상관없이 모두 반환한다.
-    @GET("${API.TODOS}/log/{todoId}/all")
-    fun getLogsAll(
-        @Path("todoId") todoId: Number,
-    ): Call<ArrayList<TodoLog>>
+    ): Call<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>
 
     // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -96,7 +79,7 @@ interface TodoService {
     fun getAllTodosByFolder(
         @Path("email") writer: String,
         @Query("completed") completed: Boolean
-    ): Call<HashMap<String, ArrayList<Todo>>>
+    ): Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>
 
     // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -105,7 +88,7 @@ interface TodoService {
         @Path("email") writer: String,
         @Path("folder") folder: String,
         @Query("completed") completed: Boolean,
-    ): Call<ArrayList<Todo>>
+    ): Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
 
     // 사용자가 작성한 todo 중 dates 내 date가 일치하는 모든 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -114,7 +97,7 @@ interface TodoService {
         @Path("email") writer: String,
         @Query("completed") completed: Boolean,
         @Query("dates") dates: List<String>,
-    ): Call<HashMap<String, ArrayList<Todo>>>
+    ): Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>
 
     // 사용자가 가지고 있는 todo를 받아온 dates로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -123,7 +106,7 @@ interface TodoService {
         @Path("email") writer: String,
         @Path("date") date: String,
         @Query("completed") completed: Boolean
-    ): Call<ArrayList<Todo>>
+    ): Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
 
     // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
     // 그리고 todo-logs에 접근하여 해당 데이터를 삭제, 추가한다.
