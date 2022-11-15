@@ -26,7 +26,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
         fun bindItem(folder: String) {
             // TodoFragment내 Folder RecyclerView에 폴더 이름을 기준으로 폴더 클릭 할 수 있는 아이템 생성
             itembinding.tvFolderTitle.text = folder
-            itembinding.tvCount.text = folderMap[folder].toString()
+            itembinding.tvCount.text = folderMap[folder]?.size.toString()
             itembinding.root.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("by", "folder")
