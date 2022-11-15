@@ -39,20 +39,17 @@
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:background="@color/skyBlue"
-        android:gravity="center"
-        android:paddingHorizontal="9dp">
+        android:gravity="center">
 
         <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="18dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="10dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/background_grass"
             />
         <EditText
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="30dp"
-            android:layout_weight="7"
+            android:layout_marginHorizontal="10dp"
             android:background="@drawable/background_grass"
             android:hint=" 전송할 메세지를 입력"
 

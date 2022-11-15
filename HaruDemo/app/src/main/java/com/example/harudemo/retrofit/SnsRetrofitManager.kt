@@ -63,7 +63,7 @@ class SnsRetrofitManager {
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
-                                    average = ""
+                                    average = 0,
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }
