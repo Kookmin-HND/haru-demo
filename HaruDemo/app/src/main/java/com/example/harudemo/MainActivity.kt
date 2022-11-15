@@ -48,13 +48,14 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        alarmManager!!.setExact(
+        alarmManager!!.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             pendingIntent
         )
     }
 
+    //알람 취소 기능 나중에 필요할시 사용할 것
     fun cancelAlarm(){
         if(alarmManager != null && pendingIntent != null) alarmManager!!.cancel(pendingIntent)
     }
