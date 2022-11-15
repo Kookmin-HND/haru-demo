@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sns_add_image_nav_menu"
+        android:title="sns_add_image"
+        android:icon="@drawable/ic_baseline_photo_camera_24"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+    <item
+        android:title="space"
+        android:enabled="false"
+        />
+</menu>

@@ -78,6 +78,11 @@ class MainActivity : AppCompatActivity() {
     //바텀 네비게이션 아이템 클릭 리스너
     private val onBottomNavItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
+            // 현재 SNS가 열려있고, 다시 sns 버튼을 누른경우 스크롤을 맨위로 보낸다.
+            if(it.itemId == R.id.menu_home && binding?.fragmentSns?.visibility == View.VISIBLE){
+                snsFragment?.postScrolltoTop()
+            }
+
             /*
             데이터를 유지하기 위해
             snsFragment를 관리하는 FrameLayout이 따로 있고 해당 레이아웃만 보여지는 상태를 토글로 관리하여
@@ -89,6 +94,22 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.fragment_sns, snsFragment!!).commit()
                     binding?.fragmentSns?.visibility = View.VISIBLE
                     binding?.fragmentsFrame?.visibility = View.GONE
+
+//                    getInfo 테스트용
+//                    AuthRetrofitManager.instance.getInfo(completion = { responseStatus, jsonElement ->
+//                        when(responseStatus){
+//                            RESPONSE_STATUS.OKAY->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.FAIL ->{
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
+//                            }
+//                            RESPONSE_STATUS.NO_CONTENT -> {
+//
+//                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_LONG).show()
+//                            }
+//                        }
+//                    })
                 }
                 R.id.menu_calendar -> {
                     calendarFragment = CalendarFragment.newInstance()

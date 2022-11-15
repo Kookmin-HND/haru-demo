@@ -34,18 +34,19 @@
             android:exported="false" />
         <activity
             android:name=".sns.SnsAddPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing" />
+            android:exported="false" />
         <activity
             android:name=".sns.SnsDirectMessageActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".sns.SnsFriendsActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false" />
+
+        <!-- 메인 화면을 로그인 화면으로 변경  -->
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,8 +56,10 @@
         </activity>
         <activity
             android:name=".todo.TodoInputActivity"
-            android:screenOrientation="portrait" /> <!-- 로그인 ,회원가입 Activity 추가 -->
-        <activity android:name=".auth.LoginActivity" />
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".MainActivity" />
+        
         <activity android:name=".auth.SignUpActivity" />
 
         <receiver
