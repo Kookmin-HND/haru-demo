@@ -6,6 +6,7 @@ import { TodoLog } from "../entity/todo-log";
 export const path = "/todos";
 export const router = Router();
 
+// FIXME: GET 요청은 body로 동적 변수를 받을 수 없고, query를 통해 받아야 한다.
 // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
 router.post(
   "/:email",
@@ -82,7 +83,7 @@ router.get(
 
     // 이 사용자가 작성한 모든 todo를 가져온다.
     const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
+      writer,
     });
 
     // completed의 값이 일치하는 todo를 가져온다.
@@ -90,7 +91,7 @@ router.get(
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
-        completed: completed,
+        completed,
       });
 
       if (logs.length) {
@@ -113,7 +114,7 @@ router.get(
     const writer = req.params.email;
 
     const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
+      writer,
     });
 
     const todosMap: { [key: number]: { todo: Todo; logs: TodoLog[] } } = {};
@@ -125,6 +126,72 @@ router.get(
       todosMap[todo.id] = { todo, logs };
     }
 
+    return res.json(todosMap);
+  }
+);
+
+// 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
+router.get(
+  "/log/:todoId/:completed",
+  async (
+    req: Request<{ todoId: number; completed: boolean }, {}, {}>,
+    res: Response<TodoLog[]>
+  ) => {
+    const { todoId, completed } = req.params;
+
+    const logs = await DB.getRepository(TodoLog).findBy({
+      todoId,
+      completed,
+    });
+
+    return res.json(logs);
+  }
+);
+
+// 사용자로부터 todoId를 입력받아, 해당 todo의 completed 상관없이 모두 반환한다.
+router.get(
+  "/log/:todoId/all",
+  async (
+    req: Request<{ todoId: number }, {}, {}>,
+    res: Response<TodoLog[]>
+  ) => {
+    const { todoId } = req.params;
+
+    const logs = await DB.getRepository(TodoLog).findBy({
+      todoId,
+    });
+    return res.json(logs);
+  }
+);
+
+// 사용자가 가지고 있는 모든 todo를 folder로 구분하여 반환한다.
+router.get(
+  "/:email/folder",
+  async (
+    req: Request<{ email: string }, {}, { completed: boolean }>,
+    res: Response<{ [key: string]: Todo[] }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed } = req.body;
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+    });
+
+    const todosMap: { [key: string]: Todo[] } = {};
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed,
+      });
+      if (logs.length) {
+        if (todo.folder in todosMap) {
+          todosMap[todo.folder].push(todo);
+        } else {
+          todosMap[todo.folder] = [todo];
+        }
+      }
+    }
     return res.json(todosMap);
   }
 );
@@ -141,8 +208,8 @@ router.get(
     const { completed } = req.body;
 
     const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
-      folder: folder,
+      writer,
+      folder,
     });
 
     const result: Todo[] = [];
@@ -156,6 +223,42 @@ router.get(
       }
     }
     return res.json(result);
+  }
+);
+
+// 사용자가 가지고 있는 todo를 받아온 dates 내 date로 구분하여 반환한다.
+router.get(
+  "/:email/date",
+  async (
+    req: Request<
+      { email: string },
+      {},
+      { completed: boolean; dates: string[] }
+    >,
+    res: Response<{ [key: string]: Todo[] }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed, dates } = req.body;
+
+    const todosMap: { [key: string]: Todo[] } = {};
+    for (const date of dates) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        date,
+        completed,
+      });
+
+      todosMap[date] = [];
+      for (const log of logs) {
+        const todos = await DB.getRepository(Todo).findBy({
+          writer,
+          id: log.todoId,
+        });
+
+        todosMap[date].push(...todos);
+      }
+    }
+
+    return res.json(todosMap);
   }
 );
 

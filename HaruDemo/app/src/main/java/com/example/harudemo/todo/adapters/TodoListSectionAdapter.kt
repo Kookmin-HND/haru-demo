@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.view.setPadding
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
@@ -20,39 +21,77 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.todo.types.TodoLog
 import java.security.PrivateKey
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 
-class TodoListSectionAdapter(
-    var section: Section,
-    private val index: Int,
-) : RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
+class TodoListSectionAdapter(private val index: Int, private val completed: Boolean) :
+    RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
+    private var logs: ArrayList<TodoLog> = arrayListOf()
+    var section: Section? = null
+        set(value) {
+            logs.clear()
+            for (todo in section?.todoList!!) {
+                val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
+                todoLogs?.first()?.let { logs.add(it) }
+            }
+            val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                val older = field
+                val newer = value
+
+                override fun getOldListSize(): Int {
+                    return older?.todoList?.size!!
+                }
+
+                override fun getNewListSize(): Int {
+                    return newer?.todoList?.size!!
+                }
+
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    return older?.todoList!![oldItemPosition].id == newer?.todoList!![newItemPosition].id
+                }
+
+                override fun areContentsTheSame(
+                    oldItemPosition: Int,
+                    newItemPosition: Int
+                ): Boolean {
+                    return older?.todoList!![oldItemPosition].folder == newer?.todoList!![newItemPosition].folder &&
+                            older.todoList[oldItemPosition].content == newer.todoList[newItemPosition].content
+                }
+            })
+            field = value
+            result.dispatchUpdatesTo(this)
+        }
+
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
         private val days = arrayListOf("월", "화", "수", "목", "금", "토", "일")
 
+        init {
+            itemBinding.btnCheckTodo.buttonTintList =
+                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[index % TodoListFragment.COLORS.size]))
+        }
+
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
-            itemBinding.btnCheckTodo.buttonTintList =
-                ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[index % TodoListFragment.COLORS.size]))
-
-            if (todo.completed) {
+            if (logs[position].completed) {
                 itemBinding.btnCheckTodo.isChecked = true
                 itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
             itemBinding.tvTodoContent.text = todo.content
 
-            val dateToken = todo.date.split('-').map { it.toInt() }
+            val dateToken = logs[position].date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
 
             // Update 실행 Action
             itemBinding.root.setOnClickListener {
-                if (todo.completed) {
+                if (logs[position].completed) {
                     return@setOnClickListener
                 }
 
@@ -63,56 +102,14 @@ class TodoListSectionAdapter(
             }
 
             // completed Toggle Action
-            val completed = todo.completed
             itemBinding.btnCheckTodo.setOnClickListener {
-                if (!todo.completed == completed)
-                    return@setOnClickListener
-
-                TodoData.API.update(
-                    todo.id,
-                    todo.folder,
-                    todo.content,
-                    todo.date,
-                    !todo.completed,
-                    {
-                        if (!todo.completed) {
-                            itemBinding.btnCheckTodo.isChecked = true
-                            itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                        } else {
-                            itemBinding.btnCheckTodo.isChecked = false
-                            itemBinding.tvTodoContent.paintFlags = Paint.LINEAR_TEXT_FLAG
-                        }
-                        Timer("completed_item", true).schedule(1000) {
-                            TodoListFragment.instance.activity?.runOnUiThread {
-                                TodoData.update(todo, completed = !todo.completed)
-                                val index = section.todoList.indexOf(todo)
-                                section.todoList.remove(todo)
-                                notifyItemRemoved(index)
-                                if (section.todoList.isEmpty()) {
-                                    TodoFragment.folderListAdapter.notifyDataSetChanged()
-                                    val sectionIndex =
-                                        TodoListFragment.instance.sections.indexOf(section)
-                                    TodoListFragment.instance.sections =
-                                        TodoListFragment.instance.sections.filter {
-                                            it != section
-                                        }
-                                    TodoListFragment.instance.todoListAdapter?.notifyItemRemoved(
-                                        sectionIndex
-                                    )
-                                    if (TodoListFragment.instance.sections.isEmpty()) {
-                                        TodoListFragment.instance.refreshView()
-                                    }
-                                }
-                            }
-                        }
-                    })
             }
 
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시 삭제한다.
                 TodoData.API.delete(todo.id, {
-                    TodoData.delete(todo)
-                    TodoListFragment.instance.onResume()
+                    section = Section(section?.sectionTitle!!,
+                        section?.todoList?.filter { it != todo } as ArrayList<Todo>)
                 })
             }
         }
@@ -128,24 +125,10 @@ class TodoListSectionAdapter(
     }
 
     override fun onBindViewHolder(holder: TodoListSectionViewHolder, position: Int) {
-        // 날짜별 정렬
-        section.todoList.sortWith(Comparator { v1, v2 ->
-            val date1 = v1.date.split('-').map { it.toInt() }
-            val date2 = v2.date.split('-').map { it.toInt() }
-            if (date1[0] == date2[0]) {
-                if (date1[1] == date2[1]) {
-                    return@Comparator date1[2].compareTo(date2[2])
-                }
-                return@Comparator date1[1].compareTo(date2[1])
-            }
-            return@Comparator date1[0].compareTo(date2[0])
-        })
-        holder.bindItem(section.todoList[position], position)
+        holder.bindItem(section?.todoList!![position], position)
     }
 
     override fun getItemCount(): Int {
-        return section.todoList.size
+        return section?.todoList?.size!!
     }
-
-
 }

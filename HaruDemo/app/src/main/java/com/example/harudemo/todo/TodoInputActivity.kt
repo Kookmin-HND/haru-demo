@@ -73,9 +73,10 @@ class TodoInputActivity : AppCompatActivity() {
 
             // TodoData를 미리 입력한다.
             val todo: Todo = intent.getSerializableExtra("todo") as Todo
+            val log = TodoData.API.getLogs(todo.id, false)?.body()?.first()
             val text = "#${todo.folder} ${todo.content}"
             binding?.todoInput?.setText(text)
-            val splittedDate = todo.date.split('-').map { it.toInt() }
+            val splittedDate = log!!.date.split('-').map { it.toInt() }
             val currentDate = SimpleDateFormat("yyyy-MM-dd").parse(
                 LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2]).toString()
             )
@@ -185,26 +186,11 @@ class TodoInputActivity : AppCompatActivity() {
             if (updated) {
                 // DB UPDATE
                 val todo = intent.getSerializableExtra("todo") as Todo
-                TodoData.API.update(todo.id, folder, content, datesList[0], false, {
-                    TodoData.update(todo, folder, content, datesList[0], false)
-                    if (todo.folder != folder) {
-                        TodoFragment.folderListAdapter.notifyDataSetChanged()
-                    }
-                    // 전역 변수들이 업데이트 됨으로써, 폴더가 변경되거나, 폴더가 삭제되는 그러한 행동이 일어날 수 있으므로
-                    // 해당 업데이트를 위해서 instance의 onResume()을 호출하여 업데이트한다.
-                    TodoListFragment.instance.onResume()
-                })
             } else {
                 // DB에 데이터 추가
-                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
-                    // DB에는 추가되었고 전역적으로 관리하는 데이터에도 추가해준다.
-                    for (todo in it) {
-                        TodoData.add(todo)
-                    }
-
-                    // Recycler View를 새로고침한다.
-                    TodoFragment.folderListAdapter.notifyDataSetChanged()
-                })
+//                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
+//
+//                })
             }
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()

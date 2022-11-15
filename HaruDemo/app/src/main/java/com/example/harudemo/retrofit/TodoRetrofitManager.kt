@@ -3,12 +3,16 @@ package com.example.harudemo.retrofit
 import android.util.Log
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
+import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 class TodoRetrofitManager {
     companion object {
@@ -30,7 +34,6 @@ class TodoRetrofitManager {
         val call =
             todoService?.addTodos(writer, PostRequestBodyParams(folder, content, dates, days))
                 ?: return
-
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()) {
@@ -123,6 +126,53 @@ class TodoRetrofitManager {
         })
     }
 
+    // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
+    fun getLogs(
+        todoId: Number,
+        completed: Boolean,
+        completion: (RESPONSE_STATUS, ArrayList<TodoLog>?) -> Unit
+    ): Response<ArrayList<TodoLog>>? {
+        val call = todoService?.getLogs(todoId, completed)
+        return call?.execute()
+    }
+
+    // 사용자로부터 todoId를 입력받아, 해당 todo의 completed 상관없이 모두 반환한다.
+    fun getLogsAll(
+        todoId: Number,
+        completion: (RESPONSE_STATUS, ArrayList<TodoLog>?) -> Unit
+    ): Response<ArrayList<TodoLog>>? {
+        val call = todoService?.getLogsAll(todoId)
+        return call?.execute()
+    }
+
+    // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
+    fun getAllTodosByFolder(
+        writer: String,
+        completed: Boolean,
+        completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
+    ) {
+        val call =
+            todoService?.getAllTodosByFolder(writer, GetRequestBodyParams(completed)) ?: return
+        call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
+            override fun onResponse(
+                call: Call<HashMap<String, ArrayList<Todo>>>,
+                response: Response<HashMap<String, ArrayList<Todo>>>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val todosByFolder = response.body() ?: return
+                        completion(RESPONSE_STATUS.OKAY, todosByFolder)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<HashMap<String, ArrayList<Todo>>>, t: Throwable) {
+                Log.d("[debug]", t.toString())
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+        })
+    }
+
     // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
     fun getTodosByFolder(
@@ -133,7 +183,6 @@ class TodoRetrofitManager {
     ) {
         val call =
             todoService?.getTodosByFolder(writer, folder, GetRequestBodyParams(completed)) ?: return
-
         call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
             override fun onResponse(
                 call: Call<ArrayList<Todo>>,
@@ -155,6 +204,36 @@ class TodoRetrofitManager {
 
     // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
+    fun getTodosByDateInDates(
+        writer: String,
+        dates: List<String>,
+        completed: Boolean,
+        completion: (RESPONSE_STATUS, HashMap<String, ArrayList<Todo>>?) -> Unit
+    ) {
+        val call =
+            todoService?.getTodosByDateInDates(writer, GetRequestBodyParams(completed, dates))
+                ?: return
+        call.enqueue(object : retrofit2.Callback<HashMap<String, ArrayList<Todo>>> {
+            override fun onResponse(
+                call: Call<HashMap<String, ArrayList<Todo>>>,
+                response: Response<HashMap<String, ArrayList<Todo>>>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val todosByDate = response.body() ?: return
+                        completion(RESPONSE_STATUS.OKAY, todosByDate)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<HashMap<String, ArrayList<Todo>>>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+        })
+    }
+
+    // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
+    // completed 값에 따라 완료여부를 필터링한다.
     fun getTodosByDate(
         writer: String,
         date: String,
@@ -163,7 +242,6 @@ class TodoRetrofitManager {
     ) {
         val call =
             todoService?.getTodosByDate(writer, date, GetRequestBodyParams(completed)) ?: return
-
         call.enqueue(object : retrofit2.Callback<ArrayList<Todo>> {
             override fun onResponse(
                 call: Call<ArrayList<Todo>>,
@@ -195,7 +273,6 @@ class TodoRetrofitManager {
         val call =
             todoService?.updateTodo(PatchRequestBodyParams(id, folder, content, dates, days))
                 ?: return
-
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()) {
@@ -220,7 +297,6 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
         val call = todoService?.checkTodo(CheckRequestBodyParams(todoId, date, completed)) ?: return
-
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()) {
@@ -243,7 +319,6 @@ class TodoRetrofitManager {
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
         val call = todoService?.deleteTodo(DeleteRequestBodyParams(id)) ?: return
-
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()) {

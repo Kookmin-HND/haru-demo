@@ -2,25 +2,23 @@ package com.example.harudemo.fragments.todo_fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.adapters.TodoListAdapter
+import com.example.harudemo.utils.CustomToast
 import java.time.LocalDate
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
 class TodoListFragment : Fragment() {
     // UI Update를 위해 Instance 접근 가능하게끔하고,
@@ -54,7 +52,6 @@ class TodoListFragment : Fragment() {
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment = TodoFragment.instance
     var todoListAdapter: TodoListAdapter = TodoListAdapter()
-    var sections: List<Section> = listOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,23 +73,20 @@ class TodoListFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        binding?.rvTodoSectionList?.adapter = todoListAdapter
+        binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
+            binding?.root?.context, LinearLayoutManager.VERTICAL, false
+        )
+    }
+
     override fun onResume() {
         super.onResume()
         // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
         // Recycler View에 전달
         updateSections()
-        if (refreshView()) {
-            todoListAdapter = TodoListAdapter()
-            binding?.rvTodoSectionList?.adapter = todoListAdapter
-            binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
-                binding?.root?.context, LinearLayoutManager.VERTICAL, false
-            )
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = "하루"
     }
 
     override fun onDetach() {
@@ -101,10 +95,25 @@ class TodoListFragment : Fragment() {
         callback?.remove()
     }
 
-    fun updateSections() {
+    private fun updateSections() {
         when (arguments?.getString("by") as String) {
             "today" -> {
-                sections = TodoData.getTodosByDates(arrayListOf(LocalDate.now().toString()))
+                val today = LocalDate.now().toString()
+                TodoData.API.getTodosByDate(
+                    "cjeongmin27@gmail.com",
+                    today,
+                    false,
+                    {
+                        todoListAdapter.sections = listOf(Section(today, it))
+                        todoListAdapter.completed = false
+                    },
+                    {
+                        CustomToast.makeText(
+                            requireContext(),
+                            "오늘의 목록을 불러오는데 실패하였습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    })
             }
             "week" -> {
                 val dates = ArrayList<String>()
@@ -113,24 +122,74 @@ class TodoListFragment : Fragment() {
                     dates.add(today.toString())
                     today = today.plusDays(1)
                 }
-                sections = TodoData.getTodosByDates(dates)
+                val result: ArrayList<Section> = arrayListOf()
+                TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, {
+                    for (section in it) {
+                        result.add(Section(section.key, section.value))
+                    }
+                    todoListAdapter.sections = result
+                    todoListAdapter.completed = false
+                }, {
+                    CustomToast.makeText(
+                        requireContext(),
+                        "일주일 목록을 불러오는데 실패하였습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                })
+
             }
             "all" -> {
-                sections = TodoData.getTodos()
+                val result: ArrayList<Section> = arrayListOf()
+                TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", false, {
+                    for (section in it) {
+                        result.add(Section(section.key, section.value))
+                    }
+                    todoListAdapter.sections = result
+                    todoListAdapter.completed = false
+                }, {
+                    CustomToast.makeText(
+                        requireContext(),
+                        "모든 목록을 불러오는데 실패하였습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                })
             }
             "completed" -> {
-                sections = TodoData.getTodos(true)
+                val result: ArrayList<Section> = arrayListOf()
+                TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", true, {
+                    for (section in it) {
+                        result.add(Section(section.key, section.value))
+                    }
+                    todoListAdapter.sections = result
+                    todoListAdapter.completed = true
+                }, {
+                    CustomToast.makeText(
+                        requireContext(),
+                        "모든 완료 목록을 불러오는데 실패하였습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                })
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-                sections = TodoData.getTodosByFolder(folderTitle)
+                TodoData.API.getTodosByFolder("cjeongmin27@gmail.com", folderTitle, false, {
+                    todoListAdapter.sections = listOf(Section(folderTitle, it))
+                    todoListAdapter.completed = false
+                }, {
+                    CustomToast.makeText(
+                        requireContext(),
+                        "#${folderTitle}를 불러오는데 실패하였습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }, {})
             }
             else -> {}
         }
     }
 
+    // TODO: Recycler View에서 감지되면 알아서 바꾸도록 변경 필요.
     fun refreshView(): Boolean {
-        return if (sections.isEmpty()) {
+        return if (todoListAdapter.sections.isEmpty()) {
             binding?.rvTodoSectionList?.visibility = View.GONE
             binding?.tvEmpty?.visibility = View.VISIBLE
             false

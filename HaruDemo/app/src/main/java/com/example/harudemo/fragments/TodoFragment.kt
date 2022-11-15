@@ -78,33 +78,19 @@ class TodoFragment : Fragment() {
                     binding?.btnAddTodo?.show();
             }
         })
-    }
 
-    override fun onResume() {
-        super.onResume()
-        // DB에서 Data를 불러온다
-        if (TodoData.isEmpty()) {
-            TodoData.API.read("cjeongmin27@gmail.com", {
-                // 데이터를 불러오는데 성공하였을 때
-                for (todo in it) {
-                    TodoData.add(todo)
-                }
-                binding?.rvFolderList?.adapter?.notifyItemInserted(it.size)
-            }, {
-                // 데이터를 불러오는데 실패하였을 때
-                CustomToast.makeText(
-                    this.requireContext(), "todo 목록을 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT
-                ).show()
-            })
-        }
-
-        // Folder Item을 Recycler View에 추가
         binding?.rvFolderList?.adapter = folderListAdapter
         binding?.rvFolderList?.layoutManager = LinearLayoutManager(
             binding?.root?.context,
             LinearLayoutManager.VERTICAL,
             false,
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Folder Item을 Recycler View에 추가
+        folderListAdapter.fetchData()
     }
 
     // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록

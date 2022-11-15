@@ -1,11 +1,13 @@
 package com.example.harudemo.todo
 
+import android.util.Log
 import com.example.harudemo.retrofit.TodoRetrofitManager
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
+import retrofit2.Response
 
 object TodoData {
     object API {
@@ -29,9 +31,9 @@ object TodoData {
                 days,
                 completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> response?.let { okayCallback(it) }
-                        RESPONSE_STATUS.FAIL -> response?.let { failCallback(it) }
-                        RESPONSE_STATUS.NO_CONTENT -> response?.let { noContentCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
                     }
                 })
         }
@@ -41,7 +43,7 @@ object TodoData {
         fun getTodos(
             writer: String,
             completed: Boolean,
-            okayCallback: (List<Todo>) -> Unit = {},
+            okayCallback: (ArrayList<Todo>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {}
         ) {
@@ -51,7 +53,7 @@ object TodoData {
                 completed,
                 completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> response?.let { okayCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
                         RESPONSE_STATUS.FAIL -> failCallback()
                         RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
@@ -69,11 +71,71 @@ object TodoData {
                 writer,
                 completion = { responseStatus, pair ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> pair?.let { okayCallback(it) }
+                        RESPONSE_STATUS.OKAY -> pair?.let(okayCallback)
                         RESPONSE_STATUS.FAIL -> failCallback()
                         RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
                 })
+        }
+
+        // 이는 동기적으로 작동한다.
+        // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
+        fun getLogs(
+            todoId: Number,
+            completed: Boolean,
+            okayCallback: (ArrayList<TodoLog>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ): Response<ArrayList<TodoLog>>? {
+            return TodoRetrofitManager.instance.getLogs(
+                todoId, completed, completion = { responseStatus, todoLogs ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todoLogs?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
+        // 이는 동기적으로 작동한다.
+        // 사용자로부터 todoId를 입력받아, 해당 todo의 completed와 상관없이 모두 반환한다.
+        fun getLogsAll(
+            todoId: Number,
+            okayCallback: (ArrayList<TodoLog>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ): Response<ArrayList<TodoLog>>? {
+            return TodoRetrofitManager.instance.getLogsAll(
+                todoId,
+                completion = { responseStatus, todoLogs ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todoLogs?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                })
+        }
+
+        // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
+        fun getAllTodosByFolder(
+            writer: String,
+            completed: Boolean,
+            okayCallback: (HashMap<String, ArrayList<Todo>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getAllTodosByFolder(
+                writer,
+                completed,
+                completion = { responseStatus, hashMap ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> hashMap?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
         }
 
         // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
@@ -92,7 +154,28 @@ object TodoData {
                 completed,
                 completion = { responseStatus, todos ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> todos?.let { okayCallback(it) }
+                        RESPONSE_STATUS.OKAY -> todos?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
+        // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getTodosByDateInDates(
+            writer: String,
+            dates: List<String>,
+            completed: Boolean,
+            okayCallback: (HashMap<String, ArrayList<Todo>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getTodosByDateInDates(
+                writer, dates, completed, completion = { responseStatus, todosByDates ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todosByDates?.let(okayCallback)
                         RESPONSE_STATUS.FAIL -> failCallback()
                         RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
@@ -114,7 +197,7 @@ object TodoData {
                 writer, date, completed,
                 completion = { responseStatus, todos ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> todos?.let { okayCallback(it) }
+                        RESPONSE_STATUS.OKAY -> todos?.let(okayCallback)
                         RESPONSE_STATUS.FAIL -> failCallback()
                         RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
@@ -140,9 +223,9 @@ object TodoData {
                 days,
                 completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> response?.let { okayCallback(it) }
-                        RESPONSE_STATUS.FAIL -> response?.let { failCallback(it) }
-                        RESPONSE_STATUS.NO_CONTENT -> response?.let { noContentCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
                     }
                 })
         }
@@ -159,9 +242,9 @@ object TodoData {
             TodoRetrofitManager.instance.checkTodo(
                 todoId, date, completed, completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> response?.let { okayCallback(it) }
-                        RESPONSE_STATUS.FAIL -> response?.let { failCallback(it) }
-                        RESPONSE_STATUS.NO_CONTENT -> response?.let { noContentCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
                     }
                 }
             )
@@ -178,9 +261,9 @@ object TodoData {
                 id,
                 completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> response?.let { okayCallback(it) }
-                        RESPONSE_STATUS.FAIL -> response?.let { failCallback(it) }
-                        RESPONSE_STATUS.NO_CONTENT -> response?.let { noContentCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
                     }
                 })
         }

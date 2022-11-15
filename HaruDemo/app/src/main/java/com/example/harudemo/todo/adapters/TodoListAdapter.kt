@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +16,45 @@ import com.example.harudemo.todo.types.Section
 
 class TodoListAdapter :
     RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
+    var completed: Boolean = false
+    var sections: List<Section> = listOf()
+        set(value) {
+            val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                val older = field
+                val newer = value
+
+                override fun getOldListSize(): Int {
+                    return older.size
+                }
+
+                override fun getNewListSize(): Int {
+                    return newer.size
+                }
+
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    return older[oldItemPosition].sectionTitle == newer[newItemPosition].sectionTitle
+                }
+
+                override fun areContentsTheSame(
+                    oldItemPosition: Int,
+                    newItemPosition: Int
+                ): Boolean {
+                    // TODO: 아래 항목이 적용이 되려면, Section 내의 todoList가 변경이 될시, todoList가 변경되어야 함.
+                    return older[oldItemPosition] == newer[newItemPosition]
+                }
+            })
+            field = value
+            result.dispatchUpdatesTo(this)
+        }
+
     inner class TodoListViewHolder(private val itemBinding: FragmentTodoListSectionBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
         fun bindItem(section: Section, position: Int) {
             // Section 이름, 하위 Recycler View에 Adapter, LayoutManager 설정
-            val sectionAdapter = TodoListSectionAdapter(section, position)
+            val sectionAdapter = TodoListSectionAdapter(position, completed)
+            sectionAdapter.section = section
             itemBinding.tvSectionName.text = section.sectionTitle
             itemBinding.rvTodoList.adapter = sectionAdapter
             itemBinding.rvTodoList.layoutManager = LinearLayoutManager(
@@ -64,7 +97,6 @@ class TodoListAdapter :
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListViewHolder {
         return TodoListViewHolder(
             FragmentTodoListSectionBinding.inflate(
@@ -74,10 +106,10 @@ class TodoListAdapter :
     }
 
     override fun onBindViewHolder(holder: TodoListViewHolder, position: Int) {
-        holder.bindItem(TodoListFragment.instance.sections[position], position)
+        holder.bindItem(sections[position], position)
     }
 
     override fun getItemCount(): Int {
-        return TodoListFragment.instance.sections.size
+        return sections.size
     }
 }
