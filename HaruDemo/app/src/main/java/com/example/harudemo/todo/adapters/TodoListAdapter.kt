@@ -19,9 +19,10 @@ class TodoListAdapter :
     var completed: Boolean = false
     var sections: List<Section> = listOf()
         set(value) {
+            val newer = value.filter { it.todos.isNotEmpty() }
+
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 val older = field
-                val newer = value
 
                 override fun getOldListSize(): Int {
                     return older.size
@@ -43,7 +44,7 @@ class TodoListAdapter :
                     return older[oldItemPosition] == newer[newItemPosition]
                 }
             })
-            field = value
+            field = newer
             result.dispatchUpdatesTo(this)
         }
 
