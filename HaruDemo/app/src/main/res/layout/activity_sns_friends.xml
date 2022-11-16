@@ -52,11 +52,9 @@
                 android:id="@+id/cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right"
                 android:background="#00000000"
-                android:gravity=""
+                android:gravity="center"
                 android:text="취 소"
-                android:textColor="@color/gray"
                 android:textSize="17dp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -77,14 +75,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="#00000000"
-                    android:text="팔로워"
-                    android:textColor="#BEE0FF" />
+                    android:textStyle="bold"
+                    android:text="Follower"
+                    />
 
                 <View
                     android:id="@+id/followerline"
                     android:layout_width="match_parent"
-                    android:layout_height="5px"
-                    android:background="@color/skyBlue" />
+                    android:layout_height="6px"
+                    android:background="@color/black"/>
             </LinearLayout>
 
             <LinearLayout
@@ -97,14 +96,16 @@
                     android:id="@+id/following"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:background="#00000000"
-                    android:text="팔로잉"
+                    android:text="Following"
+                    android:textStyle="bold"
                     android:textColor="#B6B8B8" />
 
                 <View
                     android:id="@+id/followingline"
                     android:layout_width="match_parent"
-                    android:layout_height="5px"
+                    android:layout_height="6px"
                     android:background="#B6B8B8" />
 
             </LinearLayout>

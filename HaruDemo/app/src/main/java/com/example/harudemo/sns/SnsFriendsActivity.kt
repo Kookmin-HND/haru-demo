@@ -1,5 +1,6 @@
 package com.example.harudemo.sns
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ListAdapter
@@ -11,6 +12,7 @@ import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.databinding.ActivitySnsFriendsBinding
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.recyclerview.SnsFriendsRecyclerViewAdapter
+import kotlinx.android.synthetic.main.activity_sns_friends.*
 import kotlin.math.log
 
 
@@ -32,9 +34,21 @@ class SnsFriendsActivity : AppCompatActivity() {
 
         binding.follower.setOnClickListener{
             Toast.makeText(applicationContext, "팔로워 클릭",Toast.LENGTH_SHORT).show()
+            binding.follower.setTextColor(Color.BLACK)
+            binding.followerline.setBackgroundColor(Color.BLACK)
+
+
+            binding.following.setTextColor(Color.GRAY)
+            binding.followingline.setBackgroundColor(Color.GRAY)
         }
         binding.following.setOnClickListener{
             Toast.makeText(applicationContext, "팔로잉 클릭",Toast.LENGTH_SHORT).show()
+            binding.following.setTextColor(Color.BLACK)
+            binding.followingline.setBackgroundColor(Color.BLACK)
+
+
+            binding.follower.setTextColor(Color.GRAY)
+            binding.followerline.setBackgroundColor(Color.GRAY)
         }
         binding.clearText.setOnClickListener{
             binding.search.setText(null)
