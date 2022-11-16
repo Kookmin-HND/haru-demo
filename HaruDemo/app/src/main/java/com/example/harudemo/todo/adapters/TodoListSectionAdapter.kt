@@ -87,8 +87,19 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
 
             val dateToken =
                 section?.logs?.get(position)?.first()?.date!!.split('-').map { it.toInt() }
+            var duration = ", 매주"
+            for (i in 0 until todo.days.size) {
+                if (todo.days[i]) {
+                    duration += " ${days[i]},"
+                }
+            }
+            if (duration == ", 매주") {
+                duration = " "
+            }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
-            itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
+            itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]}) ${
+                duration.slice(0 until duration.length - 1)
+            }"
 
             // Update 실행 Action
             itemBinding.root.setOnClickListener {

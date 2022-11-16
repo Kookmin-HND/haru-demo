@@ -15,34 +15,32 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:id="@+id/cl_todo_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:clipToOutline="false"
             android:elevation="1dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/btn_check_todo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="top"
+                android:scaleX="1.125"
+                android:scaleY="1.125" />
 
             <LinearLayout
-                android:id="@+id/cl_todo_content"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/background_light"
-                android:clipToOutline="false"
-                android:elevation="1dp"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/btn_check_todo"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleX="1.125"
-                    android:scaleY="1.125" />
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_todo_content"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
                     android:textSize="18sp"
                     tools:text="Todo Content" />
 
@@ -50,10 +48,10 @@
                     android:id="@+id/tv_todo_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
                     android:gravity="bottom"
                     android:textSize="10sp"
                     tools:text="2022.9.30" />
+
 
             </LinearLayout>
 
@@ -64,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginRight="17dp"
+            android:layout_marginEnd="17dp"
             android:enabled="false"
             android:text="Delete"
             android:textColor="#ffffff" />
@@ -74,7 +72,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="3dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fl_todo_content" />

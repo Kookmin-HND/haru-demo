@@ -130,7 +130,7 @@ class TodoListFragment : Fragment() {
                     dates.add(today.toString())
                     today = today.plusDays(1)
                 }
-                TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, {
+                TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, { it ->
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
                         result.add(
@@ -140,6 +140,17 @@ class TodoListFragment : Fragment() {
                                 ArrayList(section.value.second.map { log -> arrayListOf(log) })
                             )
                         )
+                    }
+                    result.sortWith { v1, v2 ->
+                        val date1 = v1.title.split("-").map { it.toInt() }
+                        val date2 = v2.title.split("-").map { it.toInt() }
+                        if (date1[0] == date2[0]) {
+                            if (date1[1] == date2[1]) {
+                                return@sortWith date1[2].compareTo(date2[2])
+                            }
+                            return@sortWith date1[1].compareTo(date2[1])
+                        }
+                        return@sortWith date1[0].compareTo(date2[0])
                     }
                     todoListAdapter.sections = result
                     todoListAdapter.completed = false
