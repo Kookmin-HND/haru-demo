@@ -2,6 +2,7 @@ package com.example.harudemo.fragments.todo_fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,7 @@ class TodoListFragment : Fragment() {
     private var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment = TodoFragment.instance
-    var todoListAdapter: TodoListAdapter = TodoListAdapter()
+    private var todoListAdapter: TodoListAdapter = TodoListAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,6 +77,7 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
+        todoListAdapter = TodoListAdapter()
         binding?.rvTodoSectionList?.adapter = todoListAdapter
         binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
             binding?.root?.context, LinearLayoutManager.VERTICAL, false
@@ -106,7 +108,7 @@ class TodoListFragment : Fragment() {
                     {
                         todoListAdapter.sections = listOf(
                             Section(
-                                today,
+                                "하루",
                                 it.first,
                                 ArrayList(it.second.map { log -> arrayListOf(log) })
                             )
