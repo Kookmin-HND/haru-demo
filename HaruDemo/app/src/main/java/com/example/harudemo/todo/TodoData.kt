@@ -115,6 +115,7 @@ object TodoData {
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {},
         ) {
+            Log.d("[debug]", dates.toString())
             TodoRetrofitManager.instance.getTodosByDateInDates(
                 writer, dates, completed, completion = { responseStatus, todosByDates ->
                     when (responseStatus) {

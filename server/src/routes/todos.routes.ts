@@ -232,6 +232,7 @@ router.get(
         completed,
       });
 
+      result[date] = { todos: [], logs: [] };
       result[date].logs = logs;
       result[date].todos = [];
       for (const log of logs) {

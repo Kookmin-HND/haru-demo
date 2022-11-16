@@ -43,7 +43,6 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoFolderListViewHolder {
-        Log.d("[debug]", folderMap.toString())
         return TodoFolderListViewHolder(
             FragmentTodoFolderItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false

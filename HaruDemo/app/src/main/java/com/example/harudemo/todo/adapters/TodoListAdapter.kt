@@ -32,7 +32,7 @@ class TodoListAdapter :
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return older[oldItemPosition].sectionTitle == newer[newItemPosition].sectionTitle
+                    return older[oldItemPosition].title == newer[newItemPosition].title
                 }
 
                 override fun areContentsTheSame(
@@ -55,7 +55,7 @@ class TodoListAdapter :
             // Section 이름, 하위 Recycler View에 Adapter, LayoutManager 설정
             val sectionAdapter = TodoListSectionAdapter(position, completed)
             sectionAdapter.section = section
-            itemBinding.tvSectionName.text = section.sectionTitle
+            itemBinding.tvSectionName.text = section.title
             itemBinding.rvTodoList.adapter = sectionAdapter
             itemBinding.rvTodoList.layoutManager = LinearLayoutManager(
                 itemBinding.root.context, LinearLayoutManager.VERTICAL, false

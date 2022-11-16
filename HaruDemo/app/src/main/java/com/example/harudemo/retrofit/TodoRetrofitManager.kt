@@ -14,7 +14,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-// TODO: 여러 object로 중첩된 경우, parsing 필요
 class TodoRetrofitManager {
     companion object {
         val instance = TodoRetrofitManager()

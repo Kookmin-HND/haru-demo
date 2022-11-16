@@ -32,20 +32,11 @@ import kotlin.concurrent.schedule
 
 class TodoListSectionAdapter(private val index: Int, private val completed: Boolean) :
     RecyclerView.Adapter<TodoListSectionAdapter.TodoListSectionViewHolder>() {
-    private var logs: ArrayList<TodoLog> = arrayListOf()
     var section: Section? = null
         set(value) {
             if (section == null) {
                 field = value
-                logs.clear()
-                for (todo in section?.todoList!!) {
-                    // TODO: API 수정(Section에다가 todoLog까지 담아서 같이 보내줌.)
-                    Runnable {
-                        val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
-                        todoLogs?.first()?.let { logs.add(it) }
-                    }
-                }
-                this@TodoListSectionAdapter.notifyItemInserted(field?.todoList?.size!!)
+                this@TodoListSectionAdapter.notifyItemInserted(field?.todos?.size!!)
                 return
             }
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
@@ -53,31 +44,26 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
                 val newer = value
 
                 override fun getOldListSize(): Int {
-                    return older?.todoList?.size!!
+                    return older?.todos?.size!!
                 }
 
                 override fun getNewListSize(): Int {
-                    return newer?.todoList?.size!!
+                    return newer?.todos?.size!!
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return older?.todoList!![oldItemPosition].id == newer?.todoList!![newItemPosition].id
+                    return older?.todos!![oldItemPosition].id == newer?.todos!![newItemPosition].id
                 }
 
                 override fun areContentsTheSame(
                     oldItemPosition: Int,
                     newItemPosition: Int
                 ): Boolean {
-                    return older?.todoList!![oldItemPosition].folder == newer?.todoList!![newItemPosition].folder &&
-                            older.todoList[oldItemPosition].content == newer.todoList[newItemPosition].content
+                    return older?.todos!![oldItemPosition].folder == newer?.todos!![newItemPosition].folder &&
+                            older.todos[oldItemPosition].content == newer.todos[newItemPosition].content
                 }
             })
             field = value
-            logs.clear()
-            for (todo in field?.todoList!!) {
-                val todoLogs = TodoData.API.getLogs(todo.id, completed)?.body()
-                todoLogs?.first()?.let { logs.add(it) }
-            }
             result.dispatchUpdatesTo(this)
         }
 
@@ -93,21 +79,20 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
-            section?.todoList?.toString()?.let { Log.d("[debug]", it) }
-            Log.d("[debug]", logs.toString())
-            if (logs[position].completed) {
+            if (section?.logs?.get(position)?.first()?.completed == true) {
                 itemBinding.btnCheckTodo.isChecked = true
                 itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
             itemBinding.tvTodoContent.text = todo.content
 
-            val dateToken = logs[position].date.split('-').map { it.toInt() }
+            val dateToken =
+                section?.logs?.get(position)?.first()?.date!!.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             itemBinding.tvTodoDate.text = "$date (${days[date.dayOfWeek.value - 1]})"
 
             // Update 실행 Action
             itemBinding.root.setOnClickListener {
-                if (logs[position].completed) {
+                if (section?.logs?.get(position)?.first()?.completed == true) {
                     return@setOnClickListener
                 }
 
@@ -124,7 +109,7 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시 삭제한다.
                 TodoData.API.delete(todo.id, {
-                    section?.todoList = section?.todoList?.filter { it != todo } as ArrayList<Todo>
+                    section?.todos = section?.todos?.filter { it != todo } as ArrayList<Todo>
                 })
             }
         }
@@ -140,10 +125,10 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
     }
 
     override fun onBindViewHolder(holder: TodoListSectionViewHolder, position: Int) {
-        holder.bindItem(section?.todoList!![position], position)
+        holder.bindItem(section?.todos!![position], position)
     }
 
     override fun getItemCount(): Int {
-        return section?.todoList?.size!!
+        return section?.todos?.size!!
     }
 }
