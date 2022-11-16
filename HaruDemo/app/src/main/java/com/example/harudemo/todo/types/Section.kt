@@ -4,5 +4,5 @@ package com.example.harudemo.todo.types
 data class Section(
     val title: String,
     var todos: ArrayList<Todo>,
-    var logs: ArrayList<TodoLog>
+    var logs: ArrayList<ArrayList<TodoLog>>
 )

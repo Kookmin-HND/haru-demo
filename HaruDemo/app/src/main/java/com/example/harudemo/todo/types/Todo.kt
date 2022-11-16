@@ -8,4 +8,5 @@ data class Todo(
     val writer: String,
     val folder: String,
     val content: String,
+    val days: List<Boolean>
 ) : Serializable

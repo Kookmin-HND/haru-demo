@@ -104,7 +104,13 @@ class TodoListFragment : Fragment() {
                     today,
                     false,
                     {
-                        todoListAdapter.sections = listOf(Section(today, it))
+                        todoListAdapter.sections = listOf(
+                            Section(
+                                today,
+                                it.first,
+                                ArrayList(it.second.map { log -> arrayListOf(log) })
+                            )
+                        )
                         todoListAdapter.completed = false
                     },
                     {
@@ -122,10 +128,16 @@ class TodoListFragment : Fragment() {
                     dates.add(today.toString())
                     today = today.plusDays(1)
                 }
-                val result: ArrayList<Section> = arrayListOf()
                 TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, {
+                    val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
-                        result.add(Section(section.key, section.value))
+                        result.add(
+                            Section(
+                                section.key,
+                                section.value.first,
+                                ArrayList(section.value.second.map { log -> arrayListOf(log) })
+                            )
+                        )
                     }
                     todoListAdapter.sections = result
                     todoListAdapter.completed = false
@@ -139,10 +151,10 @@ class TodoListFragment : Fragment() {
 
             }
             "all" -> {
-                val result: ArrayList<Section> = arrayListOf()
                 TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", false, {
+                    val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
-                        result.add(Section(section.key, section.value))
+                        result.add(Section(section.key, section.value.first, section.value.second))
                     }
                     todoListAdapter.sections = result
                     todoListAdapter.completed = false
@@ -155,10 +167,11 @@ class TodoListFragment : Fragment() {
                 })
             }
             "completed" -> {
-                val result: ArrayList<Section> = arrayListOf()
+                // FIXME: 폴더 별로 정렬하는 것이 아니라, 날짜 별로 정렬해야 함. 수정 필요.
                 TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", true, {
+                    val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
-                        result.add(Section(section.key, section.value))
+                        result.add(Section(section.key, section.value.first, section.value.second))
                     }
                     todoListAdapter.sections = result
                     todoListAdapter.completed = true
@@ -173,7 +186,7 @@ class TodoListFragment : Fragment() {
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
                 TodoData.API.getTodosByFolder("cjeongmin27@gmail.com", folderTitle, false, {
-                    todoListAdapter.sections = listOf(Section(folderTitle, it))
+                    todoListAdapter.sections = listOf(Section(folderTitle, it.first, it.second))
                     todoListAdapter.completed = false
                 }, {
                     CustomToast.makeText(

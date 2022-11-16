@@ -79,7 +79,8 @@ interface TodoService {
     fun getAllTodosByFolder(
         @Path("email") writer: String,
         @Query("completed") completed: Boolean
-    ): Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>
+    ): Call<JsonObject>
+    // HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
 
     // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -88,7 +89,8 @@ interface TodoService {
         @Path("email") writer: String,
         @Path("folder") folder: String,
         @Query("completed") completed: Boolean,
-    ): Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
+    ): Call<JsonObject>
+    // Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>
 
     // 사용자가 작성한 todo 중 dates 내 date가 일치하는 모든 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -97,7 +99,8 @@ interface TodoService {
         @Path("email") writer: String,
         @Query("completed") completed: Boolean,
         @Query("dates") dates: List<String>,
-    ): Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>
+    ): Call<JsonObject>
+    // HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
 
     // 사용자가 가지고 있는 todo를 받아온 dates로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
@@ -106,7 +109,8 @@ interface TodoService {
         @Path("email") writer: String,
         @Path("date") date: String,
         @Query("completed") completed: Boolean
-    ): Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
+    ): Call<JsonObject>
+    // Pair<ArrayList<Todo>, ArrayList<TodoLog>>
 
     // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
     // 그리고 todo-logs에 접근하여 해당 데이터를 삭제, 추가한다.

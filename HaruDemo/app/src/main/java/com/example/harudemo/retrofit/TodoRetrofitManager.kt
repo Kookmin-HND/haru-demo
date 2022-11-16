@@ -14,6 +14,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+// TODO: 여러 object로 중첩된 경우, parsing 필요
 class TodoRetrofitManager {
     companion object {
         val instance = TodoRetrofitManager()
@@ -44,6 +45,7 @@ class TodoRetrofitManager {
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -74,6 +76,7 @@ class TodoRetrofitManager {
                 call: Call<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>,
                 t: Throwable
             ) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -88,21 +91,52 @@ class TodoRetrofitManager {
         val call =
             todoService?.getAllTodosByFolder(writer, completed) ?: return
         call.enqueue(object :
-            retrofit2.Callback<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>> {
+            retrofit2.Callback<JsonObject> {
             override fun onResponse(
-                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>,
-                response: Response<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
             ) {
                 when (response.code()) {
                     200 -> {
-                        val todosByFolder = response.body() ?: return
-                        completion(RESPONSE_STATUS.OKAY, todosByFolder)
+                        val responseBody = response.body() ?: return
+                        val result: HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>> =
+                            hashMapOf()
+                        for (title in responseBody.keySet()) {
+                            result[title] = Pair(arrayListOf(), arrayListOf())
+                            // todo 추가
+                            for (todoElement in responseBody.get(title).asJsonObject.get("todos").asJsonArray) {
+                                val todoObject = todoElement.asJsonObject
+                                val id = todoObject.get("id").asInt
+                                val writer = todoObject.get("writer").asString
+                                val folder = todoObject.get("folder").asString
+                                val content = todoObject.get("content").asString
+                                val rawDays = todoObject.get("days").asString
+                                val days =
+                                    todoObject.get("days").asString.slice(1 until rawDays.length - 1)
+                                        .split(',').map { it == "1" }
+                                result[title]?.first?.add(Todo(id, writer, folder, content, days))
+                            }
+                            // logs 추가
+                            for (logsElement in responseBody.get(title).asJsonObject.get("logs").asJsonArray) {
+                                val logs = ArrayList<TodoLog>()
+                                for (logElement in logsElement.asJsonArray) {
+                                    val logObject = logElement.asJsonObject
+                                    val id = logObject.get("id").asInt
+                                    val todoId = logObject.get("todoId").asInt
+                                    val date = logObject.get("date").asString
+                                    val completed = logObject.get("completed").asBoolean
+                                    logs.add(TodoLog(id, todoId, date, completed))
+                                }
+                                result[title]?.second?.add(logs)
+                            }
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
                     }
                 }
             }
 
             override fun onFailure(
-                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>>,
+                call: Call<JsonObject>,
                 t: Throwable
             ) {
                 Log.d("[debug]", t.toString())
@@ -122,23 +156,53 @@ class TodoRetrofitManager {
         val call =
             todoService?.getTodosByFolder(writer, folder, completed) ?: return
         call.enqueue(object :
-            retrofit2.Callback<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>> {
+            retrofit2.Callback<JsonObject> {
             override fun onResponse(
-                call: Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>,
-                response: Response<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
             ) {
                 when (response.code()) {
                     200 -> {
-                        val todos = response.body() ?: return
-                        completion(RESPONSE_STATUS.OKAY, todos)
+                        val result: Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>> = Pair(
+                            arrayListOf(), arrayListOf()
+                        )
+                        val responseBody = response.body() ?: return
+                        // todos 추가.
+                        for (todoElement in responseBody.get("todos").asJsonArray) {
+                            val todoObject = todoElement.asJsonObject
+                            val id = todoObject.get("id").asInt
+                            val writer = todoObject.get("writer").asString
+                            val folder = todoObject.get("folder").asString
+                            val content = todoObject.get("content").asString
+                            val rawDays = todoObject.get("days").asString
+                            val days =
+                                todoObject.get("days").asString.slice(1 until rawDays.length - 1)
+                                    .split(',').map { it == "1" }
+                            result.first.add(Todo(id, writer, folder, content, days))
+                        }
+                        // logs 추가.
+                        for (logsElement in responseBody.get("logs").asJsonArray) {
+                            val logs = ArrayList<TodoLog>()
+                            for (logElement in logsElement.asJsonArray) {
+                                val logObject = logElement.asJsonObject
+                                val id = logObject.get("id").asInt
+                                val todoId = logObject.get("todoId").asInt
+                                val date = logObject.get("date").asString
+                                val completed = logObject.get("completed").asBoolean
+                                logs.add(TodoLog(id, todoId, date, completed))
+                            }
+                            result.second.add(logs)
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
                     }
                 }
             }
 
             override fun onFailure(
-                call: Call<Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>,
+                call: Call<JsonObject>,
                 t: Throwable
             ) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -156,23 +220,51 @@ class TodoRetrofitManager {
             todoService?.getTodosByDateInDates(writer, completed, dates)
                 ?: return
         call.enqueue(object :
-            retrofit2.Callback<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>> {
+            retrofit2.Callback<JsonObject> {
             override fun onResponse(
-                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>,
-                response: Response<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
             ) {
                 when (response.code()) {
                     200 -> {
-                        val todosByDate = response.body() ?: return
-                        completion(RESPONSE_STATUS.OKAY, todosByDate)
+                        val result: HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>> =
+                            hashMapOf()
+                        val responseBody = response.body() ?: return
+                        for (date in responseBody.keySet()) {
+                            result[date] = Pair(arrayListOf(), arrayListOf())
+                            // todos 추가
+                            for (todoElement in responseBody.get(date).asJsonObject.get("todos").asJsonArray) {
+                                val todoObject = todoElement.asJsonObject
+                                val id = todoObject.get("id").asInt
+                                val writer = todoObject.get("writer").asString
+                                val folder = todoObject.get("folder").asString
+                                val content = todoObject.get("content").asString
+                                val rawDays = todoObject.get("days").asString
+                                val days =
+                                    todoObject.get("days").asString.slice(1 until rawDays.length - 1)
+                                        .split(',').map { it == "1" }
+                                result[date]?.first?.add(Todo(id, writer, folder, content, days))
+                            }
+                            // logs 추가
+                            for (logElement in responseBody.get(date).asJsonObject.get("logs").asJsonArray) {
+                                val logObject = logElement.asJsonObject
+                                val id = logObject.get("id").asInt
+                                val todoId = logObject.get("todoId").asInt
+                                val date = logObject.get("date").asString
+                                val completed = logObject.get("completed").asBoolean
+                                result[date]?.second?.add(TodoLog(id, todoId, date, completed))
+                            }
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
                     }
                 }
             }
 
             override fun onFailure(
-                call: Call<HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>>,
+                call: Call<JsonObject>,
                 t: Throwable
             ) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
@@ -188,23 +280,48 @@ class TodoRetrofitManager {
     ) {
         val call =
             todoService?.getTodosByDate(writer, date, completed) ?: return
-        call.enqueue(object : retrofit2.Callback<Pair<ArrayList<Todo>, ArrayList<TodoLog>>> {
+        call.enqueue(object : retrofit2.Callback<JsonObject> {
             override fun onResponse(
-                call: Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>,
-                response: Response<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
             ) {
                 when (response.code()) {
                     200 -> {
-                        val todos = response.body() ?: return
-                        completion(RESPONSE_STATUS.OKAY, todos)
+                        val result: Pair<ArrayList<Todo>, ArrayList<TodoLog>> =
+                            Pair(arrayListOf(), arrayListOf())
+                        val responseBody = response.body() ?: return
+                        // todos 추가
+                        for (todoElement in responseBody.get("todos").asJsonArray) {
+                            val todoObject = todoElement.asJsonObject
+                            val id = todoObject.get("id").asInt
+                            val writer = todoObject.get("writer").asString
+                            val folder = todoObject.get("folder").asString
+                            val content = todoObject.get("content").asString
+                            val rawDays = todoObject.get("days").asString
+                            val days =
+                                todoObject.get("days").asString.slice(1 until rawDays.length - 1)
+                                    .split(',').map { it == "1" }
+                            result.first.add(Todo(id, writer, folder, content, days))
+                        }
+                        // logs 추가
+                        for (logElement in responseBody.get("logs").asJsonArray) {
+                            val logObject = logElement.asJsonObject
+                            val id = logObject.get("id").asInt
+                            val todoId = logObject.get("todoId").asInt
+                            val date = logObject.get("date").asString
+                            val completed = logObject.get("completed").asBoolean
+                            result.second.add(TodoLog(id, todoId, date, completed))
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
                     }
                 }
             }
 
             override fun onFailure(
-                call: Call<Pair<ArrayList<Todo>, ArrayList<TodoLog>>>,
+                call: Call<JsonObject>,
                 t: Throwable
             ) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })

@@ -13,12 +13,14 @@ import com.example.harudemo.databinding.FragmentTodoFolderItemBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.utils.CustomToast
 
 class TodoFolderListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<TodoFolderListAdapter.TodoFolderListViewHolder>() {
     private var folderList: List<String> = listOf()
-    private var folderMap: HashMap<String, ArrayList<Todo>> = hashMapOf()
+    private var folderMap: HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>> =
+        hashMapOf()
 
     inner class TodoFolderListViewHolder(
         private val itembinding: FragmentTodoFolderItemBinding,
@@ -26,7 +28,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
         fun bindItem(folder: String) {
             // TodoFragment내 Folder RecyclerView에 폴더 이름을 기준으로 폴더 클릭 할 수 있는 아이템 생성
             itembinding.tvFolderTitle.text = folder
-            itembinding.tvCount.text = folderMap[folder]?.size.toString()
+            itembinding.tvCount.text = folderMap[folder]?.first?.size.toString()
             itembinding.root.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("by", "folder")
@@ -41,6 +43,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoFolderListViewHolder {
+        Log.d("[debug]", folderMap.toString())
         return TodoFolderListViewHolder(
             FragmentTodoFolderItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
@@ -81,7 +84,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
                     oldItemPosition: Int,
                     newItemPosition: Int
                 ): Boolean {
-                    return olderMap[olderList[oldItemPosition]]?.size == newerMap[newerList[newItemPosition]]?.size
+                    return olderMap[olderList[oldItemPosition]]?.first?.size == newerMap[newerList[newItemPosition]]?.first?.size
                 }
             })
             folderList = it.keys.toList()
