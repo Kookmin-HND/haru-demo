@@ -121,6 +121,7 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
                 val intent = Intent(it.context, TodoInputActivity::class.java)
                 intent.putExtra("update", true)
                 intent.putExtra("todo", todo)
+                intent.putExtra("log", section?.logs?.get(position)?.first())
                 it.context.startActivity(intent)
             }
 

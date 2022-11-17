@@ -87,8 +87,6 @@ class TodoListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // TodoFragment로부터 전달된 값에 따라 TodoList Fragment에서 표시할 정보를 sections 배열에 저장 후
-        // Recycler View에 전달
         updateSections()
     }
 

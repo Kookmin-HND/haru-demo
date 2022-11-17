@@ -21,6 +21,7 @@ import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.adapters.TodoListAdapter
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
 import com.example.harudemo.utils.CustomToast
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -73,10 +74,10 @@ class TodoInputActivity : AppCompatActivity() {
 
             // TodoData를 미리 입력한다.
             val todo: Todo = intent.getSerializableExtra("todo") as Todo
-            val log = TodoData.API.getLogs(todo.id, false)?.body()?.first()
+            val log: TodoLog = intent.getSerializableExtra("log") as TodoLog
             val text = "#${todo.folder} ${todo.content}"
             binding?.todoInput?.setText(text)
-            val splittedDate = log!!.date.split('-').map { it.toInt() }
+            val splittedDate = log.date.split('-').map { it.toInt() }
             val currentDate = SimpleDateFormat("yyyy-MM-dd").parse(
                 LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2]).toString()
             )
@@ -135,6 +136,7 @@ class TodoInputActivity : AppCompatActivity() {
             val folder = splitted[0]
             val content = splitted[1]
             val datesList = arrayListOf<String>()
+            val days = arrayListOf(false, false, false, false, false, false, false)
 
             if (viewMode == ViewMode.Calendar) {
                 // 현재 입력 방식이 캘린더인 경우.
@@ -167,6 +169,7 @@ class TodoInputActivity : AppCompatActivity() {
                 while (!startDate.isAfter(endDate)) {
                     val day = startDate.dayOfWeek.value - 1
                     if (dayButtons[day].isChecked) {
+                        days[day] = true
                         datesList.add(startDate.toString())
                     }
                     startDate = startDate.plusDays(1)
@@ -187,12 +190,10 @@ class TodoInputActivity : AppCompatActivity() {
                 // DB UPDATE
                 // TODO: Update API 사용 수정해야 함
                 val todo = intent.getSerializableExtra("todo") as Todo
+                val log = intent.getSerializableExtra("log") as TodoLog
             } else {
                 // DB에 데이터 추가
-                // TODO: days도 추가해주어야 함.
-//                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
-//
-//                })
+                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days)
             }
             // 입력이 정상적으로 되었다고 판단. Activity 종료
             finish()

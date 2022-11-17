@@ -112,7 +112,7 @@ class TodoRetrofitManager {
                                 val rawDays = todoObject.get("days").asString
                                 val days =
                                     todoObject.get("days").asString.slice(1 until rawDays.length - 1)
-                                        .split(',').map { it == "1" }
+                                        .split(',').map { it == "true" }
                                 result[title]?.first?.add(Todo(id, writer, folder, content, days))
                             }
                             // logs 추가
@@ -176,7 +176,7 @@ class TodoRetrofitManager {
                             val rawDays = todoObject.get("days").asString
                             val days =
                                 todoObject.get("days").asString.slice(1 until rawDays.length - 1)
-                                    .split(',').map { it == "1" }
+                                    .split(',').map { it == "true" }
                             result.first.add(Todo(id, writer, folder, content, days))
                         }
                         // logs 추가.
@@ -241,7 +241,7 @@ class TodoRetrofitManager {
                                 val rawDays = todoObject.get("days").asString
                                 val days =
                                     todoObject.get("days").asString.slice(1 until rawDays.length - 1)
-                                        .split(',').map { it == "1" }
+                                        .split(',').map { it == "true" }
                                 result[date]?.first?.add(Todo(id, writer, folder, content, days))
                             }
                             // logs 추가
@@ -299,7 +299,7 @@ class TodoRetrofitManager {
                             val rawDays = todoObject.get("days").asString
                             val days =
                                 todoObject.get("days").asString.slice(1 until rawDays.length - 1)
-                                    .split(',').map { it == "1" }
+                                    .split(',').map { it == "true" }
                             result.first.add(Todo(id, writer, folder, content, days))
                         }
                         // logs 추가

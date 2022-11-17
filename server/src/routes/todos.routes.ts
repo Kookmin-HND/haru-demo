@@ -86,7 +86,7 @@ router.get(
     });
 
     // completed의 값이 일치하는 todo를 가져온다.
-    const result: { [key: number]: { todo: Todo; logs: TodoLog[] } } = [];
+    const result: { [key: number]: { todo: Todo; logs: TodoLog[] } } = {};
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
