@@ -67,7 +67,6 @@ const JWTVerify = async (token: any, done: any) => {
 
     return done(null, user);
   } catch (error) {
-    console.log("123");
     console.error(error);
     done(error);
   }

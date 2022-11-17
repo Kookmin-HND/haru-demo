@@ -7,10 +7,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.MainActivity
 import com.example.harudemo.R
+import com.example.harudemo.model.UserInfo
 import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.example.harudemo.utils.User
 import kotlinx.android.synthetic.main.login_layout.*
+import org.json.JSONObject
+import java.util.*
 
 
 //로그인 액티비티
@@ -40,6 +44,8 @@ class LoginActivity : AppCompatActivity() {
                     RESPONSE_STATUS.OKAY -> {
                         Log.d(TAG, "success Login")
                         Log.d(TAG, "${jsonElement}")
+                        val json = JSONObject(jsonElement.toString())
+                        User.info = UserInfo(json.getInt("id"), json.getString("email"),json.getString("name"), json.getString("createAt"))
                         CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)

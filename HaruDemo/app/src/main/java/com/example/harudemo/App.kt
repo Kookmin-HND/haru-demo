@@ -1,6 +1,7 @@
 package com.example.harudemo
 
 import android.app.Application
+import com.example.harudemo.model.UserInfo
 
 /*
 자유롭게 컨텍스트를 불러오기 위한 클래스
@@ -15,5 +16,6 @@ class App : Application(){
     override fun onCreate() {
         super.onCreate()
         instance = this
+
     }
 }

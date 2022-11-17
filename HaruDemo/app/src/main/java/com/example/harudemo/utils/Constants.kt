@@ -14,7 +14,8 @@ enum class RESPONSE_STATUS {
 object API {
 
     //const val BASE_URL: String = "http://192.168.0.7:8000/api/"
-    const val BASE_URL: String = "http://10.0.2.2:8000/api/"
+//    const val BASE_URL: String = "http://10.0.2.2:8000/api/"
+    const val BASE_URL: String = "http://10.30.113.26:8000/api/"
     const val API_KEY: String = ""
     const val RECENT_POSTS: String = "posts/recent/{postId}"
     const val POSTS: String = "posts"

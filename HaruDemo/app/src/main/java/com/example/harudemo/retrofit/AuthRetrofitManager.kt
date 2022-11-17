@@ -1,5 +1,6 @@
 package com.example.harudemo.retrofit
 
+import android.util.Log
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
