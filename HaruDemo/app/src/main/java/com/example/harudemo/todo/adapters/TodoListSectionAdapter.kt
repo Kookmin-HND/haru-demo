@@ -154,7 +154,18 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
             itemBinding.btnDelete.setOnClickListener {
                 // Delete 버튼 클릭시 삭제한다.
                 TodoData.API.delete(todo.id, {
-                    section?.todos = section?.todos?.filter { it != todo } as ArrayList<Todo>
+                    section?.let { it1 ->
+                        val newTodos =
+                            it1.todos.filter { it2 -> it2.id != todo.id } as ArrayList<Todo>
+                        val newLogs =
+                            it1.logs.filter { it2 -> it2.first().todoId != todo.id } as ArrayList<ArrayList<TodoLog>>
+
+                        section = Section(
+                            it1.title,
+                            newTodos,
+                            newLogs
+                        )
+                    }
                 })
             }
         }
