@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
@@ -49,10 +50,10 @@ class TodoListFragment : Fragment() {
         )
     }
 
-    private var binding: FragmentTodoListBinding? = null
+    var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment = TodoFragment.instance
-    private var todoListAdapter: TodoListAdapter = TodoListAdapter()
+    var todoListAdapter: TodoListAdapter = TodoListAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -97,7 +98,7 @@ class TodoListFragment : Fragment() {
         callback?.remove()
     }
 
-    private fun updateSections() {
+    fun updateSections() {
         when (arguments?.getString("by") as String) {
             "today" -> {
                 val today = LocalDate.now().toString()
@@ -213,16 +214,5 @@ class TodoListFragment : Fragment() {
         }
     }
 
-    // TODO: Recycler View에서 감지되면 알아서 바꾸도록 변경 필요.
-    fun refreshView(): Boolean {
-        return if (todoListAdapter.sections.isEmpty()) {
-            binding?.rvTodoSectionList?.visibility = View.GONE
-            binding?.tvEmpty?.visibility = View.VISIBLE
-            false
-        } else {
-            binding?.rvTodoSectionList?.visibility = View.VISIBLE
-            binding?.tvEmpty?.visibility = View.GONE
-            true
-        }
-    }
+
 }

@@ -60,11 +60,21 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
                     newItemPosition: Int
                 ): Boolean {
                     return older?.todos!![oldItemPosition].folder == newer?.todos!![newItemPosition].folder &&
-                            older.todos[oldItemPosition].content == newer.todos[newItemPosition].content
+                            older.todos[oldItemPosition].content == newer.todos[newItemPosition].content &&
+                            older.logs[oldItemPosition].first() == newer.logs[newItemPosition].first()
                 }
             })
-            field = value
-            result.dispatchUpdatesTo(this)
+
+            Timer("complete_todo", true).schedule(1000) {
+                field = value
+                TodoListFragment.instance.activity?.runOnUiThread {
+                    result.dispatchUpdatesTo(this@TodoListSectionAdapter)
+                    if (field?.logs?.any { it.isNotEmpty() } == false) {
+                        TodoListFragment.instance.todoListAdapter.sections =
+                            TodoListFragment.instance.todoListAdapter.sections.filter { it.title != section?.title }
+                    }
+                }
+            }
         }
 
     inner class TodoListSectionViewHolder(private val itemBinding: FragmentTodoListItemBinding) :
@@ -79,8 +89,9 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bindItem(todo: Todo, position: Int) {
             // Section으로부터 받은 Todo를 단순히 데이터 삽입
+            itemBinding.btnCheckTodo.isChecked =
+                section?.logs?.get(position)?.first()?.completed == true
             if (section?.logs?.get(position)?.first()?.completed == true) {
-                itemBinding.btnCheckTodo.isChecked = true
                 itemBinding.tvTodoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
             itemBinding.tvTodoContent.text = todo.content
@@ -115,6 +126,29 @@ class TodoListSectionAdapter(private val index: Int, private val completed: Bool
 
             // completed Toggle Action
             itemBinding.btnCheckTodo.setOnClickListener {
+                section?.logs!![position].first().let { log ->
+                    TodoData.API.checkTodo(
+                        todo.id,
+                        log.date,
+                        !log.completed,
+                        {
+                            section?.let { it1 ->
+                                val newLogs =
+                                    it1.logs.map { logs -> logs.filter { it2 -> it2 != log } } as ArrayList<ArrayList<TodoLog>>
+                                var newTodos = it1.todos
+                                if (newLogs[position].isEmpty()) {
+                                    newTodos.removeAt(position)
+                                }
+
+                                section = Section(
+                                    it1.title,
+                                    newTodos,
+                                    newLogs,
+                                )
+                            }
+                        }
+                    )
+                }
             }
 
             itemBinding.btnDelete.setOnClickListener {

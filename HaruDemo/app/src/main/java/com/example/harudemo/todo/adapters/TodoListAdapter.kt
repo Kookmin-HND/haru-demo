@@ -3,6 +3,7 @@ package com.example.harudemo.todo.adapters
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,12 +41,19 @@ class TodoListAdapter :
                     oldItemPosition: Int,
                     newItemPosition: Int
                 ): Boolean {
-                    // TODO: 아래 항목이 적용이 되려면, Section 내의 todoList가 변경이 될시, todoList가 변경되어야 함.
-                    return older[oldItemPosition] == newer[newItemPosition]
+                    return older[oldItemPosition].todos == newer[newItemPosition].todos &&
+                            older[oldItemPosition].logs == newer[newItemPosition].logs
                 }
             })
             field = newer
             result.dispatchUpdatesTo(this)
+            if (field.isEmpty()) {
+                TodoListFragment.instance.binding?.rvTodoSectionList?.visibility = View.GONE
+                TodoListFragment.instance.binding?.tvEmpty?.visibility = View.VISIBLE
+            } else {
+                TodoListFragment.instance.binding?.rvTodoSectionList?.visibility = View.VISIBLE
+                TodoListFragment.instance.binding?.tvEmpty?.visibility = View.GONE
+            }
         }
 
     inner class TodoListViewHolder(private val itemBinding: FragmentTodoListSectionBinding) :
