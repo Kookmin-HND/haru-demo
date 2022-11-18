@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:elevation="0dp"
-    app:cardElevation="0dp">
+    android:foreground="?attr/selectableItemBackground"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="15dp"
-        >
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/sns_post_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/sns_post_tag_rounded_corner"
+            android:text="운동"
+            android:textColor="@color/black"
+            android:textSize="10sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,32 +35,36 @@
 
             <ImageView
                 android:id="@+id/sns_post_writer_photo"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_baseline_account_circle_24" />
 
             <TextView
                 android:id="@+id/sns_post_writer_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
                 android:text=" LMJ님의 하루"
-                android:textSize="20sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sns_post_created_at"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="end"
                 android:text="2022.10.04"
                 android:textColor="@color/gray"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingHorizontal="15dp">
+            android:paddingHorizontal="12dp">
 
             <TextView
                 android:id="@+id/sns_post_content"
@@ -75,9 +92,9 @@
                 android:id="@+id/sns_post_preview_image_two_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
-                android:visibility="gone">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -89,8 +106,8 @@
                         android:layout_width="0dp"
                         android:layout_height="220dp"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
                         android:layout_marginRight="3dp"
+                        android:layout_weight="1"
                         android:scaleType="centerCrop" />
 
                     <ImageView
@@ -107,59 +124,62 @@
                 android:id="@+id/sns_post_preview_image_three_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
-                android:visibility="gone">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:id="@+id/sns_post_preview_image_three_first"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:layout_marginRight="3dp"
+                        android:layout_weight="1"
                         android:scaleType="centerCrop" />
+
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            >
-                        <ImageView
-                            android:id="@+id/sns_post_preview_image_three_second"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:layout_marginBottom="3dp"
-                            android:scaleType="centerCrop" />
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/sns_post_preview_image_three_second"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_marginBottom="3dp"
+                                android:layout_weight="1"
+                                android:scaleType="centerCrop" />
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                android:layout_weight="1"
-                                >
+                                android:layout_weight="1">
+
                                 <ImageView
                                     android:id="@+id/sns_post_preview_image_three_third"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:scaleType="centerCrop" />
+
                                 <TextView
                                     android:id="@+id/sns_post_preview_image_count_more"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="#66000000"
+                                    android:gravity="center"
                                     android:text="+1"
                                     android:textColor="@color/white"
-                                    android:textSize="22sp"
-                                    android:gravity="center"
-                                    />
+                                    android:textSize="22sp" />
                             </FrameLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -172,51 +192,52 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="15dp"
             android:background="#66CCCCCC" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="15dp">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/sns_good_vector_asset"
-                    >
-                </ImageView>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="좋아요"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/sns_comment_vector_asset"
-                    >
-                </ImageView>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="댓글 "/>
-                <TextView
-                    android:id="@+id/sns_post_comment_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3"/>
-            </LinearLayout>
-        </LinearLayout>
-
-
     </LinearLayout>
 
 
-</androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/sns_good_vector_asset"/>
+
+            <TextView
+                android:id="@+id/sns_post_like_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="3"
+                android:textColor="@color/black_coral"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:background="@drawable/sns_comment_vector_asset"/>
+            <TextView
+                android:id="@+id/sns_post_comment_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="3"
+                android:textColor="@color/black_coral"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

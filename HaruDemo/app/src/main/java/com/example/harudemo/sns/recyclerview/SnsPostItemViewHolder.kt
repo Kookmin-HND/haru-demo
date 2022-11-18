@@ -15,6 +15,9 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val snsPostWriterName = itemView.sns_post_writer_name
     private val snsPostCreatedAt = itemView.sns_post_created_at
     private val snsPostContent = itemView.sns_post_content
+    private val snsPostTag = itemView.sns_post_tag
+
+
     private val snsPostPreviewImageOneCardView = itemView.sns_post_preview_image_one_cardView
     private val snsPostPreviewImageTwoCardView = itemView.sns_post_preview_image_two_cardView
     private val snsPostPreviewImageThreeCardView = itemView.sns_post_preview_image_three_cardView
@@ -38,6 +41,9 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         snsPostCreatedAt.text = getTimeDifference(snsPostItem.createdAt.toString())
         //미리보기할 때는 개행 제거
         snsPostContent.text = snsPostItem.content?.replace("\n", " ")
+
+
+        snsPostTag.text = snsPostItem.category
 
         //comment number
         if (snsPostItem.commentNumber > 0)
