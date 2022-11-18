@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sns_post_bottom_sheet_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="25dp"
+    android:paddingBottom="100dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textStyle="bold"
+        android:background="@color/white"
+        android:text="게시글의 주제를 선택해주세요"
+        android:paddingHorizontal="20dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+    <Button
+        android:id="@+id/sns_post_bottom_sheet_dialog_health_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="운동"/>
+
+    <Button
+        android:id="@+id/sns_post_bottom_sheet_dialog_study_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="공부"/>
+
+    <Button
+        android:id="@+id/sns_post_bottom_sheet_dialog_coding_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="코딩"/>
+
+    <Button
+        android:id="@+id/sns_post_bottom_sheet_dialog_hobby_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="취미"/>
+
+    <Button
+        android:id="@+id/sns_post_bottom_sheet_dialog_diary_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="일기"/>
+</LinearLayout>
