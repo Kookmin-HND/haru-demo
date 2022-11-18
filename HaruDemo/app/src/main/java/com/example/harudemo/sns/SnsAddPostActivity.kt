@@ -53,9 +53,6 @@ class SnsAddPostActivity : AppCompatActivity(){
     private val adapter = SnsPostImagesRecyclerViewAdapter(imagesList, this)
     private val tmpFileList = ArrayList<String>()
 
-    //스피너에 사용하는 태그들
-    var postSpinnerTags = arrayOf<String?>("운동", "공부", "코딩", "취미", "일기")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySnsAddPostBinding.inflate(layoutInflater);
@@ -108,9 +105,6 @@ class SnsAddPostActivity : AppCompatActivity(){
                     )
                 )
             }
-
-
-            Log.d(TAG, "SnsAddPostActivity ${imagesMultipartBodyList} - onCreate() called")
 
             SnsRetrofitManager.instance.postPost(
                 "LMJ",
@@ -170,7 +164,7 @@ class SnsAddPostActivity : AppCompatActivity(){
 
 
         //tag 선택하는 텍스트뷰
-        binding.snsAddPostSelectTagTextview.setOnClickListener {
+        binding.snsAddPostSelectTagTextviewConstraintLayout.setOnClickListener {
             val snsAddPostBottomSheet = SnsAddPostBottomSheet{
                 when(it){
                     0 -> binding.snsAddPostSelectTagTextview.text = "운동"
