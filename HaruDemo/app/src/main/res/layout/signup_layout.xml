@@ -41,7 +41,6 @@
             android:inputType="textPassword"
             android:maxLines="1"
             android:maxLength="15"
-            android:hint="PassWord"/>
             android:textSize="12sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -60,7 +59,6 @@
             android:inputType="textPassword"
             android:maxLines="1"
             android:maxLength="15"
-            android:hint="PassWord"/>
             android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

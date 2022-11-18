@@ -8,17 +8,13 @@ import com.example.harudemo.App
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
-import com.example.harudemo.utils.isJsonArray
-import com.example.harudemo.utils.isJsonObject
 import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 

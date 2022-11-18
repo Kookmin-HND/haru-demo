@@ -47,18 +47,21 @@
         <!-- 메인 화면을 로그인 화면으로 변경  -->
         <activity
             android:name=".auth.LoginActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".todo.TodoInputActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".todo.TodoInputActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".MainActivity" />
         
         <activity android:name=".auth.SignUpActivity" />
 

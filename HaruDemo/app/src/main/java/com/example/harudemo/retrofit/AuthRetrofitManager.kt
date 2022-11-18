@@ -1,6 +1,5 @@
 package com.example.harudemo.retrofit
 
-import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
 import retrofit2.Call
@@ -12,7 +11,7 @@ class AuthRetrofitManager {
     }
 
     private val authService: AuthService? =
-        RetrofitClient.getClient(API.BASE_URL)?.create(AuthService::class.java)
+        RetrofitClient.getClient()?.create(AuthService::class.java)
 
     // email과 password, name을 전달해 회원가입 한다.
     fun signUpUser(email : String, password : String, name : String, completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
