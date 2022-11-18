@@ -127,7 +127,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         responseDataArrayList!!.forEach {
                             this.snsCommentList.add(it)
                         }
-                        binding.snsPostCommentsRecyclerview.adapter?.notifyItemInserted(this.snsCommentList.size)
+                        binding.snsPostCommentsRecyclerview.adapter?.notifyDataSetChanged()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
