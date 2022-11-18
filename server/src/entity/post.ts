@@ -14,7 +14,7 @@ export class Post {
   writer: string;
 
   @Column({ nullable: false })
-  title: string;
+  category: string;
 
   @Column({ nullable: false })
   content: string;

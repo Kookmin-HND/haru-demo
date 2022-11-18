@@ -76,7 +76,7 @@ class SnsAddPostActivity : AppCompatActivity(){
                 return@setOnClickListener
             }
 
-            val title =
+            val category =
                 binding.snsAddPostSelectTagTextview.text.toString()
                     .trim()
                     .toRequestBody("text/plain".toMediaTypeOrNull())
@@ -108,7 +108,7 @@ class SnsAddPostActivity : AppCompatActivity(){
 
             SnsRetrofitManager.instance.postPost(
                 "LMJ",
-                title,
+                category,
                 content,
                 imagesMultipartBodyList,
                 completion = { responseStatus, _ ->

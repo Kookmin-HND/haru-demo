@@ -1,30 +1,23 @@
 package com.example.harudemo.sns
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.harudemo.App
-import com.example.harudemo.R
-import com.example.harudemo.databinding.ActivitySnsAddPostBinding
 import com.example.harudemo.databinding.ActivitySnsPostDetailBinding
-import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
-import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsCommentRecyclerViewAdapter
 import com.example.harudemo.sns.recyclerview.SnsPostImageViewPagerAdpater
-import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
 import kotlinx.android.synthetic.main.activity_sns_post_detail.*
-import kotlinx.android.synthetic.main.fragment_sns.*
 
 class SnsPostDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsPostDetailBinding;
@@ -50,11 +43,14 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
         val intent = getIntent();
         val snsPostId = intent.getIntExtra("sns_post_id", -1)
+        val snsPostCategory = intent.getStringExtra("sns_post_category")
         val snsPostWriter = intent.getStringExtra("sns_post_writer")
         val snsPostContent = intent.getStringExtra("sns_post_content")
 
-        sns_post_detail_writer.text = snsPostWriter
-        sns_post_detail_body.text = snsPostContent
+        binding.snsPostDetailWriter.text = snsPostWriter
+        binding.snsPostDetailBody.text = snsPostContent
+        binding.snsPostDetailCategoryTextview.text = snsPostCategory
+
 
         //comment adapter 연결
         binding.snsPostCommentsRecyclerview.adapter = SnsCommentRecyclerViewAdapter()

@@ -10,8 +10,8 @@ import retrofit2.http.*
 
 
 data class SnsPostRequestBodyParams(
-    @SerializedName("title")
-    val title: String,
+    @SerializedName("category")
+    val category: String,
     @SerializedName("content")
     val content: String
 )
@@ -50,7 +50,7 @@ interface SnsService {
     @POST("${API.POSTS}/{email}")
     fun postPost(
         @Path("email") writer: String,
-        @Part("title") title: RequestBody,
+        @Part("category") category: RequestBody,
         @Part("content") content: RequestBody,
         @Part images: List<MultipartBody.Part>?
     ): Call<JsonElement>

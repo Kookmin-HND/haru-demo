@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
 import com.example.harudemo.model.SnsPost
-import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
@@ -49,6 +48,7 @@ class SnsRetrofitManager {
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
                                 val postId = resultItemObject.get("id").asInt
+                                val category = resultItemObject.get("category").asString
                                 val writer = resultItemObject.get("writer").asString
                                 val content =
                                     resultItemObject.get("content").asString
@@ -70,6 +70,7 @@ class SnsRetrofitManager {
                                 val snsPostItem = SnsPost(
                                     id = postId,
                                     writer = writer,
+                                    category = category,
                                     content = content,
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
@@ -93,14 +94,14 @@ class SnsRetrofitManager {
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
         writer: String,
-        title: RequestBody,
+        category: RequestBody,
         content: RequestBody,
         images: ArrayList<MultipartBody.Part>?,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
 
         val call =
-            snsService?.postPost(writer, title, content, images) ?: return
+            snsService?.postPost(writer, category, content, images) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
