@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
+import com.example.harudemo.utils.getTimeDifference
 import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
 
 //Sns 게시물 리사이클러뷰를 위한 뷰홀더
@@ -34,14 +35,14 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
-        snsPostCreatedAt.text = snsPostItem.createdAt
+        snsPostCreatedAt.text = getTimeDifference(snsPostItem.createdAt.toString())
         //미리보기할 때는 개행 제거
         snsPostContent.text = snsPostItem.content?.replace("\n", " ")
 
         //comment number
-        if(snsPostItem.commentNumber > 0)
+        if (snsPostItem.commentNumber > 0)
             snsPostCommentNumber.text = snsPostItem.commentNumber.toString()
-        else if(snsPostItem.commentNumber == 0)
+        else if (snsPostItem.commentNumber == 0)
             snsPostCommentNumber.text = ""
 
         snsPostPreviewImageCountMore.visibility = View.GONE
