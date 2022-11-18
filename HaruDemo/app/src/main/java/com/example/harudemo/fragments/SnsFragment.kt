@@ -5,18 +5,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsPost
-import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity
@@ -82,12 +82,12 @@ class SnsFragment : Fragment() {
 
         //스크롤 이벤트 처리 함수
         initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
-
-        binding.btnUp.setOnClickListener {
-            // 스크롤 위로 보내기
-            postScrolltoTop()
-        }
-
+//
+//        binding.btnUp.setOnClickListener {
+//            // 스크롤 위로 보내기
+//            postScrolltoTop()
+//        }
+//
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         binding.snsTopAppBar.setOnMenuItemClickListener {

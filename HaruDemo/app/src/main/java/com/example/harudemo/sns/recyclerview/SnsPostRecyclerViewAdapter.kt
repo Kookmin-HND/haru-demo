@@ -32,7 +32,7 @@ class SnsPostRecyclerViewAdapter : RecyclerView.Adapter<SnsPostItemViewHolder>()
                 else ->
                     LayoutInflater
                         .from(parent.context)
-                        .inflate(R.layout.layout_sns_post_item, parent, false)
+                        .inflate(R.layout.sns_post_recyclerview_item, parent, false)
             }
         return SnsPostItemViewHolder(view)
     }

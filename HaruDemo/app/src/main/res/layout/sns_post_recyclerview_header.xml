@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-
     android:orientation="horizontal">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
         android:padding="10dp"
-        >
+        android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,37 +20,37 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sns_select_rounded_corner"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/sns_select_rounded_corner"
                 android:text="전체" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sns_select_rounded_corner"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/sns_select_rounded_corner"
                 android:text="운동" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sns_select_rounded_corner"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/sns_select_rounded_corner"
                 android:text="공부" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sns_select_rounded_corner"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/sns_select_rounded_corner"
                 android:text="코딩" />
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sns_select_rounded_corner"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/sns_select_rounded_corner"
                 android:text="취미" />
 
 

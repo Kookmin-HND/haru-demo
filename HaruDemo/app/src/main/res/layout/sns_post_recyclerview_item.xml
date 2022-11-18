@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:foreground="?attr/selectableItemBackground"
     android:background="@color/white"
+    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <LinearLayout
@@ -205,11 +205,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp">
-
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:background="@drawable/sns_good_vector_asset"/>
+                android:background="@drawable/sns_heart" />
 
             <TextView
                 android:id="@+id/sns_post_like_number"
@@ -229,7 +228,8 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_gravity="center"
-                android:background="@drawable/sns_comment_vector_asset"/>
+                android:background="@drawable/sns_comment_vector_asset" />
+
             <TextView
                 android:id="@+id/sns_post_comment_number"
                 android:layout_width="wrap_content"

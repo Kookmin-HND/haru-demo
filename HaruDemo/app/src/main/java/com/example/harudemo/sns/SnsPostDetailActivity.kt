@@ -1,5 +1,6 @@
 package com.example.harudemo.sns
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,7 +18,6 @@ import com.example.harudemo.sns.recyclerview.SnsPostImageViewPagerAdpater
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
-import kotlinx.android.synthetic.main.activity_sns_post_detail.*
 
 class SnsPostDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsPostDetailBinding;
@@ -31,6 +31,10 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
     private val MIN_SCALE = 1f // 뷰가 몇퍼센트로 줄어들 것인지
     private val MIN_ALPHA = 0.97f // 어두워지는 정도
+
+    //lottie heart
+    private var isLiked = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
@@ -77,9 +81,38 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsImageViewpager.setPageTransformer(ZoomOutPageTransformer()) //애니메이션 적용
 
 
-        sns_post_detail_cancel_button.setOnClickListener {
+
+        binding.snsPostDetailCancelButton.setOnClickListener {
             finish()
         }
+
+
+        //post heart click event
+        // heart click event listener
+        binding.snsPostLottieHeart.setOnClickListener {
+            if (!isLiked) {
+                // Custom animation speed or duration.
+                val animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(1000)
+                animator.addUpdateListener { animation ->
+                    binding.snsPostLottieHeart.setProgress(animation.getAnimatedValue() as Float)
+                }
+                animator.start()
+                isLiked = true
+                //좋아요 개수 업데이트
+                binding.snsPostDetailLikeNumber.text = "1"
+            }else{
+                val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(1000)
+                animator.addUpdateListener { animation ->
+                    binding.snsPostLottieHeart.setProgress(animation.getAnimatedValue() as Float)
+                }
+                animator.start()
+                isLiked = false
+                binding.snsPostDetailLikeNumber.text = ""
+            }
+        }
+
+
+
 
         //일반 댓글 입력
         binding.btnSendComment.setOnClickListener {
