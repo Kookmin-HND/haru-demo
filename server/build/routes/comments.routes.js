@@ -37,9 +37,7 @@ exports.router.get("/:postId", (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.router.post("/:email", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
     const writer = req.params.email;
-    const post = app_data_source_1.default
-        .getRepository(comment_1.Comment)
-        .create(Object.assign(Object.assign({}, req.body), { post: req.body.postId, writer }));
+    const post = app_data_source_1.default.getRepository(comment_1.Comment).create(Object.assign(Object.assign({}, req.body), { post: req.body.postId, writer }));
     const result = yield app_data_source_1.default.getRepository(comment_1.Comment).save(post);
     return res.json(result);
 }));

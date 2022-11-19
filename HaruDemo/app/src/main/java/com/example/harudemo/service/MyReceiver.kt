@@ -45,19 +45,19 @@ class MyReceiver : BroadcastReceiver() {
                  */
             )
 
-            var sectiondata = TodoData.getTodos()
+//            var sectiondata = TodoData.getTodos()
 
-            for (section in sectiondata){
-                for(todo in section.todoList){
-                    var content = todo.content
-                    var date = todo.date
-                    var splitdate = date.split("-")
-                    val year = splitdate[0].toInt()
-                    val month = splitdate[1].toInt()
-                    val day = splitdate[2].toInt()
-                    maindata.contents[year-2022][month-1][day] += content+"\n"
-                }
-            }
+//            for (section in sectiondata){
+//                for(todo in section.todoList){
+//                    var content = todo.content
+//                    var date = todo.date
+//                    var splitdate = date.split("-")
+//                    val year = splitdate[0].toInt()
+//                    val month = splitdate[1].toInt()
+//                    val day = splitdate[2].toInt()
+//                    maindata.contents[year-2022][month-1][day] += content+"\n"
+//                }
+//            }
 
             var calendar = Calendar.getInstance()
 

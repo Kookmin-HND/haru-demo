@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
-import com.example.harudemo.service.Constant
 import com.example.harudemo.service.MyReceiver
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*

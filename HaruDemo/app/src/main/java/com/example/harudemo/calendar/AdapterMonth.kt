@@ -50,19 +50,19 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         maindata.contents = Array(30){Array(13){Array(32){""} }}
 
         Log.d("월",tempMonth.toString())
-        var sectiondata = TodoData.getTodos()
+//        var sectiondata = TodoData.getTodos()
 
-        for (section in sectiondata){
-            for(todo in section.todoList){
-                var content = todo.content
-                var date = todo.date
-                var splitdate = date.split("-")
-                val year = splitdate[0].toInt()
-                val month = splitdate[1].toInt()
-                val day = splitdate[2].toInt()
-                maindata.contents[year-2022][month-1][day] += content+"\n"
-            }
-        }
+//        for (section in sectiondata){
+//            for(todo in section.todoList){
+//                var content = todo.content
+//                var date = todo.date
+//                var splitdate = date.split("-")
+//                val year = splitdate[0].toInt()
+//                val month = splitdate[1].toInt()
+//                val day = splitdate[2].toInt()
+//                maindata.contents[year-2022][month-1][day] += content+"\n"
+//            }
+//        }
 
         //달력의 아이템마다 값을 입력
         for(i in 0..5) {

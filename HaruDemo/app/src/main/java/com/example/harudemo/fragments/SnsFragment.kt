@@ -10,13 +10,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsPost
-import com.example.harudemo.retrofit.RetrofitManager
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.SnsAddPostActivity
 import com.example.harudemo.sns.SnsDirectMessageActivity

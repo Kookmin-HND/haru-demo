@@ -26,6 +26,9 @@ export class Todo {
   @Column({ nullable: false })
   days: string; // boolean[]
 
+  @Column({ type: "boolean", nullable: false })
+  deleted: number;
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",

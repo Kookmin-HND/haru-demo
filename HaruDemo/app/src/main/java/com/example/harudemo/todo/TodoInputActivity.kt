@@ -1,49 +1,39 @@
 package com.example.harudemo.todo
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
-import androidx.core.widget.addTextChangedListener
-import com.example.harudemo.MainActivity
-import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivityTodoInputBinding
-import com.example.harudemo.databinding.FragmentTodoBinding
-import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
-import com.example.harudemo.todo.adapters.TodoListAdapter
+import com.example.harudemo.todo.adapters.NewTodoSectionAdapter
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
 import com.example.harudemo.utils.CustomToast
-import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import kotlinx.android.synthetic.main.activity_sns_add_post.*
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
 import kotlin.collections.ArrayList
 
 class TodoInputActivity : AppCompatActivity() {
     private var binding: ActivityTodoInputBinding? = null
     private var startDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 시작 날짜 선택하는 변수
     private var endDatePickerFragment: DatePickerFragment? = null // 기간으로 입력받을 때, 끝 날짜 선택하는 변수
-    private var dayButtons: ArrayList<ToggleButton> = ArrayList() // 일 ~ 토 버튼을 리스트로 가지는 변수
+    private var dayButtons: ArrayList<ToggleButton?> =
+        arrayListOf(null) // 일 ~ 토 버튼을 리스트로 가지는 변수
     private var viewMode: Int = -1 // 현재 무슨 형식으로 데이터를 입력받고 있는지 확인하는 변수
+    val days = arrayListOf(false, false, false, false, false, false, false)
 
     @SuppressLint("NotifyDataSetChanged", "SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTodoInputBinding.inflate(layoutInflater)
-        binding?.calendar?.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
         setContentView(binding?.root)
 
         dayButtons.add(binding?.btnSun!!)
@@ -61,24 +51,78 @@ class TodoInputActivity : AppCompatActivity() {
             }
         }
 
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.cvDurationView?.setOnClickListener {
+            goneCalendarView()
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.cvCalendarView?.setOnClickListener {
+            goneDurationView()
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        for (i in 1 until dayButtons.size) {
+            dayButtons[i]?.setOnClickListener {
+                goneCalendarView()
+                days[i - 1] = !days[i - 1]
+            }
+        }
+
+        // DurationStart 텍스트뷰 클릭시 DatePicker 표시
+        binding?.tvDurationStart?.setOnClickListener {
+            goneCalendarView()
+            startDatePickerFragment = DatePickerFragment(it as TextView)
+            startDatePickerFragment?.show(supportFragmentManager, "시작 날짜 선택")
+        }
+
+        // DurationStart 텍스트뷰 클릭시 DatePicker 표시
+        binding?.tvDurationEnd?.setOnClickListener {
+            goneCalendarView()
+            endDatePickerFragment = DatePickerFragment(it as TextView)
+            endDatePickerFragment?.show(supportFragmentManager, "끝 날짜 선택")
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
+        binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
+
         // 업데이트하려고 들어온 상태인지 확인하려는 변수
         val updated = intent.getBooleanExtra("update", false)
         if (updated) {
-            // 업데이트
-            // 기간 선택 방식은 제외
-            viewMode = ViewMode.Calendar
-            binding?.cvDurationView?.visibility = View.GONE
-            // 캘린더 선택도 날짜를 하나만 입력받고록 강제
-            binding?.calendar?.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
-
             // TodoData를 미리 입력한다.
-            val todo: Todo = intent.getSerializableExtra("todo") as Todo
+            val todoPair: Pair<Todo, List<TodoLog>> =
+                intent.getSerializableExtra("todo") as Pair<Todo, List<TodoLog>>
+            val todo = todoPair.first
+            val log = todoPair.second.first()
             val text = "#${todo.folder} ${todo.content}"
             binding?.todoInput?.setText(text)
-            val splittedDate = todo.date.split('-').map { it.toInt() }
+            val splittedDate = log.date.split('-').map { it.toInt() }
             val currentDate = SimpleDateFormat("yyyy-MM-dd").parse(
                 LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2]).toString()
             )
+
+            // 업데이트
+            if (todo.days.any { it }) {
+                // 기간으로 입력을 받았을 때
+                viewMode = ViewMode.Duration
+                binding?.cvCalendarView?.visibility = View.GONE
+
+                val endDateLog = todoPair.second.last()
+                val splittedEndDate = endDateLog.date.split('-').map { it.toInt() }
+                val startDate = LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2])
+                val endDate =
+                    LocalDate.of(splittedEndDate[0], splittedEndDate[1], splittedEndDate[2])
+
+                binding?.tvDurationStart?.text = startDate.toString()
+                binding?.tvDurationEnd?.text = endDate.toString()
+            } else {
+                // 캘린더로 입력을 받았을 때
+                // 기간 선택 방식은 제외
+                viewMode = ViewMode.Calendar
+                binding?.cvDurationView?.visibility = View.GONE
+            }
+
             binding?.calendar?.setCurrentDate(currentDate)
             binding?.calendar?.setSelectedDate(currentDate)
         } else {
@@ -86,39 +130,6 @@ class TodoInputActivity : AppCompatActivity() {
             // 기본적으로 시작 날짜를 오늘로 설정한다.
             binding?.tvDurationStart?.text = "${LocalDate.now()}"
             binding?.tvDurationEnd?.text = "${LocalDate.now()}"
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.cvDurationView?.setOnClickListener {
-                goneCalendarView()
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.cvCalendarView?.setOnClickListener {
-                goneDurationView()
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            for (button in dayButtons) {
-                button.setOnClickListener { goneCalendarView() }
-            }
-
-            // DurationStart 텍스트뷰 클릭시 DatePicker 표시
-            binding?.tvDurationStart?.setOnClickListener {
-                goneCalendarView()
-                startDatePickerFragment = DatePickerFragment(it as TextView)
-                startDatePickerFragment?.show(supportFragmentManager, "시작 날짜 선택")
-            }
-
-            // DurationStart 텍스트뷰 클릭시 DatePicker 표시
-            binding?.tvDurationEnd?.setOnClickListener {
-                goneCalendarView()
-                endDatePickerFragment = DatePickerFragment(it as TextView)
-                endDatePickerFragment?.show(supportFragmentManager, "끝 날짜 선택")
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
-            binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
         }
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
@@ -142,6 +153,10 @@ class TodoInputActivity : AppCompatActivity() {
                 for (date in dates!!) {
                     datesList.add("${date.year}-${date.month + 1}-${date.day}")
                 }
+
+                for (i in 0 until days.size) {
+                    days[i] = false
+                }
             } else {
                 // 현재 입력 방식이 기간인 경우.
                 // 시작 날짜와 끝 날짜를 가져와서 문자열로 변환한다.
@@ -164,12 +179,19 @@ class TodoInputActivity : AppCompatActivity() {
 
                 // 시작 날짜가 끝 날짜를 넘어설 때까지 모든 날짜와 선택한 요일을 1:1로 확인하여 저장.
                 while (!startDate.isAfter(endDate)) {
-                    val day = startDate.dayOfWeek.value - 1
-                    if (dayButtons[day].isChecked) {
+                    Log.d("[debug]", startDate.toString())
+                    var day = startDate.dayOfWeek.value + 1
+                    if (day == 8) day = 1
+                    Log.d(
+                        "[debug]",
+                        "$day ${dayButtons[day]?.isChecked}, ${dayButtons[day]?.text}"
+                    )
+                    if (dayButtons[day]?.isChecked == true) {
                         datesList.add(startDate.toString())
                     }
                     startDate = startDate.plusDays(1)
                 }
+                Log.d("[debug]", days.toString())
             }
 
             if (folder.isBlank() || content.isBlank()) {
@@ -184,43 +206,30 @@ class TodoInputActivity : AppCompatActivity() {
 
             if (updated) {
                 // DB UPDATE
-                val todo = intent.getSerializableExtra("todo") as Todo
-                TodoData.API.update(todo.id, folder, content, datesList[0], false, {
-                    TodoData.update(todo, folder, content, datesList[0], false)
-                    if (todo.folder != folder) {
-                        TodoFragment.folderListAdapter.notifyDataSetChanged()
-                    }
-                    // 전역 변수들이 업데이트 됨으로써, 폴더가 변경되거나, 폴더가 삭제되는 그러한 행동이 일어날 수 있으므로
-                    // 해당 업데이트를 위해서 instance의 onResume()을 호출하여 업데이트한다.
-                    TodoListFragment.instance.onResume()
-                })
+                val todoPair: Pair<Todo, List<TodoLog>> =
+                    intent.getSerializableExtra("todo") as Pair<Todo, List<TodoLog>>
+                val todo = todoPair.first
+                val log = todoPair.second.first()
+                TodoData.API.update(todo.id, folder, content, datesList, days)
             } else {
                 // DB에 데이터 추가
-                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, {
-                    // DB에는 추가되었고 전역적으로 관리하는 데이터에도 추가해준다.
-                    for (todo in it) {
-                        TodoData.add(todo)
-                    }
-
-                    // Recycler View를 새로고침한다.
-                    TodoFragment.folderListAdapter.notifyDataSetChanged()
-                })
+                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days)
             }
 
             for(data in datesList) {
                 var splitdata = data.split("-")
 
-                val calendar: Calendar = Calendar.getInstance().apply { // 1
-                    timeInMillis = System.currentTimeMillis()
-                    set(Calendar.YEAR, splitdata[0].toInt())
-                    set(Calendar.MONTH, splitdata[1].toInt()-1)
-                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
-                    set(Calendar.AM_PM, Calendar.AM)
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                }
-
-                MainActivity.getInstance()?.addAlarm(calendar)
+//                val calendar: Calendar = Calendar.getInstance().apply { // 1
+//                    timeInMillis = System.currentTimeMillis()
+//                    set(Calendar.YEAR, splitdata[0].toInt())
+//                    set(Calendar.MONTH, splitdata[1].toInt()-1)
+//                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
+//                    set(Calendar.AM_PM, Calendar.AM)
+//                    set(Calendar.HOUR_OF_DAY, 9)
+//                    set(Calendar.MINUTE, 0)
+//                }
+//
+//                MainActivity.getInstance()?.addAlarm(calendar)
             }
 
             // 입력이 정상적으로 되었다고 판단. Activity 종료
@@ -236,7 +245,7 @@ class TodoInputActivity : AppCompatActivity() {
         viewMode = ViewMode.Calendar
         binding?.clDuration?.visibility = View.GONE
         for (button in dayButtons) {
-            button.visibility = View.GONE
+            button?.visibility = View.GONE
         }
         binding?.flCalendarView?.visibility = View.VISIBLE
     }
@@ -250,7 +259,7 @@ class TodoInputActivity : AppCompatActivity() {
         binding?.flCalendarView?.visibility = View.GONE
         binding?.clDuration?.visibility = View.VISIBLE
         for (button in dayButtons) {
-            button.visibility = View.VISIBLE
+            button?.visibility = View.VISIBLE
         }
     }
 
