@@ -38,8 +38,7 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
         }
 
     }) {
-    private val days1 = arrayListOf("월", "화", "수", "목", "금", "토", "일")
-    private val days2 = arrayListOf("일", "월", "화", "수", "목", "금", "토")
+    private val days = arrayListOf(" ", "일", "월", "화", "수", "목", "금", "토")
 
     inner class ViewHolder(private val binding: FragmentTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -59,7 +58,7 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
             var duration = " - 매주"
             for (i in 0 until pair.first.days.size) {
                 if (pair.first.days[i]) {
-                    duration += " ${days2[i]},"
+                    duration += " ${days[i + 1]},"
                 }
             }
             if (duration == " - 매주") {
@@ -68,8 +67,10 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
 
             val dateToken = pair.second.first().date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
+            var index = date.dayOfWeek.value + 1
+            if (index == 8) index = 1
             binding.tvTodoDate.text =
-                "$date (${days1[date.dayOfWeek.value - 1]}) ${duration.slice(0 until duration.length - 1)}"
+                "$date (${days[index]}) ${duration.slice(0 until duration.length - 1)}"
 
             binding.root.setOnClickListener {
                 if (pair.second.first().completed) {
