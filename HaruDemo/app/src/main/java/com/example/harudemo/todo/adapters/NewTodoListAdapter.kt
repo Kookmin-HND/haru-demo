@@ -18,7 +18,7 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 
-class NewTodoListAdapter :
+class NewTodoListAdapter:
     ListAdapter<Section, RecyclerView.ViewHolder>(object :
         DiffUtil.ItemCallback<Section>() {
         override fun areItemsTheSame(
@@ -35,6 +35,7 @@ class NewTodoListAdapter :
             return oldItem == newItem
         }
     }) {
+    var isDateSection: Boolean = false
 
     inner class ViewHolder(private val binding: FragmentTodoListSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -68,7 +69,7 @@ class NewTodoListAdapter :
             binding.vSectionDivider.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[bindingAdapterPosition % TodoListFragment.COLORS.size]))
 
-            val sectionAdapter = NewTodoSectionAdapter(bindingAdapterPosition)
+            val sectionAdapter = NewTodoSectionAdapter(bindingAdapterPosition, isDateSection)
             val list: ArrayList<Pair<Todo, List<TodoLog>>> = arrayListOf()
             for (i in 0 until section.todos.size) {
                 list.add(Pair(section.todos[i], section.logs[i]))

@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.concurrent.schedule
 
-class NewTodoSectionAdapter(private val sectionIndex: Int) :
+class NewTodoSectionAdapter(private val sectionIndex: Int, private val isDateSection: Boolean) :
     ListAdapter<Pair<Todo, List<TodoLog>>, RecyclerView.ViewHolder>(object :
         DiffUtil.ItemCallback<Pair<Todo, List<TodoLog>>>() {
         override fun areItemsTheSame(
@@ -70,9 +70,11 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
             val dateToken = pair.second.first().date.split('-').map { it.toInt() }
             val date = LocalDate.of(dateToken[0], dateToken[1], dateToken[2])
             var index = date.dayOfWeek.value + 1
+            val folder = if (isDateSection) " - #${pair.first.folder}" else ""
             if (index == 8) index = 1
             binding.tvTodoDate.text =
-                "$date (${days[index]}) ${duration.slice(0 until duration.length - 1)}"
+                "$date (${days[index]}) ${duration.slice(0 until duration.length - 1)}" +
+                        "$folder"
 
             binding.root.setOnClickListener {
                 if (pair.second.first().completed) {

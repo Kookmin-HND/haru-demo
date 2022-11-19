@@ -109,6 +109,7 @@ class TodoListFragment : Fragment() {
                     false,
                     {
                         if (it.first.isEmpty()) return@getTodosByDate
+                        todoListAdapter.isDateSection = true
                         todoListAdapter.submitList(listOf(
                             Section(
                                 "하루",
@@ -155,6 +156,7 @@ class TodoListFragment : Fragment() {
                         }
                         return@sortWith date1[0].compareTo(date2[0])
                     }
+                    todoListAdapter.isDateSection = true
                     todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
@@ -172,6 +174,7 @@ class TodoListFragment : Fragment() {
                         if (section.value.first.isEmpty()) continue
                         result.add(Section(section.key, section.value.first, section.value.second))
                     }
+                    todoListAdapter.isDateSection = false
                     todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
@@ -211,6 +214,7 @@ class TodoListFragment : Fragment() {
                         }
                         return@sortWith date1[0].compareTo(date2[0])
                     }
+                    todoListAdapter.isDateSection = true
                     todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
@@ -224,6 +228,7 @@ class TodoListFragment : Fragment() {
                 val folderTitle = arguments?.getString("folder-title") as String
                 TodoData.API.getTodosByFolder("cjeongmin27@gmail.com", folderTitle, false, {
                     if (it.first.isEmpty()) return@getTodosByFolder
+                    todoListAdapter.isDateSection = false
                     todoListAdapter.submitList(listOf(Section(folderTitle, it.first, it.second)))
                 }, {
                     CustomToast.makeText(
