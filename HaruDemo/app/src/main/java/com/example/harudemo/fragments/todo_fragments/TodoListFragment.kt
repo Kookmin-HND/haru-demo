@@ -181,12 +181,27 @@ class TodoListFragment : Fragment() {
                 })
             }
             "completed" -> {
-                // FIXME: 폴더 별로 정렬하는 것이 아니라, 날짜 별로 정렬해야 함. 수정 필요.
-                TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", true, {
+                TodoData.API.getAllTodosByDate("cjeongmin27@gmail.com", true, {
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
                         if (section.value.first.isEmpty()) continue
-                        result.add(Section(section.key, section.value.first, section.value.second))
+                        result.add(
+                            Section(
+                                section.key,
+                                section.value.first,
+                                section.value.second.map { log -> listOf(log) })
+                        )
+                    }
+                    result.sortWith { v1, v2 ->
+                        val date1 = v1.title.split("-").map { it.toInt() }
+                        val date2 = v2.title.split("-").map { it.toInt() }
+                        if (date1[0] == date2[0]) {
+                            if (date1[1] == date2[1]) {
+                                return@sortWith date1[2].compareTo(date2[2])
+                            }
+                            return@sortWith date1[1].compareTo(date2[1])
+                        }
+                        return@sortWith date1[0].compareTo(date2[0])
                     }
                     todoListAdapter.submitList(result)
                 }, {

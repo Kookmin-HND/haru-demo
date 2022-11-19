@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
+import com.example.harudemo.utils.CustomToast
 import java.time.LocalDate
 import java.util.*
 import kotlin.concurrent.schedule
@@ -84,6 +86,18 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
             }
 
             binding.btnCheckTodo.setOnClickListener {
+                if (pair.second.first().completed && pair.second.first().date != LocalDate.now()
+                        .toString()
+                ) {
+                    binding.btnCheckTodo.isChecked = true
+                    CustomToast.makeText(
+                        binding.root.context,
+                        "날짜가 오늘인 것만 취소할 수 있습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
                 TodoData.API.checkTodo(
                     pair.first.id,
                     pair.second.first().date,

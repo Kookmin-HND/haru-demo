@@ -93,6 +93,16 @@ interface TodoService {
     ): Call<JsonObject>
     // Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>
 
+
+    // 사용자가 작성한 모든 todo를 date로 구분하여 반환한다.
+    // completed 값에 따라 완료여부를 필터링한다.
+    @GET("${API.TODOS}/{email}/date/all")
+    fun getAllTodosByDate(
+        @Path("email") writer: String,
+        @Query("completed") completed: Boolean,
+    ): Call<JsonObject>
+    // HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>
+
     // 사용자가 작성한 todo 중 dates 내 date가 일치하는 모든 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
     @GET("${API.TODOS}/{email}/date")

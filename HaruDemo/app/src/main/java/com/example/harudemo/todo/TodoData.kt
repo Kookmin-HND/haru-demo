@@ -105,6 +105,28 @@ object TodoData {
             )
         }
 
+        // 사용자가 작성한 모든 todo를 date로 구분하여 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getAllTodosByDate(
+            writer: String,
+            completed: Boolean,
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {}
+        ) {
+            TodoRetrofitManager.instance.getAllTodosByDate(
+                writer,
+                completed,
+                completion = { responseStatus, todosByDates ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todosByDates?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
         // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
         // completed 값에 따라 완료여부를 필터링한다.
         fun getTodosByDateInDates(

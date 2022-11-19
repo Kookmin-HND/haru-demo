@@ -384,7 +384,7 @@ router.patch(
 router.patch(
   "/check",
   async (
-    req: Request<{}, {}, { todoId: number; date: string; completed: string }>,
+    req: Request<{}, {}, { todoId: number; date: string; completed: boolean }>,
     res: Response
   ) => {
     const { todoId, date, completed } = req.body;
@@ -399,7 +399,7 @@ router.patch(
         date,
       },
       {
-        completed: completed === "true" ? 1 : 0,
+        completed: completed ? 1 : 0,
       }
     );
 
