@@ -46,7 +46,7 @@ router.post(
       folder,
       content,
       days: JSON.stringify(days),
-      deleted: false,
+      deleted: 0,
     });
     // 위에서 생성한 todo 데이터를 table에 저장한다.
     await DB.getRepository(Todo).save(todo);
@@ -59,7 +59,7 @@ router.post(
         DB.getRepository(TodoLog).create({
           todoId: todo.id,
           date,
-          completed: false,
+          completed: 0,
         })
       );
     }
@@ -69,12 +69,12 @@ router.post(
   }
 );
 
-// 사용자의 모든 todo를 folder로 구분하여 반환한다.
+// 사용자의 모든 todo를 todoId 구분하여 반환한다.
 // completed 값에 따라 완료여부 값들을 필터링한다.
 router.get(
   "/:email",
   async (
-    req: Request<{ email: string }, {}, {}, { completed: boolean }>,
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
     res: Response<{ [key: number]: { todo: Todo; logs: TodoLog[] } }>
   ) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
@@ -91,7 +91,7 @@ router.get(
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
-        completed,
+        completed: completed === "true" ? 1 : 0,
       });
 
       if (logs.length) {
@@ -103,21 +103,18 @@ router.get(
   }
 );
 
-// 사용자의 모든 todo를 date로 구분하여 반환한다.
-// completed 값에 따라 완료여부 값들을 필터링한다.
-
 // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
 router.get(
   "/log/:todoId/:completed",
   async (
-    req: Request<{ todoId: number; completed: boolean }, {}, {}>,
+    req: Request<{ todoId: number; completed: string }, {}, {}>,
     res: Response<TodoLog[]>
   ) => {
     const { todoId, completed } = req.params;
 
     const logs = await DB.getRepository(TodoLog).findBy({
       todoId,
-      completed,
+      completed: completed === "true" ? 1 : 0,
     });
 
     return res.json(logs);
@@ -141,10 +138,11 @@ router.get(
 );
 
 // 사용자가 가지고 있는 모든 todo를 folder로 구분하여 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
 router.get(
   "/:email/folder",
   async (
-    req: Request<{ email: string }, {}, {}, { completed: boolean }>,
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
     res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[][] } }>
   ) => {
     const { email: writer } = req.params;
@@ -158,7 +156,7 @@ router.get(
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
-        completed,
+        completed: completed === "true" ? 1 : 0,
       });
       if (logs.length) {
         if (todo.folder in result) {
@@ -182,7 +180,7 @@ router.get(
       { email: string; folder: string },
       {},
       {},
-      { completed: boolean }
+      { completed: string }
     >,
     res: Response<{ todos: Todo[]; logs: TodoLog[][] }>
   ) => {
@@ -201,11 +199,45 @@ router.get(
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
         todoId: todo.id,
-        completed,
+        completed: completed === "true" ? 1 : 0,
       });
       if (logs.length) {
         result.todos.push(todo);
         result.logs.push(logs);
+      }
+    }
+    return res.json(result);
+  }
+);
+
+// 사용자가 작성한 모든 todo를 date로 구분하여 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
+router.get(
+  "/:email/date/all",
+  async (
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[] } }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed } = req.query;
+
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[] } } = {};
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+    });
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed: completed === "true" ? 1 : 0,
+      });
+
+      for (const log of logs) {
+        if (log.date in result) {
+          result[log.date].todos.push(todo);
+          result[log.date].logs.push(log);
+        } else {
+          result[log.date] = { todos: [todo], logs: [log] };
+        }
       }
     }
     return res.json(result);
@@ -220,7 +252,7 @@ router.get(
       { email: string },
       {},
       {},
-      { completed: boolean; dates: string[] }
+      { completed: string; dates: string[] }
     >,
     res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[] } }>
   ) => {
@@ -231,7 +263,7 @@ router.get(
     for (const date of dates) {
       const logs = await DB.getRepository(TodoLog).findBy({
         date,
-        completed,
+        completed: completed === "true" ? 1 : 0,
       });
 
       result[date] = { todos: [], logs: [] };
@@ -259,7 +291,7 @@ router.get(
       { email: string; date: string },
       {},
       {},
-      { completed: boolean }
+      { completed: string }
     >,
     res: Response<{ todos: Todo[]; logs: TodoLog[] }>
   ) => {
@@ -275,7 +307,7 @@ router.get(
       const log = await DB.getRepository(TodoLog).findOneBy({
         todoId: todo.id,
         date: date,
-        completed,
+        completed: completed === "true" ? 1 : 0,
       });
       if (log) {
         result.todos.push(todo);
@@ -313,7 +345,6 @@ router.patch(
 
     // request body로부터 데이터를 가져온다.
     const { folder, content, dates, days } = req.body;
-    console.log("[debug] HERE");
     console.log(folder, content, dates, days);
 
     // todo 데이터를 업데이트 한다.
@@ -327,12 +358,11 @@ router.patch(
 
     // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다. 단, 완료된 일은 삭제하지 않는다.
     // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
-    console.log(dates);
     if (dates && dates.length) {
       result.push(
         await DB.getRepository(TodoLog).delete({
           todoId: id,
-          completed: false,
+          completed: 0,
         })
       );
       for (const date of dates) {
@@ -340,7 +370,7 @@ router.patch(
           DB.getRepository(TodoLog).create({
             todoId: id,
             date,
-            completed: false,
+            completed: 0,
           })
         );
       }
@@ -354,7 +384,7 @@ router.patch(
 router.patch(
   "/check",
   async (
-    req: Request<{}, {}, { todoId: number; date: string; completed: boolean }>,
+    req: Request<{}, {}, { todoId: number; date: string; completed: string }>,
     res: Response
   ) => {
     const { todoId, date, completed } = req.body;
@@ -369,7 +399,7 @@ router.patch(
         date,
       },
       {
-        completed,
+        completed: completed === "true" ? 1 : 0,
       }
     );
 
@@ -389,7 +419,7 @@ router.delete(
     }
 
     const result = await DB.getRepository(Todo).update(id, {
-      deleted: true,
+      deleted: 1,
     });
 
     return res.json(result);

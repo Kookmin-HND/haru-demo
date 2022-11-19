@@ -26,8 +26,8 @@ export class Todo {
   @Column({ nullable: false })
   days: string; // boolean[]
 
-  @Column({ nullable: false })
-  deleted: boolean;
+  @Column({ type: "boolean", nullable: false })
+  deleted: number;
 
   @CreateDateColumn({
     type: "timestamp",

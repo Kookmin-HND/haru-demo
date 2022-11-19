@@ -67,7 +67,7 @@ interface TodoService {
 
     // 사용자의 모든 todo를 반환한다.
     // completed 값에 따라 완료여부 값들을 필터링한다.
-    @GET("${API.TODOS}/{email}")
+    @GET("${API.TODOS}/{email}/all/folder")
     fun getTodos(
         @Path("email") writer: String,
         @Query("completed") completed: Boolean,
