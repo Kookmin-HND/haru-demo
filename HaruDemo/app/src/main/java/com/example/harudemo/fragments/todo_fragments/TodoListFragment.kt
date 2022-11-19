@@ -188,12 +188,19 @@ class TodoListFragment : Fragment() {
                         if (section.value.first.isEmpty()) continue
                         result.add(
                             Section(
-                                section.key,
+                                if (section.key == LocalDate.now()
+                                        .toString()
+                                ) "오늘" else section.key,
                                 section.value.first,
                                 section.value.second.map { log -> listOf(log) })
                         )
                     }
                     result.sortWith { v1, v2 ->
+                        if (v1.title == "오늘") {
+                            return@sortWith -1
+                        } else if (v2.title == "오늘") {
+                            return@sortWith 1
+                        }
                         val date1 = v1.title.split("-").map { it.toInt() }
                         val date2 = v2.title.split("-").map { it.toInt() }
                         if (date1[0] == date2[0]) {
@@ -208,7 +215,7 @@ class TodoListFragment : Fragment() {
                 }, {
                     CustomToast.makeText(
                         requireContext(),
-                        "모든 완료 목록을 불러오는데 실패하였습니다.",
+                        "완료 목록을 불러오는데 실패하였습니다.",
                         Toast.LENGTH_SHORT
                     ).show()
                 })
