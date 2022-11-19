@@ -375,6 +375,7 @@ class TodoRetrofitManager {
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
 
@@ -421,6 +422,7 @@ class TodoRetrofitManager {
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })

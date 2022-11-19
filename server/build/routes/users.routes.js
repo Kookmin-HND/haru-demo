@@ -75,9 +75,9 @@ exports.router.post("/signup", function (req, res) {
             return res.status(400).send("email, password, name을 다시 확인해주세요.");
         }
         // email 중복 확인을 위한 변수
-        const overlap_check = yield app_data_source_1.default
-            .getRepository(user_1.User)
-            .findOneBy({ email: (0, typeorm_1.Equal)(email) });
+        const overlap_check = yield app_data_source_1.default.getRepository(user_1.User).findOneBy({
+            email: (0, typeorm_1.Equal)(email),
+        });
         if (overlap_check) {
             // overlap_check가 null이 아니면 중복
             console.log("email 중복");

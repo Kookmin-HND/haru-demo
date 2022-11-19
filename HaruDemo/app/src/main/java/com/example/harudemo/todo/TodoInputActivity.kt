@@ -11,6 +11,7 @@ import android.widget.ToggleButton
 import com.example.harudemo.databinding.ActivityTodoInputBinding
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
+import com.example.harudemo.todo.adapters.NewTodoSectionAdapter
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
@@ -33,7 +34,6 @@ class TodoInputActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTodoInputBinding.inflate(layoutInflater)
-        binding?.calendar?.selectionMode = MaterialCalendarView.SELECTION_MODE_MULTIPLE
         setContentView(binding?.root)
 
         dayButtons.add(binding?.btnSun!!)
@@ -54,13 +54,6 @@ class TodoInputActivity : AppCompatActivity() {
         // 업데이트하려고 들어온 상태인지 확인하려는 변수
         val updated = intent.getBooleanExtra("update", false)
         if (updated) {
-            // 업데이트
-            // 기간 선택 방식은 제외
-            viewMode = ViewMode.Calendar
-            binding?.cvDurationView?.visibility = View.GONE
-            // 캘린더 선택도 날짜를 하나만 입력받고록 강제
-            binding?.calendar?.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
-
             // TodoData를 미리 입력한다.
             val todoPair: Pair<Todo, List<TodoLog>> =
                 intent.getSerializableExtra("todo") as Pair<Todo, List<TodoLog>>
@@ -72,6 +65,28 @@ class TodoInputActivity : AppCompatActivity() {
             val currentDate = SimpleDateFormat("yyyy-MM-dd").parse(
                 LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2]).toString()
             )
+
+            // 업데이트
+            if (todo.days.any { it }) {
+                // 기간으로 입력을 받았을 때
+                viewMode = ViewMode.Duration
+                binding?.cvCalendarView?.visibility = View.GONE
+
+                val endDateLog = todoPair.second.last()
+                val splittedEndDate = endDateLog.date.split('-').map { it.toInt() }
+                val startDate = LocalDate.of(splittedDate[0], splittedDate[1], splittedDate[2])
+                val endDate =
+                    LocalDate.of(splittedEndDate[0], splittedEndDate[1], splittedEndDate[2])
+
+                binding?.tvDurationStart?.text = startDate.toString()
+                binding?.tvDurationEnd?.text = endDate.toString()
+            } else {
+                // 캘린더로 입력을 받았을 때
+                // 기간 선택 방식은 제외
+                viewMode = ViewMode.Calendar
+                binding?.cvDurationView?.visibility = View.GONE
+            }
+
             binding?.calendar?.setCurrentDate(currentDate)
             binding?.calendar?.setSelectedDate(currentDate)
         } else {
@@ -138,6 +153,10 @@ class TodoInputActivity : AppCompatActivity() {
                 for (date in dates!!) {
                     datesList.add("${date.year}-${date.month + 1}-${date.day}")
                 }
+
+                for (i in 0 until days.size) {
+                    days[i] = false
+                }
             } else {
                 // 현재 입력 방식이 기간인 경우.
                 // 시작 날짜와 끝 날짜를 가져와서 문자열로 변환한다.
@@ -187,12 +206,11 @@ class TodoInputActivity : AppCompatActivity() {
 
             if (updated) {
                 // DB UPDATE
-                // FIXME: Update 상태 UI 변경 필요함.
-                val todo = intent.getSerializableExtra("todo") as Todo
-                val log = intent.getSerializableExtra("log") as TodoLog
-                TodoData.API.update(todo.id, folder, content, datesList, days, {
-                    TodoListFragment.instance.updateSections()
-                })
+                val todoPair: Pair<Todo, List<TodoLog>> =
+                    intent.getSerializableExtra("todo") as Pair<Todo, List<TodoLog>>
+                val todo = todoPair.first
+                val log = todoPair.second.first()
+                TodoData.API.update(todo.id, folder, content, datesList, days)
             } else {
                 // DB에 데이터 추가
                 TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days)

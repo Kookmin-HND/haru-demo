@@ -64,7 +64,6 @@ class NewTodoListAdapter :
         }
 
         fun bindItem(section: Section) {
-            Log.d("[debug]", section.logs.toString())
             binding.tvSectionName.text = section.title
             binding.vSectionDivider.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor(TodoListFragment.COLORS[bindingAdapterPosition % TodoListFragment.COLORS.size]))

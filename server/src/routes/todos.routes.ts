@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { DataSource } from "typeorm";
 import DB from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { TodoLog } from "../entity/todo-log";
@@ -70,7 +69,7 @@ router.post(
   }
 );
 
-// 사용자의 모든 todo를 반환한다.
+// 사용자의 모든 todo를 folder로 구분하여 반환한다.
 // completed 값에 따라 완료여부 값들을 필터링한다.
 router.get(
   "/:email",
@@ -104,6 +103,9 @@ router.get(
   }
 );
 
+// 사용자의 모든 todo를 date로 구분하여 반환한다.
+// completed 값에 따라 완료여부 값들을 필터링한다.
+
 // 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
 router.get(
   "/log/:todoId/:completed",
@@ -111,14 +113,12 @@ router.get(
     req: Request<{ todoId: number; completed: boolean }, {}, {}>,
     res: Response<TodoLog[]>
   ) => {
-    console.log("HERE");
     const { todoId, completed } = req.params;
 
     const logs = await DB.getRepository(TodoLog).findBy({
       todoId,
       completed,
     });
-    console.log(logs);
 
     return res.json(logs);
   }
@@ -313,6 +313,8 @@ router.patch(
 
     // request body로부터 데이터를 가져온다.
     const { folder, content, dates, days } = req.body;
+    console.log("[debug] HERE");
+    console.log(folder, content, dates, days);
 
     // todo 데이터를 업데이트 한다.
     const result: any[] = [
@@ -323,17 +325,17 @@ router.patch(
       }),
     ];
 
-    // FIXME: 모두 삭제를 하는 것이 아닌, 완료된 일은 삭제하지 않도록 변경할 필요가 있음.
-    // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다.
+    // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다. 단, 완료된 일은 삭제하지 않는다.
     // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
+    console.log(dates);
     if (dates && dates.length) {
       result.push(
         await DB.getRepository(TodoLog).delete({
           todoId: id,
+          completed: false,
         })
       );
       for (const date of dates) {
-        console.log(date);
         result.push(
           DB.getRepository(TodoLog).create({
             todoId: id,

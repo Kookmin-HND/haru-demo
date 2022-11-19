@@ -124,7 +124,9 @@ class NewTodoSectionAdapter(private val sectionIndex: Int) :
                 holder.bindItem(pair)
             } else {
                 removeItem(position)
-                TodoListFragment.instance.todoListAdapter.removeItem(sectionIndex)
+                if (currentList.none { it.second.isNotEmpty() }) {
+                    TodoListFragment.instance.todoListAdapter.removeItem(sectionIndex)
+                }
             }
         }
     }
