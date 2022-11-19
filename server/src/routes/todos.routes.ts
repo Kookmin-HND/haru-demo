@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { DataSource } from "typeorm";
 import DB from "../app-data-source";
 import { Todo } from "../entity/todo";
 import { TodoLog } from "../entity/todo-log";
@@ -46,6 +47,7 @@ router.post(
       folder,
       content,
       days: JSON.stringify(days),
+      deleted: false,
     });
     // 위에서 생성한 todo 데이터를 table에 저장한다.
     await DB.getRepository(Todo).save(todo);
@@ -321,6 +323,7 @@ router.patch(
       }),
     ];
 
+    // FIXME: 모두 삭제를 하는 것이 아닌, 완료된 일은 삭제하지 않도록 변경할 필요가 있음.
     // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다.
     // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
     if (dates && dates.length) {
@@ -383,10 +386,10 @@ router.delete(
       return res.status(400).send("id가 존재하지 않습니다");
     }
 
-    const result = await DB.getRepository(Todo).delete(id);
-    await DB.getRepository(TodoLog).delete({
-      todoId: id,
+    const result = await DB.getRepository(Todo).update(id, {
+      deleted: true,
     });
+
     return res.json(result);
   }
 );
