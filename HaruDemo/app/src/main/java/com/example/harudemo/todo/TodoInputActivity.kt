@@ -51,6 +51,42 @@ class TodoInputActivity : AppCompatActivity() {
             }
         }
 
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.cvDurationView?.setOnClickListener {
+            goneCalendarView()
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.cvCalendarView?.setOnClickListener {
+            goneDurationView()
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        for (i in 1 until dayButtons.size) {
+            dayButtons[i]?.setOnClickListener {
+                goneCalendarView()
+                days[i - 1] = true
+            }
+        }
+
+        // DurationStart 텍스트뷰 클릭시 DatePicker 표시
+        binding?.tvDurationStart?.setOnClickListener {
+            goneCalendarView()
+            startDatePickerFragment = DatePickerFragment(it as TextView)
+            startDatePickerFragment?.show(supportFragmentManager, "시작 날짜 선택")
+        }
+
+        // DurationStart 텍스트뷰 클릭시 DatePicker 표시
+        binding?.tvDurationEnd?.setOnClickListener {
+            goneCalendarView()
+            endDatePickerFragment = DatePickerFragment(it as TextView)
+            endDatePickerFragment?.show(supportFragmentManager, "끝 날짜 선택")
+        }
+
+        // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
+        binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
+        binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
+
         // 업데이트하려고 들어온 상태인지 확인하려는 변수
         val updated = intent.getBooleanExtra("update", false)
         if (updated) {
@@ -94,42 +130,6 @@ class TodoInputActivity : AppCompatActivity() {
             // 기본적으로 시작 날짜를 오늘로 설정한다.
             binding?.tvDurationStart?.text = "${LocalDate.now()}"
             binding?.tvDurationEnd?.text = "${LocalDate.now()}"
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.cvDurationView?.setOnClickListener {
-                goneCalendarView()
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.cvCalendarView?.setOnClickListener {
-                goneDurationView()
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            for (i in 1 until dayButtons.size) {
-                dayButtons[i]?.setOnClickListener {
-                    goneCalendarView()
-                    days[i - 1] = true
-                }
-            }
-
-            // DurationStart 텍스트뷰 클릭시 DatePicker 표시
-            binding?.tvDurationStart?.setOnClickListener {
-                goneCalendarView()
-                startDatePickerFragment = DatePickerFragment(it as TextView)
-                startDatePickerFragment?.show(supportFragmentManager, "시작 날짜 선택")
-            }
-
-            // DurationStart 텍스트뷰 클릭시 DatePicker 표시
-            binding?.tvDurationEnd?.setOnClickListener {
-                goneCalendarView()
-                endDatePickerFragment = DatePickerFragment(it as TextView)
-                endDatePickerFragment?.show(supportFragmentManager, "끝 날짜 선택")
-            }
-
-            // 하나의 방식으로만 입력받게 하기 위해서 강제적으로 표시 전환
-            binding?.calendar?.setOnDateChangedListener { _, _, _ -> goneDurationView() }
-            binding?.calendar?.setOnMonthChangedListener { _, _ -> goneDurationView() }
         }
 
         // 모든 입력이 완료되면 추가 버튼을 클릭했을 때 발생하는 이벤트
