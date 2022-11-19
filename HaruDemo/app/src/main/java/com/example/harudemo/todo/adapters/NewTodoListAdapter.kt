@@ -73,12 +73,24 @@ class NewTodoListAdapter :
             for (i in 0 until section.todos.size) {
                 list.add(Pair(section.todos[i], section.logs[i]))
             }
+            binding.rvTodoList.itemAnimator = null
             binding.rvTodoList.apply {
                 adapter = sectionAdapter
                 layoutManager = LinearLayoutManager(
                     context, LinearLayoutManager.VERTICAL, false
                 )
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            }
+            list.sortWith { v1, v2 ->
+                val date1 = v1.second.first().date.split("-").map { it.toInt() }
+                val date2 = v2.second.first().date.split("-").map { it.toInt() }
+                if (date1[0] == date2[0]) {
+                    if (date1[1] == date2[1]) {
+                        return@sortWith date1[2].compareTo(date2[2])
+                    }
+                    return@sortWith date1[1].compareTo(date2[1])
+                }
+                return@sortWith date1[0].compareTo(date2[0])
             }
             sectionAdapter.submitList(list)
         }

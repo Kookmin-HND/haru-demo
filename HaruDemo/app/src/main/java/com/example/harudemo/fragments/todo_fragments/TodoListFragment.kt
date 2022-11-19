@@ -80,6 +80,7 @@ class TodoListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
         todoListAdapter = NewTodoListAdapter()
         binding?.rvTodoSectionList?.apply {
+            this.itemAnimator = null
             adapter = todoListAdapter
             layoutManager = LinearLayoutManager(
                 binding?.root?.context, LinearLayoutManager.VERTICAL, false
