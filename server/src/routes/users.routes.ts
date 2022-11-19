@@ -50,18 +50,14 @@ router.post("/login", async (req: Request, res: Response) => {
         return res.status(400).json(info.reason);
       }
 
-      req.login(user, { session: false }, (loginError) => {
-        if (loginError) {
-          console.error(loginError);
-          return res.status(400).json(loginError);
-        }
-        const token = jwt.sign(
-          { email: user.email },
-          process.env.JWT_KEY as Secret
-        );
-        delete user.password;
-        return res.cookie("token", token, { httpOnly: true }).json(user);
-      });
+      const token = jwt.sign(
+        { email: user.email },
+        process.env.JWT_KEY as Secret
+      );
+
+      delete user.password;
+      user.token = token;
+      return res.cookie("token", token, { httpOnly: true }).json(user);
     })(req, res);
   } catch (error) {
     console.error(error);

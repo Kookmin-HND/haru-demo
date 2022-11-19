@@ -9,23 +9,36 @@ import com.example.harudemo.MainActivity
 import com.example.harudemo.R
 import com.example.harudemo.model.UserInfo
 import com.example.harudemo.retrofit.AuthRetrofitManager
+import com.example.harudemo.retrofit.RetrofitClient
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.PreferenceUtil
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.example.harudemo.utils.User
+import com.google.android.gms.common.util.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.login_layout.*
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.internal.parseCookie
 import org.json.JSONObject
+import retrofit2.Retrofit
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.net.CookieStore
 import java.util.*
+import java.util.prefs.Preferences
 
 
 //로그인 액티비티
 class LoginActivity : AppCompatActivity() {
-
+    companion object{
+        lateinit var prefs : PreferenceUtil
+    }
     val TAG = "LoginActivity : "
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        prefs = PreferenceUtil(applicationContext)  // preference
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-
 
         // 회원가입 버튼 클릭 기능
         signUpBtn.setOnClickListener{
@@ -44,8 +57,14 @@ class LoginActivity : AppCompatActivity() {
                     RESPONSE_STATUS.OKAY -> {
                         Log.d(TAG, "success Login")
                         Log.d(TAG, "${jsonElement}")
+
                         val json = JSONObject(jsonElement.toString())
-                        User.info = UserInfo(json.getInt("id"), json.getString("email"),json.getString("name"), json.getString("createAt"))
+                        User.info = UserInfo(json.getInt("id"),
+                            json.getString("email"),
+                            json.getString("name"),
+                            json.getString("createAt"),
+                            json.getString("token"))
+                        prefs.setString("currentUser", User.info.toString())
                         CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
