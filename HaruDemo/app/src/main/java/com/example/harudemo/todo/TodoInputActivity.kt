@@ -65,7 +65,7 @@ class TodoInputActivity : AppCompatActivity() {
         for (i in 1 until dayButtons.size) {
             dayButtons[i]?.setOnClickListener {
                 goneCalendarView()
-                days[i - 1] = true
+                days[i - 1] = !days[i - 1]
             }
         }
 
