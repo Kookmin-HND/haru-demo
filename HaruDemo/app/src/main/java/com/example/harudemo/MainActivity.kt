@@ -1,22 +1,12 @@
 package com.example.harudemo
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
-import com.example.harudemo.todo.adapters.SwipeHelperCallback
-import com.example.harudemo.todo.adapters.TodoListAdapter
-import com.example.harudemo.todo.adapters.TodoListSectionAdapter
-import com.example.harudemo.todo.types.Section
-import com.example.harudemo.todo.types.Todo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.text.Typography.section
 
 class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null

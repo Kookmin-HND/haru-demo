@@ -1,7 +1,6 @@
 package com.example.harudemo.todo.adapters
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -23,13 +22,13 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
         hashMapOf()
 
     inner class TodoFolderListViewHolder(
-        private val itembinding: FragmentTodoFolderItemBinding,
-    ) : RecyclerView.ViewHolder(itembinding.root) {
+        private val binding: FragmentTodoFolderItemBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bindItem(folder: String) {
             // TodoFragment내 Folder RecyclerView에 폴더 이름을 기준으로 폴더 클릭 할 수 있는 아이템 생성
-            itembinding.tvFolderTitle.text = folder
-            itembinding.tvCount.text = folderMap[folder]?.first?.size.toString()
-            itembinding.root.setOnClickListener {
+            binding.tvFolderTitle.text = folder
+            binding.tvCount.text = folderMap[folder]?.first?.size.toString()
+            binding.root.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("by", "folder")
                 bundle.putString("folder-title", folder)

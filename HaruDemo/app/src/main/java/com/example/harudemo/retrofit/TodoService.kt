@@ -71,7 +71,8 @@ interface TodoService {
     fun getTodos(
         @Path("email") writer: String,
         @Query("completed") completed: Boolean,
-    ): Call<HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>>
+    ): Call<JsonObject>
+    // HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>
 
     // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.

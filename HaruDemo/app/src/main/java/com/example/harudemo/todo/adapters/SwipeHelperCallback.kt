@@ -18,16 +18,16 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     private var clamp = 0f
 
     override fun getMovementFlags(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
     ): Int {
         return makeMovementFlags(0, LEFT or RIGHT)
     }
 
     override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
     ): Boolean {
         return false
     }
@@ -60,41 +60,43 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     }
 
     override fun onChildDraw(
-            c: Canvas,
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            dX: Float,
-            dY: Float,
-            actionState: Int,
-            isCurrentlyActive: Boolean
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
     ) {
         if (actionState == ACTION_STATE_SWIPE) {
             val view = getView(viewHolder)
-            btnDelete = (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.btn_delete
+            btnDelete =
+                (viewHolder as NewTodoSectionAdapter.ViewHolder).itemView.btn_delete
             val isClamped = getTag(viewHolder)
             val x = clampViewPositionHorizontal(view, dX, isClamped, isCurrentlyActive)
             currentDx = x
             getDefaultUIUtil().onDraw(
-                    c,
-                    recyclerView,
-                    view,
-                    x,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
+                c,
+                recyclerView,
+                view,
+                x,
+                dY,
+                actionState,
+                isCurrentlyActive
             )
         }
     }
 
     private fun getView(viewHolder: RecyclerView.ViewHolder): View {
-        return (viewHolder as TodoListSectionAdapter.TodoListSectionViewHolder).itemView.cl_todo_content
+        return (viewHolder as NewTodoSectionAdapter.ViewHolder).itemView.cl_todo_content
     }
 
     private fun clampViewPositionHorizontal(
-            view: View,
-            dX: Float,
-            isClamped: Boolean,
-            isCurrentlyActive: Boolean):
+        view: View,
+        dX: Float,
+        isClamped: Boolean,
+        isCurrentlyActive: Boolean
+    ):
             Float {
         // View의 절반만 스와이프 되도록
         val min: Float = -view.width.toFloat()

@@ -24,6 +24,8 @@ import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants
 import com.example.harudemo.utils.CustomToast
 
+// TODO: RecyclerView Adapter 다시 작성하기 ListAdapter 이용.
+
 class TodoFragment : Fragment() {
     companion object {
         private var _instance: TodoFragment? = null

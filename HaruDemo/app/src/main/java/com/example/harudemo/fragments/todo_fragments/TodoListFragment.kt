@@ -16,8 +16,8 @@ import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.adapters.NewTodoListAdapter
 import com.example.harudemo.todo.types.Section
-import com.example.harudemo.todo.adapters.TodoListAdapter
 import com.example.harudemo.utils.CustomToast
 import java.time.LocalDate
 import kotlin.collections.ArrayList
@@ -53,7 +53,7 @@ class TodoListFragment : Fragment() {
     var binding: FragmentTodoListBinding? = null
     private var callback: OnBackPressedCallback? = null
     private var todoFragment: TodoFragment = TodoFragment.instance
-    var todoListAdapter: TodoListAdapter = TodoListAdapter()
+    var todoListAdapter: NewTodoListAdapter = NewTodoListAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -78,11 +78,13 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
-        todoListAdapter = TodoListAdapter()
-        binding?.rvTodoSectionList?.adapter = todoListAdapter
-        binding?.rvTodoSectionList?.layoutManager = LinearLayoutManager(
-            binding?.root?.context, LinearLayoutManager.VERTICAL, false
-        )
+        todoListAdapter = NewTodoListAdapter()
+        binding?.rvTodoSectionList?.apply {
+            adapter = todoListAdapter
+            layoutManager = LinearLayoutManager(
+                binding?.root?.context, LinearLayoutManager.VERTICAL, false
+            )
+        }
     }
 
     override fun onResume() {
@@ -105,14 +107,14 @@ class TodoListFragment : Fragment() {
                     today,
                     false,
                     {
-                        todoListAdapter.sections = listOf(
+                        if (it.first.isEmpty()) return@getTodosByDate
+                        todoListAdapter.submitList(listOf(
                             Section(
                                 "하루",
                                 it.first,
-                                ArrayList(it.second.map { log -> arrayListOf(log) })
+                                it.second.map { log -> listOf(log) }
                             )
-                        )
-                        todoListAdapter.completed = false
+                        ))
                     },
                     {
                         CustomToast.makeText(
@@ -132,11 +134,12 @@ class TodoListFragment : Fragment() {
                 TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, { it ->
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
+                        if (section.value.first.isEmpty()) continue
                         result.add(
                             Section(
                                 section.key,
                                 section.value.first,
-                                ArrayList(section.value.second.map { log -> arrayListOf(log) })
+                                section.value.second.map { log -> listOf(log) }
                             )
                         )
                     }
@@ -151,8 +154,7 @@ class TodoListFragment : Fragment() {
                         }
                         return@sortWith date1[0].compareTo(date2[0])
                     }
-                    todoListAdapter.sections = result
-                    todoListAdapter.completed = false
+                    todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
                         requireContext(),
@@ -166,10 +168,10 @@ class TodoListFragment : Fragment() {
                 TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", false, {
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
+                        if (section.value.first.isEmpty()) continue
                         result.add(Section(section.key, section.value.first, section.value.second))
                     }
-                    todoListAdapter.sections = result
-                    todoListAdapter.completed = false
+                    todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
                         requireContext(),
@@ -183,10 +185,10 @@ class TodoListFragment : Fragment() {
                 TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", true, {
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
+                        if (section.value.first.isEmpty()) continue
                         result.add(Section(section.key, section.value.first, section.value.second))
                     }
-                    todoListAdapter.sections = result
-                    todoListAdapter.completed = true
+                    todoListAdapter.submitList(result)
                 }, {
                     CustomToast.makeText(
                         requireContext(),
@@ -198,8 +200,8 @@ class TodoListFragment : Fragment() {
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
                 TodoData.API.getTodosByFolder("cjeongmin27@gmail.com", folderTitle, false, {
-                    todoListAdapter.sections = listOf(Section(folderTitle, it.first, it.second))
-                    todoListAdapter.completed = false
+                    if (it.first.isEmpty()) return@getTodosByFolder
+                    todoListAdapter.submitList(listOf(Section(folderTitle, it.first, it.second)))
                 }, {
                     CustomToast.makeText(
                         requireContext(),
@@ -212,5 +214,14 @@ class TodoListFragment : Fragment() {
         }
     }
 
+    fun decideView(sections: List<Section>?) {
+        if (sections?.isEmpty() == true) {
+            binding?.rvTodoSectionList?.visibility = View.GONE
+            binding?.tvEmpty?.visibility = View.VISIBLE
+        } else {
+            binding?.rvTodoSectionList?.visibility = View.VISIBLE
+            binding?.tvEmpty?.visibility = View.GONE
+        }
+    }
 
 }
