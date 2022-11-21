@@ -1,7 +1,9 @@
 package com.example.harudemo.sns.recyclerview
 
 import android.animation.ValueAnimator
+import android.graphics.Color
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.harudemo.App
@@ -12,10 +14,14 @@ import kotlinx.android.synthetic.main.sns_comment_item.view.*
 
 //Sns 댓글 리사이클러뷰를 위한 뷰홀더
 class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val snsCommentConstraintLayout =  itemView.sns_comment_constraint_layout
+
     private val snsCommentWriterPhoto = itemView.sns_comment_writer_photo
     private val snsCommentWriterName = itemView.sns_comment_writer_name
     private val snsCommentCreatedAt = itemView.sns_comment_created_at
     private val snsCommentContent = itemView.sns_comment_content
+
+    private val snsCommentReCommentTextView = itemView.sns_comment_recomment_tv
 
 
     // 좋아요 여부
@@ -54,6 +60,17 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 snsCommentLikesNumberTv.text = ""
             }
         }
+
+
+
+        snsCommentReCommentTextView.setOnClickListener {
+            Toast.makeText(App.instance, "${snsCommentItem.content}", Toast.LENGTH_SHORT).show()
+
+            snsCommentConstraintLayout.setBackgroundColor(Color.parseColor("#EBF9FF"));
+        }
+
+
+
         //이미지 생성
         Glide.with(App.instance)
             .load(snsCommentItem.writerPhoto)

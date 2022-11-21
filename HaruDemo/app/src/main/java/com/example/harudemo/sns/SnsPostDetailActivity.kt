@@ -134,7 +134,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             //API 재호출
                             commentApiCall(snsPostId)
                             binding.etWriteComment.setText("")
-                            binding.snsPostCommentsRecyclerview.smoothScrollToPosition(100)
+                            binding.snsPostDetailNestedScrollView.fullScroll(View.FOCUS_DOWN)
                         }
                         RESPONSE_STATUS.FAIL -> {
                             CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
@@ -161,6 +161,8 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             this.snsCommentList.add(it)
                         }
                         binding.snsPostCommentsRecyclerview.adapter?.notifyDataSetChanged()
+
+                        binding.snsPostDetailCommentNumber.text = this.snsCommentList.size.toString()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
