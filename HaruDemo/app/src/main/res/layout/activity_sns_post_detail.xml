@@ -184,10 +184,11 @@
                 android:layout_below="@id/sns_post_detail_body" />
 
             <LinearLayout
+                android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginHorizontal="30dp"
+
                 android:gravity="bottom"
                 android:padding="10dp">
 
