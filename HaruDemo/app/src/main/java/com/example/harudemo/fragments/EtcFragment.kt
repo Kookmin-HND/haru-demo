@@ -14,8 +14,10 @@ import androidx.fragment.app.Fragment
 import com.example.harudemo.R
 import com.example.harudemo.auth.LoginActivity
 import com.example.harudemo.auth.LoginActivity.Companion.prefs
+import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.PreferenceUtil
+import com.example.harudemo.utils.RESPONSE_STATUS
 import com.example.harudemo.utils.User
 import kotlinx.android.synthetic.main.fragment_etc.*
 
@@ -61,11 +63,30 @@ class EtcFragment: Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = "더보기"
 
         logoutBtn.setOnClickListener {
-            prefs.clearUser()
             Log.d(TAG, "Logout button Clicked")
-            CustomToast.makeText(act, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-            val intent = Intent(act, LoginActivity::class.java)
-            startActivity(intent)
+
+            AuthRetrofitManager.instance.logoutUser { responseStatus, jsonElement ->
+                when(responseStatus){
+                    RESPONSE_STATUS.OKAY -> {
+                        Log.d(TAG, "success Logout")
+                        Log.d(TAG, "${jsonElement}")
+                        prefs.clearUser()
+                        CustomToast.makeText(act, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(act, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                    RESPONSE_STATUS.FAIL ->{
+                        Log.d(TAG, "fail Logout")
+                        Log.d(TAG, "${jsonElement}")
+                        CustomToast.makeText(act, "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                    }
+                    RESPONSE_STATUS.NO_CONTENT -> {
+                        Log.d(TAG, "fail Logout")
+                        Log.d(TAG, "${jsonElement}")
+                        CustomToast.makeText(act, "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 
