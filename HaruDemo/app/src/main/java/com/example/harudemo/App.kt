@@ -1,7 +1,7 @@
 package com.example.harudemo
 
 import android.app.Application
-import com.example.harudemo.model.UserInfo
+import com.kakao.sdk.common.KakaoSdk
 
 /*
 자유롭게 컨텍스트를 불러오기 위한 클래스
@@ -16,6 +16,7 @@ class App : Application(){
     override fun onCreate() {
         super.onCreate()
         instance = this
+        KakaoSdk.init(this, "08d22f1822cce5ec065ef7a86a7cbb35")
 
     }
 }
