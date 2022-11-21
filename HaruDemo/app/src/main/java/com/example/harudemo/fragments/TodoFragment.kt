@@ -1,14 +1,11 @@
 package com.example.harudemo.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
-import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
-import com.example.harudemo.todo.types.Todo
-import com.example.harudemo.utils.API
-import com.example.harudemo.utils.Constants
-import com.example.harudemo.utils.CustomToast
+
+/**
+ * TODO: 사용자의 최대 Todo 개수 제한 필요
+ * FIXME: 업데이트 상태에서 기간 입력시 날짜 선택 안해도 기존 선택으로 가도록 수정
+ **/
 
 class TodoFragment : Fragment() {
     companion object {
@@ -39,7 +36,7 @@ class TodoFragment : Fragment() {
         val folderListAdapter: TodoFolderListAdapter
             get() {
                 if (_folderListAdapter == null) {
-                    _folderListAdapter = instance.activity?.let { TodoFolderListAdapter(it) }
+                    _folderListAdapter = TodoFolderListAdapter(instance.requireActivity())
                 }
                 return _folderListAdapter!!
             }

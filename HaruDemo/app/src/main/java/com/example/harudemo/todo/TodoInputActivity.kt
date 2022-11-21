@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import com.example.harudemo.App
 import com.example.harudemo.databinding.ActivityTodoInputBinding
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
@@ -179,19 +180,13 @@ class TodoInputActivity : AppCompatActivity() {
 
                 // 시작 날짜가 끝 날짜를 넘어설 때까지 모든 날짜와 선택한 요일을 1:1로 확인하여 저장.
                 while (!startDate.isAfter(endDate)) {
-                    Log.d("[debug]", startDate.toString())
                     var day = startDate.dayOfWeek.value + 1
                     if (day == 8) day = 1
-                    Log.d(
-                        "[debug]",
-                        "$day ${dayButtons[day]?.isChecked}, ${dayButtons[day]?.text}"
-                    )
                     if (dayButtons[day]?.isChecked == true) {
                         datesList.add(startDate.toString())
                     }
                     startDate = startDate.plusDays(1)
                 }
-                Log.d("[debug]", days.toString())
             }
 
             if (folder.isBlank() || content.isBlank()) {
@@ -213,10 +208,17 @@ class TodoInputActivity : AppCompatActivity() {
                 TodoData.API.update(todo.id, folder, content, datesList, days)
             } else {
                 // DB에 데이터 추가
-                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days)
+                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days, {
+                }, {
+                    CustomToast.makeText(
+                        App.instance.applicationContext,
+                        "더 이상 Todo를 입력할 수 없습니다!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                })
             }
 
-            for(data in datesList) {
+            for (data in datesList) {
                 var splitdata = data.split("-")
 
 //                val calendar: Calendar = Calendar.getInstance().apply { // 1
@@ -265,7 +267,7 @@ class TodoInputActivity : AppCompatActivity() {
 
     // 입력에 문제가 있는지 판별하는 함수
     private fun validation(text: String): Boolean {
-        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[\\sa-zA-Z0-9ㄱ-ㅎ가-힣~!]+")
+        val regex = Regex("#[a-zA-Z0-9ㄱ-ㅎ가-힣]+\\s+[\\sa-zA-Z0-9ㄱ-ㅎ가-힣~!_\\-@#^*]+")
         return regex.matches(text)
     }
 

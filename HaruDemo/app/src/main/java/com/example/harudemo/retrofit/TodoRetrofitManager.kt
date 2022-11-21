@@ -40,11 +40,13 @@ class TodoRetrofitManager {
                     200 -> {
                         completion(RESPONSE_STATUS.OKAY, response.body())
                     }
+                    406 -> {
+                        completion(RESPONSE_STATUS.FAIL, response.body())
+                    }
                 }
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                Log.d("[debug]", t.toString())
                 completion(RESPONSE_STATUS.FAIL, null)
             }
         })
