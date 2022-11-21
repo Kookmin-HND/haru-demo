@@ -270,4 +270,69 @@ class SnsRetrofitManager {
         })
     }
 
+
+    //SNS에서 포스트에 해당하는 좋아요를 저장하는 함수
+    fun postPostLike(
+        postId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postPostLike(
+                SnsPostLikeRequestBodyParams(postId, user),
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    fun deletePostLike(
+        postId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.deletePostLike(
+                postId,
+                user
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
 }

@@ -56,8 +56,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsPostDetailBody.text = snsPostContent
         binding.snsPostDetailCategoryTextview.text = snsPostCategory
         binding.snsPostDetailLikeNumber.text = snsPostLikeList?.size.toString()
-        if (binding.snsPostDetailLikeNumber.text == "0") binding.snsPostDetailLikeNumber.text = ""
-
 
         //comment adapter 연결
         binding.snsPostCommentsRecyclerview.adapter = SnsCommentRecyclerViewAdapter()
@@ -89,6 +87,13 @@ class SnsPostDetailActivity : AppCompatActivity() {
         }
 
 
+        //좋아요가 이미 있다면
+        if(snsPostLikeList!!.contains("LMJ")){
+            isLiked = true
+            binding.snsPostLottieHeart.progress = 0.5f
+        }
+
+
         //post heart click event
         // heart click event listener
         binding.snsPostLottieHeart.setOnClickListener {
@@ -101,7 +106,16 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 animator.start()
                 isLiked = true
                 //좋아요 개수 업데이트
-                binding.snsPostDetailLikeNumber.text = "1"
+                binding.snsPostDetailLikeNumber.text =
+                    (Integer.parseInt(binding.snsPostDetailLikeNumber.text.toString()) + 1).toString()
+
+                //좋아요 api 호출
+                SnsRetrofitManager.instance.postPostLike(
+                    snsPostId,
+                    "LMJ",
+                    completion = { responseStatus, responseDataArrayList ->
+                    })
+
             } else {
                 val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(1000)
                 animator.addUpdateListener { animation ->
@@ -109,7 +123,15 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 }
                 animator.start()
                 isLiked = false
-                binding.snsPostDetailLikeNumber.text = ""
+                binding.snsPostDetailLikeNumber.text = (Integer.parseInt(binding.snsPostDetailLikeNumber.text.toString()) - 1).toString()
+
+
+                //좋아요 api 호출
+                SnsRetrofitManager.instance.deletePostLike(
+                    snsPostId,
+                    "LMJ",
+                    completion = { responseStatus, responseDataArrayList ->
+                    })
             }
         }
 

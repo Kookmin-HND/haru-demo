@@ -25,6 +25,13 @@ data class SnsCommentPostRequestBodyParams(
     val parentCommentId: Int
 )
 
+data class SnsPostLikeRequestBodyParams(
+    @SerializedName("postId")
+    val postId: Int,
+    @SerializedName("user")
+    val user: String
+)
+
 
 interface SnsService {
     //url:    http://10.0.2.2/api/posts/recent/{postId}
@@ -73,5 +80,18 @@ interface SnsService {
     @GET("${API.POSTS}/{postId}/images")
     fun getImages(
         @Path("postId") postId: Int,
+    ): Call<JsonElement>
+
+
+    @POST("likes/post")
+    fun postPostLike(
+        @Body requestBodyParams: SnsPostLikeRequestBodyParams
+    ): Call<JsonElement>
+
+
+    @DELETE("likes/post/{postId}/{user}")
+    fun deletePostLike(
+        @Path("postId") postId: Int,
+        @Path("user") user: String,
     ): Call<JsonElement>
 }
