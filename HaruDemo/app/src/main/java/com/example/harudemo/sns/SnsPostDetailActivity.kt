@@ -50,10 +50,13 @@ class SnsPostDetailActivity : AppCompatActivity() {
         val snsPostCategory = intent.getStringExtra("sns_post_category")
         val snsPostWriter = intent.getStringExtra("sns_post_writer")
         val snsPostContent = intent.getStringExtra("sns_post_content")
+        val snsPostLikeList = intent.getStringArrayListExtra("sns_post_like_list")
 
         binding.snsPostDetailWriter.text = snsPostWriter
         binding.snsPostDetailBody.text = snsPostContent
         binding.snsPostDetailCategoryTextview.text = snsPostCategory
+        binding.snsPostDetailLikeNumber.text = snsPostLikeList?.size.toString()
+        if (binding.snsPostDetailLikeNumber.text == "0") binding.snsPostDetailLikeNumber.text = ""
 
 
         //comment adapter 연결
@@ -81,7 +84,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsImageViewpager.setPageTransformer(ZoomOutPageTransformer()) //애니메이션 적용
 
 
-
         binding.snsPostDetailCancelButton.setOnClickListener {
             finish()
         }
@@ -100,7 +102,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 isLiked = true
                 //좋아요 개수 업데이트
                 binding.snsPostDetailLikeNumber.text = "1"
-            }else{
+            } else {
                 val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(1000)
                 animator.addUpdateListener { animation ->
                     binding.snsPostLottieHeart.setProgress(animation.getAnimatedValue() as Float)
@@ -110,8 +112,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 binding.snsPostDetailLikeNumber.text = ""
             }
         }
-
-
 
 
         //일반 댓글 입력
@@ -162,7 +162,8 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         }
                         binding.snsPostCommentsRecyclerview.adapter?.notifyDataSetChanged()
 
-                        binding.snsPostDetailCommentNumber.text = this.snsCommentList.size.toString()
+                        binding.snsPostDetailCommentNumber.text =
+                            this.snsCommentList.size.toString()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)

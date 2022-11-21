@@ -35,6 +35,8 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     //comment number
     private val snsPostCommentNumber = itemView.sns_post_comment_number
 
+    //likes number
+    private val snsPostLikeNumber = itemView.sns_post_like_number
 
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
@@ -50,6 +52,15 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             snsPostCommentNumber.text = snsPostItem.commentNumber.toString()
         else if (snsPostItem.commentNumber == 0)
             snsPostCommentNumber.text = ""
+
+
+        //like number
+        if (snsPostItem.postLikeList.size > 0)
+            snsPostLikeNumber.text = snsPostItem.postLikeList.size.toString()
+        else
+            snsPostLikeNumber.text = ""
+
+
 
         snsPostPreviewImageCountMore.visibility = View.GONE
 

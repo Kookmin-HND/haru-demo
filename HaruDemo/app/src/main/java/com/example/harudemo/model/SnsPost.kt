@@ -10,7 +10,8 @@ data class SnsPost(
     var updatedAt: String?,
     var writerPhoto: String?,
     var commentNumber: Int,
-    var postImageList : ArrayList<String>,
+    var postLikeList: ArrayList<String>,
+    var postImageList: ArrayList<String>,
     var average: String?,
 ) {
 }

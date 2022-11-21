@@ -54,6 +54,7 @@ class SnsPostRecyclerViewAdapter : RecyclerView.Adapter<SnsPostItemViewHolder>()
                 intent.putExtra("sns_post_category", this.snsPostList[position-1].category)
                 intent.putExtra("sns_post_writer", this.snsPostList[position-1].writer)
                 intent.putExtra("sns_post_content", this.snsPostList[position-1].content)
+                intent.putExtra("sns_post_like_list", this.snsPostList[position-1].postLikeList)
                 //액티비티가 아닌 곳에서 새로운 액티비티 생성하기 위해 추가
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 App.instance.startActivity(intent)

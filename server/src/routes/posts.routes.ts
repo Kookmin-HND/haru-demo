@@ -43,6 +43,7 @@ router.get("/recent/:postId", async (req: Request<PostParams>, res: Response) =>
     .orderBy({ "post.id": "DESC" })
     .leftJoinAndSelect("post.imageFiles", "imageFiles.url")
     .leftJoinAndSelect("post.comments", "comment.post")
+    .leftJoinAndSelect("post.likes", "like.post")
     .take(20)
     .getMany();
 

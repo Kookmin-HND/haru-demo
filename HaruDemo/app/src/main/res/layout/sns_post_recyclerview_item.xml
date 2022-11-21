@@ -214,7 +214,7 @@
                 android:id="@+id/sns_post_like_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
+                android:layout_marginLeft="5dp"
                 android:text="3"
                 android:textColor="@color/black_coral"
                 android:textSize="14sp" />
@@ -234,7 +234,7 @@
                 android:id="@+id/sns_post_comment_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
+                android:layout_marginLeft="5dp"
                 android:text="3"
                 android:textColor="@color/black_coral"
                 android:textSize="14sp" />
