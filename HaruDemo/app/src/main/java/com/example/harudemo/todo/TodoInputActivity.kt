@@ -117,9 +117,15 @@ class TodoInputActivity : AppCompatActivity() {
 
                 binding?.tvDurationStart?.text = startDate.toString()
                 binding?.tvDurationEnd?.text = endDate.toString()
+
+                for (i in 0 until todo.days.size) {
+                    if (todo.days[i]) {
+                        dayButtons[i + 1]?.isChecked = true
+                        days[i] = true
+                    }
+                }
             } else {
                 // 캘린더로 입력을 받았을 때
-                // 기간 선택 방식은 제외
                 viewMode = ViewMode.Calendar
                 binding?.cvDurationView?.visibility = View.GONE
             }

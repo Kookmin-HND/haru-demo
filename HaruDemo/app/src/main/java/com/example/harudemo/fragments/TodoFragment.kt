@@ -17,8 +17,8 @@ import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
 
 /**
- * TODO: 사용자의 최대 Todo 개수 제한 필요
  * FIXME: 업데이트 상태에서 기간 입력시 날짜 선택 안해도 기존 선택으로 가도록 수정
+ * FIXME: 삭제된 아이템 불러오지 않도록 수정
  **/
 
 class TodoFragment : Fragment() {
