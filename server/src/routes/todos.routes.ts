@@ -347,6 +347,42 @@ router.get(
   }
 );
 
+// 사용자가 작성한 todo 데이터의 폴더 명과 데이터 수를 반환한다.
+router.get(
+  "/:email/folder-title",
+  async (
+    req: Request<{ email: string }>,
+    res: Response<{ [key: string]: number }>
+  ) => {
+    const { email: writer } = req.params;
+
+    const result: { [key: string]: number } = {};
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      deleted: 0,
+    });
+
+    for (const todo of todos) {
+      const { id, folder } = todo;
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: id,
+        completed: 0,
+      });
+
+      // 모든 일이 완료되지 않음.
+      if (logs.length) {
+        if (folder in result) {
+          result[folder]++;
+        } else {
+          result[folder] = 1;
+        }
+      }
+    }
+    return res.json(result);
+  }
+);
+
 // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
 // 그리고 todo-logs에 접근하여 해당 데이터를 삭제, 추가한다.
 router.patch(
