@@ -82,10 +82,10 @@ class SnsRetrofitManager {
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    average = 0,
                                     commentNumber = commentNumber,
                                     postLikeList = postLikeList,
                                     postImageList = postImageList,
-                                    average = ""
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }

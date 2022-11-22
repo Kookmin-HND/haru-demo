@@ -13,11 +13,12 @@ enum class RESPONSE_STATUS {
 // 106 - 5g 192.168.0.48
 object API {
     //const val BASE_URL: String = "http://192.168.0.7:8000/api/"
-    const val BASE_URL: String = "http://10.0.2.2:8000/api/"
+//    const val BASE_URL: String = "http://10.0.2.2:8000/api/"
+    const val BASE_URL: String = "http://10.30.119.142:8000/api/"
     const val API_KEY: String = ""
     const val RECENT_POSTS: String = "posts/recent/{postId}"
     const val POSTS: String = "posts"
     const val COMMENTS: String = "comments"
     const val TODOS: String = "todos"
-    const val USERS : String = "users"
+    const val USERS: String = "users"
 }

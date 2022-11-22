@@ -1,186 +1,173 @@
 package com.example.harudemo.todo
 
-import com.example.harudemo.retrofit.RetrofitManager
+import android.util.Log
+import com.example.harudemo.retrofit.TodoRetrofitManager
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
+import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
+import retrofit2.Response
 
 object TodoData {
-    // todos, todosByFolder 내에 있는 TodoData는 같은 instance를 가진다.
-    private val todos: ArrayList<Todo> = ArrayList()
-    private val todosByFolder: HashMap<String, ArrayList<Todo>> = HashMap()
-
-    // todos, todosByFolder에 TodoData를 추가
-    fun add(todo: Todo) {
-        todos.add(todo)
-        if (todo.folder in todosByFolder) {
-            todosByFolder[todo.folder]?.add(todo)
-        } else {
-            todosByFolder[todo.folder] = arrayListOf(todo)
-        }
-    }
-
-    fun get(folder: String): List<Todo>? {
-        return todosByFolder[folder]
-    }
-
-    // 데이터 삭제 (todos, todosByFolder)에서 모두 삭제
-    fun delete(todo: Todo) {
-        todos.remove(todo)
-        todosByFolder[todo.folder]?.remove(todo)
-        if (todosByFolder[todo.folder]?.isEmpty() == true) {
-            todosByFolder.remove(todo.folder)
-        }
-    }
-
-    // 데이터에 접근해서 입력받은 데이터로 변경
-    fun update(
-        todo: Todo,
-        folder: String? = null,
-        content: String? = null,
-        date: String? = null,
-        completed: Boolean? = null
-    ) {
-        val newer = Todo(
-            todo.id,
-            todo.writer,
-            folder ?: todo.folder,
-            content ?: todo.content,
-            date ?: todo.date,
-            completed ?: todo.completed
-        )
-        delete(todo)
-        add(newer)
-    }
-
-    fun getTodosByFolder(folderName: String): List<Section> {
-        val todos = arrayListOf<Todo>()
-        for (todo in this.todos) {
-            if (todo.folder == folderName && !todo.completed) {
-                todos.add(todo)
-            }
-        }
-        if (todos.isEmpty()) {
-            return listOf()
-        }
-        return listOf(Section(folderName, todos))
-    }
-
-    fun getTodos(completed: Boolean = false): List<Section> {
-        val todos = mutableMapOf<String, ArrayList<Todo>>()
-        for (todo in this.todos) {
-            if (completed != todo.completed) {
-                continue
-            }
-
-            if (todo.folder in todos) {
-                todos[todo.folder]?.add(todo)
-            } else {
-                todos[todo.folder] = arrayListOf(todo)
-            }
-        }
-
-        todos.values.removeIf { it.isEmpty() }
-        return todos.map {
-            Section(it.key, it.value)
-        }
-    }
-
-    fun getTodosByDates(dates: List<String>): List<Section> {
-        val todos = mutableMapOf<String, ArrayList<Todo>>()
-        for (date in dates) {
-            todos[date] = arrayListOf()
-        }
-
-        for (todo in this.todos) {
-            if (todo.completed) {
-                continue
-            }
-
-            if (todo.date in todos) {
-                todos[todo.date]?.add(todo)
-            }
-        }
-
-        todos.values.removeIf { it.isEmpty() }
-        return todos.map {
-            Section(it.key, it.value)
-        }
-    }
-
-    fun isEmpty(): Boolean {
-        return todos.isEmpty()
-    }
-
-    fun getFolderNames(): Set<String> {
-        return todosByFolder.keys
-    }
-
     object API {
         // DB에 todo를 추가한다.
+        // 동시에 todo-log도 추가된다.
         fun create(
             writer: String,
             folder: String,
             content: String,
             dates: List<String>,
-            okayCallback: (todos: List<Todo>) -> Unit = {},
+            days: List<Boolean>,
+            okayCallback: (JsonElement) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {}
         ) {
-            RetrofitManager.instance.addTodo(
+            TodoRetrofitManager.instance.addTodo(
                 writer,
                 folder,
                 content,
                 dates,
-                completion = { responseStatus, todos ->
+                days,
+                completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> {
-                            // DB에 데이터를 넣는 것에 성공하면 해당 응답을 받아서, 이를 다시 배열로 만들어 반환한다.
-                            val response = arrayListOf<Todo>()
-                            if (todos != null) {
-                                for (i in 0 until todos.size()) {
-                                    val todo = todos[i].asJsonObject
-                                    response.add(
-                                        Todo(
-                                            todo.get("id").asInt,
-                                            todo.get("writer").asString,
-                                            todo.get("folder").asString,
-                                            todo.get("content").asString,
-                                            todo.get("date").asString,
-                                            todo.get("completed").asBoolean,
-                                        )
-                                    )
-                                }
-                            }
-
-                            okayCallback(response)
-                        }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
                         RESPONSE_STATUS.FAIL -> failCallback()
                         RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
                 })
         }
 
-        // DB에서 writer가 일치하는 TodoData를 불러온다.
-        fun read(
+        // 사용자의 모든 todo를 반환한다.
+        // completed 값에 따라 완료여부 값들을 필터링한다.
+        fun getTodos(
             writer: String,
-            okayCallback: (todos: List<Todo>) -> Unit = {},
+            completed: Boolean,
+            okayCallback: (HashMap<Number, Pair<Todo, ArrayList<TodoLog>>>) -> Unit = {},
             failCallback: () -> Unit = {},
             noContentCallback: () -> Unit = {}
         ) {
             // 만약 유저가 유저의 TodoData를 가지고 있지 않으면 불러온다.
-            RetrofitManager.instance.getTodos(writer, completion = { responseStatus, todos ->
-                when (responseStatus) {
-                    RESPONSE_STATUS.OKAY -> {
-                        if (todos != null) {
-                            okayCallback(todos)
-                        }
+            TodoRetrofitManager.instance.getTodos(
+                writer,
+                completed,
+                completion = { responseStatus, response ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
-                    RESPONSE_STATUS.FAIL -> failCallback()
-                    RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                })
+        }
+
+        // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
+        fun getAllTodosByFolder(
+            writer: String,
+            completed: Boolean,
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getAllTodosByFolder(
+                writer,
+                completed,
+                completion = { responseStatus, hashMap ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> hashMap?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
                 }
-            })
+            )
+        }
+
+        // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getTodosByFolder(
+            writer: String,
+            folder: String,
+            completed: Boolean,
+            okayCallback: (Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getTodosByFolder(
+                writer,
+                folder,
+                completed,
+                completion = { responseStatus, todos ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todos?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
+        // 사용자가 작성한 모든 todo를 date로 구분하여 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getAllTodosByDate(
+            writer: String,
+            completed: Boolean,
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {}
+        ) {
+            TodoRetrofitManager.instance.getAllTodosByDate(
+                writer,
+                completed,
+                completion = { responseStatus, todosByDates ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todosByDates?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
+        // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getTodosByDateInDates(
+            writer: String,
+            dates: List<String>,
+            completed: Boolean,
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<TodoLog>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getTodosByDateInDates(
+                writer, dates, completed, completion = { responseStatus, todosByDates ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todosByDates?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
+        // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
+        // completed 값에 따라 완료여부를 필터링한다.
+        fun getTodosByDate(
+            writer: String,
+            date: String,
+            completed: Boolean,
+            okayCallback: (Pair<ArrayList<Todo>, ArrayList<TodoLog>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getTodosByDate(
+                writer, date, completed,
+                completion = { responseStatus, todos ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> todos?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
         }
 
         // DB에서 일치하는 todo를 업데이트한다.
@@ -188,40 +175,62 @@ object TodoData {
             id: Number,
             folder: String,
             content: String,
+            dates: List<String>,
+            days: List<Boolean>,
+            okayCallback: (response: JsonElement) -> Unit = {},
+            failCallback: (response: JsonElement) -> Unit = {},
+            noContentCallback: (response: JsonElement) -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.updateTodo(id,
+                folder,
+                content,
+                dates,
+                days,
+                completion = { responseStatus, response ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
+                    }
+                })
+        }
+
+        // todo-logs DB에 접근하여 입력으로 받은 completed 값으로 바꾸어준다.
+        fun checkTodo(
+            todoId: Number,
             date: String,
             completed: Boolean,
             okayCallback: (response: JsonElement) -> Unit = {},
             failCallback: (response: JsonElement) -> Unit = {},
             noContentCallback: (response: JsonElement) -> Unit = {},
         ) {
-            RetrofitManager.instance.updateTodo(id,
-                folder,
-                content,
-                date,
-                completed,
-                completion = { responseStatus, jsonElement ->
+            TodoRetrofitManager.instance.checkTodo(
+                todoId, date, completed, completion = { responseStatus, response ->
                     when (responseStatus) {
-                        RESPONSE_STATUS.OKAY -> jsonElement?.let { okayCallback(it) }
-                        RESPONSE_STATUS.FAIL -> jsonElement?.let { failCallback(it) }
-                        RESPONSE_STATUS.NO_CONTENT -> jsonElement?.let { noContentCallback(it) }
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
                     }
-                })
+                }
+            )
         }
 
-        // DB에서 일치하는 todo를 제거한다.
+        // todo-logs DB에 접근하여 입력으로 받은 completed 값으로 바꾸어준다.
         fun delete(
             id: Number,
             okayCallback: (response: JsonElement) -> Unit = {},
             failCallback: (response: JsonElement) -> Unit = {},
             noContentCallback: (response: JsonElement) -> Unit = {},
         ) {
-            RetrofitManager.instance.deleteTodo(id, completion = { responseStatus, jsonElement ->
-                when (responseStatus) {
-                    RESPONSE_STATUS.OKAY -> jsonElement?.let { okayCallback(it) }
-                    RESPONSE_STATUS.FAIL -> jsonElement?.let { failCallback(it) }
-                    RESPONSE_STATUS.NO_CONTENT -> jsonElement?.let { noContentCallback(it) }
-                }
-            })
+            TodoRetrofitManager.instance.deleteTodo(
+                id,
+                completion = { responseStatus, response ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
+                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
+                    }
+                })
         }
     }
 }

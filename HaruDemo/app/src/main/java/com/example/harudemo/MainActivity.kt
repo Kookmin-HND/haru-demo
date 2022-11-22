@@ -10,8 +10,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
+import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.service.Constant
 import com.example.harudemo.service.MyReceiver
+import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -48,13 +51,14 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        alarmManager!!.setExact(
+        alarmManager!!.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             pendingIntent
         )
     }
 
+    //알람 취소 기능 나중에 필요할시 사용할 것
     fun cancelAlarm(){
         if(alarmManager != null && pendingIntent != null) alarmManager!!.cancel(pendingIntent)
     }
@@ -97,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 //                    getInfo 테스트용
 //                    AuthRetrofitManager.instance.getInfo(completion = { responseStatus, jsonElement ->
 //                        when(responseStatus){
-//                            RESPONSE_STATUS.OKAY->{
+//                            RESPONSE_STATUS.OKAY ->{
 //                                CustomToast.makeText(this, "${jsonElement}", Toast.LENGTH_SHORT).show()
 //                            }
 //                            RESPONSE_STATUS.FAIL ->{

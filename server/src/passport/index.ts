@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../entity/user";
 import DB from "../app-data-source";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { Strategy } from "passport-jwt";
+import { Strategy as KakaoStrategy } from "passport-kakao";
 
 const passportConfig = {
   usernameField: "email",
@@ -67,7 +68,6 @@ const JWTVerify = async (token: any, done: any) => {
 
     return done(null, user);
   } catch (error) {
-    console.log("123");
     console.error(error);
     done(error);
   }
