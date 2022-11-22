@@ -216,6 +216,7 @@ class TodoInputActivity : AppCompatActivity() {
             } else {
                 // DB에 데이터 추가
                 TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days, {
+                    TodoFragment.folderListAdapter.fetchData()
                 }, {
                     CustomToast.makeText(
                         App.instance.applicationContext,
@@ -223,7 +224,6 @@ class TodoInputActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 })
-                TodoFragment.folderListAdapter.fetchData()
             }
 
             for (data in datesList) {
