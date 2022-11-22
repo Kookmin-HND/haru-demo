@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.12478977463841238" />
         <entry key="../../../../layout/custom_preview.xml" value="0.20413669064748202" />
+        <entry key="../../../.gradle/caches/transforms-3/347dd7e87e2e2db954375b9f0778a91e/transformed/jetified-play-services-base-17.1.0/res/drawable/common_google_signin_btn_icon_dark_normal.xml" value="0.2525" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/background_grass.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/circular_progress_background.xml" value="0.1" />
@@ -29,6 +30,7 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_toggle_selected.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/ic_toggle_unselected.xml" value="0.2385" />
+        <entry key="app/src/main/res/drawable/kakao.xml" value="0.2525" />
         <entry key="app/src/main/res/drawable/month_onxml.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/sns_comment_vector_asset.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/sns_direct_message.xml" value="0.1965" />
@@ -71,7 +73,7 @@
         <entry key="app/src/main/res/layout/list_item_month.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/list_item_week.xml" value="0.1308876811594203" />
         <entry key="app/src/main/res/layout/login_activity.xml" value="0.3075753750168202" />
-        <entry key="app/src/main/res/layout/login_layout.xml" value="0.11822916666666666" />
+        <entry key="app/src/main/res/layout/login_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/my_dialog.xml" value="0.1752786220871327" />
         <entry key="app/src/main/res/layout/progress_bar.xml" value="0.375" />
         <entry key="app/src/main/res/layout/signup_layout.xml" value="0.5" />
