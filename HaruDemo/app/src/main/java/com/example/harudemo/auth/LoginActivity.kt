@@ -126,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
             else if (token != null) {
                 CustomToast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                startActivity(intent)
                 finish()
             }
         }
