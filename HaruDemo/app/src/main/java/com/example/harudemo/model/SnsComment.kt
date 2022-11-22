@@ -9,6 +9,7 @@ data class SnsComment(
     var content: String?,
     var createdAt: String?,
     var updatedAt: String?,
+    var commentLikeList: ArrayList<String>?,
     var writerPhoto: String?,
 ) {
 }

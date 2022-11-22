@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Generated, UpdateDateColumn, OneToMany, JoinTable } from "typeorm";
 import { Comment } from "./comment";
 import { ImageFile } from "./imageFile";
-import { PostLike } from "./like";
+import { PostLike } from "./postLike";
 
 //필요한 데이터베이스 스키마 entity에 생성
 

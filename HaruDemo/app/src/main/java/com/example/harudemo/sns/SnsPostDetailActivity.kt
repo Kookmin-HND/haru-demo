@@ -35,7 +35,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
     //lottie heart
     private var isLiked = false
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)

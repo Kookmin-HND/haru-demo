@@ -7,8 +7,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
+  JoinTable,
 } from "typeorm";
 import { Post } from "./post";
+import { CommentLike } from "./commentLike";
 
 //필요한 데이터베이스 스키마 entity에 생성
 @Entity()
@@ -38,6 +41,16 @@ export class Comment {
   //삭제된 댓글인지 표기하기 위한 컬럼
   @Column({ default: false })
   deleted: boolean;
+
+
+  //좋아요와 일대다 연결, 댓글이 삭제되면 좋아요도 삭제되도록 cascade
+  @OneToMany(() => CommentLike, (like) => like.comment, {
+    cascade: true,
+  })
+  @JoinTable()
+  likes: CommentLike[];
+
+
 
   @CreateDateColumn({
     type: "timestamp",

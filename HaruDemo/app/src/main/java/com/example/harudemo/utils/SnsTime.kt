@@ -20,5 +20,5 @@ fun getTimeDifference(preTime: String): String {
     if (minutes > 0) return (minutes.toString() + "분 전")
     if (seconds > 0) return (seconds.toString() + "초 전")
 
-    return diff.toString()
+    return "방금"
 }
