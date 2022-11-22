@@ -68,9 +68,9 @@ class SnsFriendsActivity : AppCompatActivity() {
 
     fun initializelist(){ //임의로 데이터 넣어서 만들어봄
         with(mDatas){
-            add(SnsPost(1,"Lee min jae",null,null,null,"@drawable/ic_baseline_account_circle_24",98))
-            add(SnsPost(2,"Mara sanrok","","","","@drawable/ic_baseline_account_circle_24",90))
-            add(SnsPost(3,"invincible cjm","","","","@drawable/ic_baseline_account_circle_24",10))
+//            add(SnsPost(1,"Lee min jae",null,null,null,"@drawable/ic_baseline_account_circle_24",98))
+//            add(SnsPost(2,"Mara sanrok","","","","@drawable/ic_baseline_account_circle_24",90))
+//            add(SnsPost(3,"invincible cjm","","","","@drawable/ic_baseline_account_circle_24",10))
         }
     }
 
