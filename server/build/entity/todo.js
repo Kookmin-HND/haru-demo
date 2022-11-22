@@ -33,11 +33,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
-], Todo.prototype, "dates", void 0);
+], Todo.prototype, "days", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
-    __metadata("design:type", String)
-], Todo.prototype, "days", void 0);
+    __metadata("design:type", Boolean)
+], Todo.prototype, "deleted", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({
         type: "timestamp",

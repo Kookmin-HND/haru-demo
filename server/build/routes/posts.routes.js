@@ -86,9 +86,7 @@ exports.router.patch("/:postId", (req, res) => __awaiter(void 0, void 0, void 0,
     const postId = Number(req.params.postId);
     const content = req.body.content;
     // id가 postId에 해당하는 게시글의 content 수정
-    const result = yield app_data_source_1.default
-        .getRepository(post_1.Post)
-        .update({ id: postId }, { content });
+    const result = yield app_data_source_1.default.getRepository(post_1.Post).update({ id: postId }, { content });
     //affected : 0 실패, affected : 1 성공
     if (!result.affected)
         return res.status(400).send("게시물 수정에 실패했습니다.");

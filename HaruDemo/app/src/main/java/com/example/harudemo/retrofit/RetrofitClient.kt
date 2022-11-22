@@ -11,6 +11,7 @@ import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.isJsonArray
 import com.example.harudemo.utils.isJsonObject
 import okhttp3.Interceptor
+import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,6 +19,7 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
+import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 
@@ -28,6 +30,8 @@ object RetrofitClient {
 
         //okhttp 인스턴스 생성
         val client = OkHttpClient.Builder()
+
+        val okHttpClient = client.cookieJar(JavaNetCookieJar(CookieManager())).build()
 
         // 로그를 찍기 위해 로깅 인터셉터 추가 - 테스트 용도
         val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
@@ -57,38 +61,34 @@ object RetrofitClient {
 
 
         // 기본 파라미터 인터셉터 설정
-        val baseParameterInterceptor: Interceptor = (object : Interceptor {
-            override fun intercept(chain: Interceptor.Chain): Response {
-
-                Log.d(TAG, "RetrofitClient - intercept() called")
-                // 오리지널 리퀘스트
-                val originalRequest = chain.request()
-
-//                // 쿼리 파라미터 추가하기 추후 API KET 추가 용도
-//                val addedUrl =
-//                    originalRequest.url.newBuilder().addQueryParameter("client_id", API.API_KEY)
-//                        .build()
-//
-//                val finalRequest = originalRequest.newBuilder()
-//                    .url(addedUrl)
-//                    .method(originalRequest.method, originalRequest.body)
-//                    .build()
-//
-//                val response = chain.proceed(finalRequest)
-                Log.d("[debug]", originalRequest.toString())
-                val response = chain.proceed(originalRequest)
-                Log.d("[debug]", response.toString())
-                Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
-                Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
-                if(response.code != 200){
-                    Handler(Looper.getMainLooper()).post {
-                        CustomToast.makeText(
-                            App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
-                        ).show()
-                    }
+        val baseParameterInterceptor: Interceptor = (Interceptor { chain ->
+            Log.d(TAG, "RetrofitClient - intercept() called")
+            // 오리지널 리퀘스트
+            val originalRequest = chain.request()
+            //                // 쿼리 파라미터 추가하기 추후 API KET 추가 용도
+            //                val addedUrl =
+            //                    originalRequest.url.newBuilder().addQueryParameter("client_id", API.API_KEY)
+            //                        .build()
+            //
+            //                val finalRequest = originalRequest.newBuilder()
+            //                    .url(addedUrl)
+            //                    .method(originalRequest.method, originalRequest.body)
+            //                    .build()
+            //
+            //                val response = chain.proceed(finalRequest)
+            Log.d("[debug]", originalRequest.toString())
+            val response = chain.proceed(originalRequest)
+            Log.d("[debug]", response.toString())
+            Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
+            Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
+            if (response.code != 200) {
+                Handler(Looper.getMainLooper()).post {
+                    CustomToast.makeText(
+                        App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
+                    ).show()
                 }
-                return response
             }
+            response
         })
 
 
@@ -106,7 +106,8 @@ object RetrofitClient {
             retrofitClient = Retrofit.Builder().baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
-                .client(client.build()).build()
+                .client(okHttpClient).build()
+//            client.build()
         }
         return retrofitClient
     }

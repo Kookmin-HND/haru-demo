@@ -6,128 +6,6 @@ import { TodoLog } from "../entity/todo-log";
 export const path = "/todos";
 export const router = Router();
 
-// 사용자의 모든 todo를 반환한다.
-// completed 값에 따라 완료여부 값들을 필터링한다.
-router.get(
-  "/:email",
-  async (
-    req: Request<{ email: string }, {}, { completed: boolean }>,
-    res: Response<Todo[]>
-  ) => {
-    // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
-    const { email: writer } = req.params;
-    const { completed } = req.body;
-
-    // 이 사용자가 작성한 모든 todo를 가져온다.
-    const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
-    });
-
-    // completed의 값이 일치하는 todo를 가져온다.
-    const result: Todo[] = [];
-    for (const todo of todos) {
-      const logs = await DB.getRepository(TodoLog).findBy({
-        todoId: todo.id,
-        completed: completed,
-      });
-
-      if (logs.length) {
-        result.push(todo);
-      }
-    }
-
-    // 이 사용자가 가지고 있는 조건이 일치하는 모든 todo를 반환한다.
-    return res.json(result);
-  }
-);
-
-// 사용자의 모든 데이터를 가져오기 (todo-log) 포함.
-router.get(
-  "/:email/all",
-  async (
-    req: Request<{ email: string }>,
-    res: Response<{ [key: number]: { todo: Todo; todoLogs: TodoLog[] } }>
-  ) => {
-    const writer = req.params.email;
-
-    const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
-    });
-
-    const todosMap: { [key: number]: { todo: Todo; todoLogs: TodoLog[] } } = {};
-    for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
-        todoId: todo.id,
-      });
-
-      todosMap[todo.id] = { todo, todoLogs };
-    }
-
-    return res.json(todosMap);
-  }
-);
-
-// 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
-// completed 값에 따라 완료여부를 필터링한다.
-router.get(
-  "/:email/folder/:folder",
-  async (
-    req: Request<{ email: string; folder: string }, {}, { completed: boolean }>,
-    res: Response<Todo[]>
-  ) => {
-    const { email: writer, folder } = req.params;
-    const { completed } = req.body;
-
-    const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
-      folder: folder,
-    });
-
-    const result: Todo[] = [];
-    for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
-        todoId: todo.id,
-        completed,
-      });
-      if (todoLogs.length) {
-        result.push(todo);
-      }
-    }
-    return res.json(result);
-  }
-);
-
-// 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
-// completed 값에 따라 완료여부를 필터링한다.
-router.get(
-  "/:email/date/:date",
-  async (
-    req: Request<{ email: string; date: string }, {}, { completed: boolean }>,
-    res: Response<Todo[]>
-  ) => {
-    const { email: writer, date } = req.params;
-    const { completed } = req.body;
-
-    const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
-    });
-
-    const result: Todo[] = [];
-    for (const todo of todos) {
-      const todoLogs = await DB.getRepository(TodoLog).findBy({
-        todoId: todo.id,
-        date: date,
-        completed,
-      });
-      if (todoLogs.length) {
-        result.push(todo);
-      }
-    }
-
-    return res.json(result);
-  }
-);
-
 // 사용자로부터 folder, content, dates, days를 받아서 todo table에 데이터를 저장한다.
 router.post(
   "/:email",
@@ -141,6 +19,28 @@ router.post(
   ) => {
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
+
+    // 삭제되지 않은 Todo의 개수를 파악 후 제한에 걸리는지 확인한다.
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      deleted: 0,
+    });
+
+    let todoCount = 0;
+    for (const todo of todos) {
+      const count = await DB.getRepository(TodoLog).countBy({
+        todoId: todo.id,
+        completed: 0,
+      });
+
+      if (count) {
+        todoCount++;
+      }
+    }
+
+    if (todoCount + 1 > 200) {
+      return res.status(406).send("Todo의 개수는 200개를 넘길 수 없습니다.");
+    }
 
     const { folder, content, dates, days } = req.body;
 
@@ -158,17 +58,21 @@ router.post(
         .send("folder, content, dates, days 중 하나의 값이 없습니다.");
     }
 
-    const result: any[] = [];
+    const result: { todo: Todo | null; logs: TodoLog[] } = {
+      todo: null,
+      logs: [],
+    };
     // 입력 값에 따른 데이터를 생성한다.
     const todo = DB.getRepository(Todo).create({
       writer,
       folder,
       content,
       days: JSON.stringify(days),
+      deleted: 0,
     });
     // 위에서 생성한 todo 데이터를 table에 저장한다.
     await DB.getRepository(Todo).save(todo);
-    result.push(todo);
+    result.todo = todo;
 
     // TodoLog에 기록을 추가한다.
     const logs: TodoLog[] = [];
@@ -177,12 +81,262 @@ router.post(
         DB.getRepository(TodoLog).create({
           todoId: todo.id,
           date,
-          completed: false,
+          completed: 0,
         })
       );
     }
     await DB.getRepository(TodoLog).save(logs);
-    result.push(...logs);
+    result.logs = logs;
+    return res.json(result);
+  }
+);
+
+// 사용자의 모든 todo를 todoId 구분하여 반환한다.
+// completed 값에 따라 완료여부 값들을 필터링한다.
+router.get(
+  "/:email",
+  async (
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
+    res: Response<{ [key: number]: { todo: Todo; logs: TodoLog[] } }>
+  ) => {
+    // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
+    const { email: writer } = req.params;
+    const { completed } = req.query;
+
+    // 이 사용자가 작성한 모든 todo를 가져온다.
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+    });
+
+    // completed의 값이 일치하는 todo를 가져온다.
+    const result: { [key: number]: { todo: Todo; logs: TodoLog[] } } = {};
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed: completed === "true" ? 1 : 0,
+      });
+
+      if (logs.length) {
+        result[todo.id] = { todo, logs };
+      }
+    }
+    // 이 사용자가 가지고 있는 조건이 일치하는 모든 todo를 반환한다.
+    return res.json(result);
+  }
+);
+
+// 사용자로부터 todoId를 입력받아, 해당 todo의 todo-log를 반환한다.
+router.get(
+  "/log/:todoId/:completed",
+  async (
+    req: Request<{ todoId: number; completed: string }, {}, {}>,
+    res: Response<TodoLog[]>
+  ) => {
+    const { todoId, completed } = req.params;
+
+    const logs = await DB.getRepository(TodoLog).findBy({
+      todoId,
+      completed: completed === "true" ? 1 : 0,
+    });
+
+    return res.json(logs);
+  }
+);
+
+// 사용자로부터 todoId를 입력받아, 해당 todo의 completed 상관없이 모두 반환한다.
+router.get(
+  "/log/:todoId/all",
+  async (
+    req: Request<{ todoId: number }, {}, {}>,
+    res: Response<TodoLog[]>
+  ) => {
+    const { todoId } = req.params;
+
+    const logs = await DB.getRepository(TodoLog).findBy({
+      todoId,
+    });
+    return res.json(logs);
+  }
+);
+
+// 사용자가 가지고 있는 모든 todo를 folder로 구분하여 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
+router.get(
+  "/:email/folder",
+  async (
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[][] } }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed } = req.query;
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+    });
+
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[][] } } = {};
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed: completed === "true" ? 1 : 0,
+      });
+      if (logs.length) {
+        if (todo.folder in result) {
+          result[todo.folder].todos.push(todo);
+          result[todo.folder].logs.push(logs);
+        } else {
+          result[todo.folder] = { todos: [todo], logs: [logs] };
+        }
+      }
+    }
+    return res.json(result);
+  }
+);
+
+// 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
+router.get(
+  "/:email/folder/:folder",
+  async (
+    req: Request<
+      { email: string; folder: string },
+      {},
+      {},
+      { completed: string }
+    >,
+    res: Response<{ todos: Todo[]; logs: TodoLog[][] }>
+  ) => {
+    const { email: writer, folder } = req.params;
+    const { completed } = req.query;
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      folder,
+    });
+
+    const result: { todos: Todo[]; logs: TodoLog[][] } = {
+      todos: [],
+      logs: [],
+    };
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed: completed === "true" ? 1 : 0,
+      });
+      if (logs.length) {
+        result.todos.push(todo);
+        result.logs.push(logs);
+      }
+    }
+    return res.json(result);
+  }
+);
+
+// 사용자가 작성한 모든 todo를 date로 구분하여 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
+router.get(
+  "/:email/date/all",
+  async (
+    req: Request<{ email: string }, {}, {}, { completed: string }>,
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[] } }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed } = req.query;
+
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[] } } = {};
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+    });
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+        completed: completed === "true" ? 1 : 0,
+      });
+
+      for (const log of logs) {
+        if (log.date in result) {
+          result[log.date].todos.push(todo);
+          result[log.date].logs.push(log);
+        } else {
+          result[log.date] = { todos: [todo], logs: [log] };
+        }
+      }
+    }
+    return res.json(result);
+  }
+);
+
+// 사용자가 가지고 있는 todo를 받아온 dates 내 date로 구분하여 반환한다.
+router.get(
+  "/:email/date",
+  async (
+    req: Request<
+      { email: string },
+      {},
+      {},
+      { completed: string; dates: string[] }
+    >,
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[] } }>
+  ) => {
+    const { email: writer } = req.params;
+    const { completed, dates } = req.query;
+
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[] } } = {};
+    for (const date of dates) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        date,
+        completed: completed === "true" ? 1 : 0,
+      });
+
+      result[date] = { todos: [], logs: [] };
+      result[date].logs = logs;
+      result[date].todos = [];
+      for (const log of logs) {
+        const todo = await DB.getRepository(Todo).findOneBy({
+          writer,
+          id: log.todoId,
+        });
+        if (todo) result[date].todos.push(todo);
+      }
+    }
+
+    return res.json(result);
+  }
+);
+
+// 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
+// completed 값에 따라 완료여부를 필터링한다.
+router.get(
+  "/:email/date/:date",
+  async (
+    req: Request<
+      { email: string; date: string },
+      {},
+      {},
+      { completed: string }
+    >,
+    res: Response<{ todos: Todo[]; logs: TodoLog[] }>
+  ) => {
+    const { email: writer, date } = req.params;
+    const { completed } = req.query;
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer: writer,
+    });
+
+    const result: { todos: Todo[]; logs: TodoLog[] } = { todos: [], logs: [] };
+    for (const todo of todos) {
+      const log = await DB.getRepository(TodoLog).findOneBy({
+        todoId: todo.id,
+        date: date,
+        completed: completed === "true" ? 1 : 0,
+      });
+      if (log) {
+        result.todos.push(todo);
+        result.logs.push(log);
+      }
+    }
+
     return res.json(result);
   }
 );
@@ -213,6 +367,7 @@ router.patch(
 
     // request body로부터 데이터를 가져온다.
     const { folder, content, dates, days } = req.body;
+    console.log(folder, content, dates, days);
 
     // todo 데이터를 업데이트 한다.
     const result: any[] = [
@@ -223,22 +378,21 @@ router.patch(
       }),
     ];
 
-    // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다.
+    // 만약 dates가 있다면 todo-log를 전부 삭제하고, 다시 추가한다. 단, 완료된 일은 삭제하지 않는다.
     // 기존에 있던 것을 비교하여 삭제, 추가보다 전부 삭제, 추가가 더 효율적으로 생각하여 이 방식을 택한다.
     if (dates && dates.length) {
       result.push(
         await DB.getRepository(TodoLog).delete({
           todoId: id,
+          completed: 0,
         })
       );
-      console.log(dates);
       for (const date of dates) {
-        console.log(date);
         result.push(
           DB.getRepository(TodoLog).create({
             todoId: id,
             date,
-            completed: false,
+            completed: 0,
           })
         );
       }
@@ -267,7 +421,7 @@ router.patch(
         date,
       },
       {
-        completed,
+        completed: completed ? 1 : 0,
       }
     );
 
@@ -276,7 +430,7 @@ router.patch(
 );
 
 // 사용자로부터 todo id값을 입력받아 해당 데이터를 삭제한다.
-// 그리고 todo-logs에 접근하여 해당하는 log들을 모두 삭제한다.
+// 그리고 todo-logs에 접근하여 해당하는 log를 모두 삭제한다.
 router.delete(
   "/",
   async (req: Request<{}, {}, { id: number }>, res: Response) => {
@@ -286,10 +440,10 @@ router.delete(
       return res.status(400).send("id가 존재하지 않습니다");
     }
 
-    const result = await DB.getRepository(Todo).delete(id);
-    await DB.getRepository(TodoLog).delete({
-      todoId: id,
+    const result = await DB.getRepository(Todo).update(id, {
+      deleted: 1,
     });
+
     return res.json(result);
   }
 );

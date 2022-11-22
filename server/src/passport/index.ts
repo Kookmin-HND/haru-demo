@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../entity/user";
 import DB from "../app-data-source";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { Strategy } from "passport-jwt";
+import { Strategy as KakaoStrategy } from "passport-kakao";
 
 const passportConfig = {
   usernameField: "email",
@@ -16,12 +17,14 @@ const passportVerify = async (email: string, password: string, done: any) => {
     const user = await DB.getRepository(User).findOneBy({ email: email });
 
     if (!user) {
+      console.log("존재하지 않는 사용자");
       return done(null, false, { reason: "존재하지 않는 사용자입니다." });
     }
 
     const result = await bcrypt.compare(password, user.password);
 
     if (!result) {
+      console.log("올바르지 않은 비밀번호");
       return done(null, false, { reason: "올바르지 않은 비밀번호 입니다." });
     }
     done(null, user);
@@ -65,7 +68,6 @@ const JWTVerify = async (token: any, done: any) => {
 
     return done(null, user);
   } catch (error) {
-    console.log("123");
     console.error(error);
     done(error);
   }

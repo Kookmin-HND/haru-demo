@@ -34,18 +34,31 @@
             android:exported="false" />
         <activity
             android:name=".sns.SnsAddPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing" />
+            android:exported="false" />
         <activity
             android:name=".sns.SnsDirectMessageActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".sns.SnsFriendsActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false" />
+        
+        <!-- kakao 로그인 activity    -->
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="oauth"
+                    android:scheme="kakao08d22f1822cce5ec065ef7a86a7cbb35"/>
+            </intent-filter>
+        </activity>
+
+        <!-- 메인 화면을 로그인 화면으로 변경  -->
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,8 +68,10 @@
         </activity>
         <activity
             android:name=".todo.TodoInputActivity"
-            android:screenOrientation="portrait" /> <!-- 로그인 ,회원가입 Activity 추가 -->
-        <activity android:name=".auth.LoginActivity" />
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".MainActivity" />
+        
         <activity android:name=".auth.SignUpActivity" />
 
         <receiver

@@ -1,109 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/sns_post_detail_cancel_button"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:background="#00000000"
-            android:backgroundTint="@color/white"
-            android:gravity="bottom"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:src="@drawable/ic_baseline_clear_24"></ImageButton>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_margin="0dp"
-            android:gravity="center"
-            android:text="제목"
-            android:textColor="@color/black"
-            android:textSize="25dp" />
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="50dp"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/sns_post_detail_writer"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="작성자"
-            android:textSize="20dp"></TextView>
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/sns_post_detail_cancel_button"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="#00000000"
+                android:backgroundTint="@color/white"
+                android:gravity="bottom"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:src="@drawable/sns_arrow_back" />
 
-        <View
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="나의 하루"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="공부"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="10dp"
-            android:background="@color/gray" />
-
-        <TextView
-            android:id="@+id/sns_post_detail_body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#00000000"
-            android:hint="게시물 내용"
-            android:textSize="20dp" />
-
-        <View
-            android:id="@+id/sns_post_detail_underline"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="10dp"
-            android:background="@color/gray" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sns_post_comments_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/sns_post_detail_underline"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="30dp"
-        android:gravity="bottom"
-        android:padding="10dp">
-
-        <EditText
-            android:id="@+id/et_write_comment"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="9"
-            android:hint="댓글을 입력하세요" />
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/btn_send_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00000000"
-            android:src="@drawable/ic_baseline_send_24"
-            android:contentDescription="댓글입력" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="10dp"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/sns_comment_writer_photo"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="user profile"
+                        android:src="@drawable/ic_baseline_account_circle_24" />
 
-</RelativeLayout>
+                    <TextView
+                        android:id="@+id/sns_post_detail_writer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:text="작성자"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/sns_post_detail_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:hint="게시물 내용"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/sns_post_detail_images_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/sns_image_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp" />
+
+                <me.relex.circleindicator.CircleIndicator3
+                    android:id="@+id/sns_image_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="10dp" />
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sns_post_comments_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sns_post_detail_body" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="30dp"
+                android:gravity="bottom"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/et_write_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:hint="댓글을 입력하세요" />
+
+                <ImageButton
+                    android:id="@+id/btn_send_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:contentDescription="댓글입력"
+                    android:src="@drawable/ic_baseline_send_24" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

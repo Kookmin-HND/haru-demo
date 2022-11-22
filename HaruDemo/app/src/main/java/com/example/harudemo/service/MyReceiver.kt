@@ -12,8 +12,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.harudemo.R
 import com.example.harudemo.MainActivity
+import com.example.harudemo.fragments.maindata
 import com.example.harudemo.service.Constant.Companion.CHANNEL_ID
 import com.example.harudemo.service.Constant.Companion.NOTIFICATION_ID
+import com.example.harudemo.todo.TodoData
+import java.util.*
 
 class MyReceiver : BroadcastReceiver() {
     lateinit var notificationManager: NotificationManager
@@ -41,10 +44,32 @@ class MyReceiver : BroadcastReceiver() {
                 4. IMPORTANCE_MIN = 알림음 없고 상태줄 표시 X
                  */
             )
+
+//            var sectiondata = TodoData.getTodos()
+
+//            for (section in sectiondata){
+//                for(todo in section.todoList){
+//                    var content = todo.content
+//                    var date = todo.date
+//                    var splitdate = date.split("-")
+//                    val year = splitdate[0].toInt()
+//                    val month = splitdate[1].toInt()
+//                    val day = splitdate[2].toInt()
+//                    maindata.contents[year-2022][month-1][day] += content+"\n"
+//                }
+//            }
+
+            var calendar = Calendar.getInstance()
+
+            val y = calendar.get(Calendar.YEAR)
+            val m = calendar.get(Calendar.MONTH)
+            val d = calendar.get(Calendar.DAY_OF_MONTH)
+
             notificationChannel.enableLights(true) // 불빛
             notificationChannel.lightColor = Color.RED // 색상
             notificationChannel.enableVibration(true) // 진동 여부
-            notificationChannel.description = "채널의 상세정보입니다." // 채널 정보
+            notificationChannel.description = maindata.contents[y-2022][m-1][d] //채널정보
+            
             notificationManager.createNotificationChannel(
                 notificationChannel)
         }
@@ -57,18 +82,12 @@ class MyReceiver : BroadcastReceiver() {
             NOTIFICATION_ID, // requestCode
             contentIntent, // 알림 클릭 시 이동할 인텐트
             PendingIntent.FLAG_IMMUTABLE
-            /*
-            1. FLAG_UPDATE_CURRENT : 현재 PendingIntent를 유지하고, 대신 인텐트의 extra data는 새로 전달된 Intent로 교체
-            2. FLAG_CANCEL_CURRENT : 현재 인텐트가 이미 등록되어있다면 삭제, 다시 등록
-            3. FLAG_NO_CREATE : 이미 등록된 인텐트가 있다면, null
-            4. FLAG_ONE_SHOT : 한번 사용되면, 그 다음에 다시 사용하지 않음
-             */
         )
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher) // 아이콘
-            .setContentTitle("타이틀 입니다.") // 제목
-            .setContentText("내용 입니다.") // 내용
+            .setContentTitle("하루 알람") // 제목
+            .setContentText("오늘의 일정입니다.") // 내용
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)

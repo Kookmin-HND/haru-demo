@@ -1,8 +1,16 @@
 package com.example.harudemo.retrofit
 
+<<<<<<< HEAD
 import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
+=======
+import android.util.Log
+import com.example.harudemo.utils.API
+import com.example.harudemo.utils.RESPONSE_STATUS
+import com.google.gson.JsonElement
+import okhttp3.CookieJar
+>>>>>>> d53d0086597f385ec9d2da6109fcd63c901c1a37
 import retrofit2.Call
 import retrofit2.Response
 
@@ -46,6 +54,10 @@ class AuthRetrofitManager {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()){
                     200 -> {
+<<<<<<< HEAD
+=======
+                        Log.d("[debug]", "${response.body()}")
+>>>>>>> d53d0086597f385ec9d2da6109fcd63c901c1a37
                         completion(RESPONSE_STATUS.OKAY, response.body())
                     }
                 }

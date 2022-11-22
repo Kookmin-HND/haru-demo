@@ -9,12 +9,7 @@
     android:layout_marginEnd="24dp"
     android:layout_marginBottom="8dp"
     android:background="@color/background"
-    android:orientation="vertical"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintEnd_toStartOf="parent"
-    app:layout_constraintStart_toEndOf="parent">
-
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/LoginHeader"
@@ -29,6 +24,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/EmailLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
@@ -40,17 +36,19 @@
             android:layout_height="wrap_content"
             android:hint="E-Mail"
             android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:textSize="12sp" />
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pwLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:passwordToggleEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:boxBackgroundColor="@color/white">
+        app:boxBackgroundColor="@color/white"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/userPwEdit"
@@ -58,15 +56,14 @@
             android:layout_height="wrap_content"
             android:hint="PassWord"
             android:inputType="textPassword"
-            android:maxLines="1"
-            android:textSize="12sp" />
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/gray"
         android:text="로그인"
@@ -75,10 +72,19 @@
     <Button
         android:id="@+id/signUpBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:backgroundTint="@color/gray"
         android:text="회원가입"
         android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/kakaoLoginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="4dp"
+        app:srcCompat="@drawable/kakao_login_medium_wide" />
 
 
 </LinearLayout>
