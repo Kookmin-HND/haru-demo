@@ -8,7 +8,6 @@ import com.example.harudemo.R
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
 import com.example.harudemo.model.SnsPost
-import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
 import kotlinx.android.synthetic.main.sns_comment_item.view.*
 import kotlinx.android.synthetic.main.sns_post_image_item.view.*
 

@@ -5,7 +5,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -80,12 +82,12 @@ class SnsFragment : Fragment() {
 
         //스크롤 이벤트 처리 함수
         initScrollListener((sns_post_recycler_view.adapter as SnsPostRecyclerViewAdapter))
-
-        binding.btnUp.setOnClickListener {
-            // 스크롤 위로 보내기
-            postScrolltoTop()
-        }
-
+//
+//        binding.btnUp.setOnClickListener {
+//            // 스크롤 위로 보내기
+//            postScrolltoTop()
+//        }
+//
 
         // SNS 툴바 메뉴 클릭시 해당 메뉴 액티비티로 이동
         binding.snsTopAppBar.setOnMenuItemClickListener {

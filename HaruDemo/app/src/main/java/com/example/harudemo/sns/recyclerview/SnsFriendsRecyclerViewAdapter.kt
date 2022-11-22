@@ -10,7 +10,7 @@ import com.example.harudemo.R
 import com.example.harudemo.databinding.LayoutSnsFriendsItemBinding
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.SnsPostDetailActivity
-import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
+import kotlinx.android.synthetic.main.sns_post_recyclerview_item.view.*
 
 class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsRecyclerViewAdapter.SnsFriendsitemViewHolder>(){
 

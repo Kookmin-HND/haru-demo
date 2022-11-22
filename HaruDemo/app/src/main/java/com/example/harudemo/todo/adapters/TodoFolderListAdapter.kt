@@ -15,6 +15,7 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 
 class TodoFolderListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<TodoFolderListAdapter.TodoFolderListViewHolder>() {
@@ -57,7 +58,7 @@ class TodoFolderListAdapter(private val activity: FragmentActivity) :
     }
 
     fun fetchData() {
-        TodoData.API.getFoldersAndCount("cjeongmin27@gmail.com", {
+        TodoData.API.getFoldersAndCount(User.info?.email!!, {
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 val newer = it
                 val older = data

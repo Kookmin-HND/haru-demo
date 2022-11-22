@@ -6,7 +6,8 @@ import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
-import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
+import com.example.harudemo.utils.getTimeDifference
+import kotlinx.android.synthetic.main.sns_post_recyclerview_item.view.*
 
 //Sns 게시물 리사이클러뷰를 위한 뷰홀더
 class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -14,6 +15,9 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val snsPostWriterName = itemView.sns_post_writer_name
     private val snsPostCreatedAt = itemView.sns_post_created_at
     private val snsPostContent = itemView.sns_post_content
+    private val snsPostTag = itemView.sns_post_tag
+
+
     private val snsPostPreviewImageOneCardView = itemView.sns_post_preview_image_one_cardView
     private val snsPostPreviewImageTwoCardView = itemView.sns_post_preview_image_two_cardView
     private val snsPostPreviewImageThreeCardView = itemView.sns_post_preview_image_three_cardView
@@ -31,18 +35,32 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     //comment number
     private val snsPostCommentNumber = itemView.sns_post_comment_number
 
+    //likes number
+    private val snsPostLikeNumber = itemView.sns_post_like_number
 
     fun bindWidthView(snsPostItem: SnsPost) {
         snsPostWriterName.text = snsPostItem.writer
-        snsPostCreatedAt.text = snsPostItem.createdAt
+        snsPostCreatedAt.text = getTimeDifference(snsPostItem.createdAt.toString())
         //미리보기할 때는 개행 제거
         snsPostContent.text = snsPostItem.content?.replace("\n", " ")
 
+
+        snsPostTag.text = snsPostItem.category
+
         //comment number
-        if(snsPostItem.commentNumber > 0)
+        if (snsPostItem.commentNumber > 0)
             snsPostCommentNumber.text = snsPostItem.commentNumber.toString()
-        else if(snsPostItem.commentNumber == 0)
+        else if (snsPostItem.commentNumber == 0)
             snsPostCommentNumber.text = ""
+
+
+        //like number
+        if (snsPostItem.postLikeList.size > 0)
+            snsPostLikeNumber.text = snsPostItem.postLikeList.size.toString()
+        else
+            snsPostLikeNumber.text = ""
+
+
 
         snsPostPreviewImageCountMore.visibility = View.GONE
 

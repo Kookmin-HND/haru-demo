@@ -15,6 +15,10 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text</item>
         <item name="backgroundColor">#f0f0f0</item>
+
+
+        <!-- bottom dialog-->
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
     <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
@@ -26,4 +30,17 @@
         <item name="android:textStyle">bold</item>
         <item name="android:backgroundTint">#E3F2FD</item>
     </style>
+
+
+
+    <!-- bottom dialog-->
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/sns_post_add_tag_rounded_dialog</item>
+    </style>
+
+
 </resources>

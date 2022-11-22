@@ -18,6 +18,7 @@ import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -215,7 +216,7 @@ class TodoInputActivity : AppCompatActivity() {
                 TodoData.API.update(todo.id, folder, content, datesList, days)
             } else {
                 // DB에 데이터 추가
-                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days, {
+                TodoData.API.create(User.info?.email!!, folder, content, datesList, days, {
                     TodoFragment.folderListAdapter.fetchData()
                 }, {
                     CustomToast.makeText(

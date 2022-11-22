@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Generated, UpdateDateColumn, OneToMany, JoinTable } from "typeorm";
 import { Comment } from "./comment";
 import { ImageFile } from "./imageFile";
+import { PostLike } from "./postLike";
 
 //필요한 데이터베이스 스키마 entity에 생성
 
@@ -14,7 +15,7 @@ export class Post {
   writer: string;
 
   @Column({ nullable: false })
-  title: string;
+  category: string;
 
   @Column({ nullable: false })
   content: string;
@@ -32,6 +33,15 @@ export class Post {
   })
   @JoinTable()
   imageFiles: ImageFile[];
+
+
+  //좋아요와 일대다 연결, 게시물이 삭제되면 좋아요도 삭제되도록 cascade
+  @OneToMany(() => PostLike, (like) => like.post, {
+    cascade: true,
+  })
+  @JoinTable()
+  likes: PostLike[];
+
 
   @CreateDateColumn({
     type: "timestamp",
