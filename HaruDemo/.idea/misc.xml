@@ -7,13 +7,16 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.20413669064748202" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/background_grass.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/bottom_nav_bar_color.xml" value="0.238" />
         <entry key="app/src/main/res/drawable/circular_progress_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/circular_progress_bar.xml" value="0.19196319580078125" />
+        <entry key="app/src/main/res/drawable/direct_message_input_background.xml" value="0.238" />
         <entry key="app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.231" />
         <entry key="app/src/main/res/drawable/ic_baseline_align_vertical_bottom_24.xml" value="0.221" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_circle_up_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.221" />
+        <entry key="app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.238" />
         <entry key="app/src/main/res/drawable/ic_baseline_check_box_24.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.196" />
         <entry key="app/src/main/res/drawable/ic_baseline_dehaze_24.xml" value="0.2485" />
@@ -43,7 +46,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_sns_add_post.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_sns_add_post2.xml" value="0.4276041666666667" />
-        <entry key="app/src/main/res/layout/activity_sns_direct_message.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_sns_direct_message.xml" value="0.37738128662109394" />
         <entry key="app/src/main/res/layout/activity_sns_friends.xml" value="0.3581324259440104" />
         <entry key="app/src/main/res/layout/activity_sns_post_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sns_test.xml" value="0.375" />

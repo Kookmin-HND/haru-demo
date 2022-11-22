@@ -5,10 +5,11 @@
     android:background="@color/background">
 
     <LinearLayout
+        android:id="@+id/title_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:paddingHorizontal="10dp">
 
         <TextView
             android:id="@+id/dm_user_name"
@@ -16,49 +17,48 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:text="Lee min jae"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="40dp"
-        android:background="@color/gray">
+        android:layout_below="@+id/title_name"
+        android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/direct_message_input_background"
+            android:gravity="center">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:hint=" 메세지 보내기..."
+                android:paddingStart="3dp"
+                android:textSize="15sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:text="보내기"
+                android:textColor="#54A2EC" />
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:background="#00000000"
-        android:gravity="center">
-
-        <EditText
-            android:layout_width="350dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="@drawable/background_grass"
-            android:hint=" 전송할 메세지를 입력"
-            />
-
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/sns_direct_message"
-            />
-
-
-
-    </LinearLayout>
-
-
 
 
 </RelativeLayout>

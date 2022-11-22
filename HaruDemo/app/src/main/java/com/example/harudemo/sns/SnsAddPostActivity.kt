@@ -55,7 +55,6 @@ class SnsAddPostActivity : AppCompatActivity() {
 
         //글 작성 취소 버튼 클릭 시
         binding.addCancel.setOnClickListener {
-            CustomToast.makeText(applicationContext, "취소취소", Toast.LENGTH_SHORT).show();
             finish();
         }
 
