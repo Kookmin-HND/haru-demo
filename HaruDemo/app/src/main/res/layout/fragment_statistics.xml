@@ -29,9 +29,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/statistics_wrapbox"
         android:gravity="center"
-        android:layout_margin="20dp"
-        android:layoutAnimation="@drawable/layout_controller"
-        android:persistentDrawingCache="animation|scrolling">
+        android:layout_margin="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/statistic_vp"
@@ -50,9 +48,7 @@
         android:background="@drawable/statistics_wrapbox"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:layout_margin="20dp"
-        android:layoutAnimation="@drawable/layout_controller"
-        android:persistentDrawingCache="animation|scrolling">
+        android:layout_margin="20dp">
 
         <TextView
             android:layout_width="wrap_content"

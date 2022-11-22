@@ -24,10 +24,4 @@ export class User {
 
   @CreateDateColumn()
   createAt: Date;
-
-  @Column()
-  follower: number[];
-
-  @Column()
-  following: number[];
 }
