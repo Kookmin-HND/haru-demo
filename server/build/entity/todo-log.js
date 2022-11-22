@@ -11,11 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodoLog = void 0;
 const typeorm_1 = require("typeorm");
-// Todo가 완료되는 시점을 기록하는 데이터의 Entity
-class TodoLog {
-}
+let TodoLog = class TodoLog {
+};
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], TodoLog.prototype, "id", void 0);
 __decorate([
@@ -28,8 +27,8 @@ __decorate([
 ], TodoLog.prototype, "date", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
-    __metadata("design:type", String)
-], TodoLog.prototype, "completedAt", void 0);
+    __metadata("design:type", Boolean)
+], TodoLog.prototype, "completed", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({
         type: "timestamp",
@@ -45,4 +44,8 @@ __decorate([
     }),
     __metadata("design:type", Date)
 ], TodoLog.prototype, "updatedAt", void 0);
+TodoLog = __decorate([
+    (0, typeorm_1.Entity)()
+    // Todo의 일정을 기록하는 데이터의 Entity
+], TodoLog);
 exports.TodoLog = TodoLog;

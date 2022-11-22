@@ -11,8 +11,7 @@ const passport_1 = __importDefault(require("passport"));
 const passport_2 = __importDefault(require("./passport"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // establish database connection
-app_data_source_1.default
-    .initialize()
+app_data_source_1.default.initialize()
     .then(() => {
     console.log("Data Source has been initialized!");
 })

@@ -1,14 +1,11 @@
 package com.example.harudemo.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
-import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.TodoFolderListAdapter
-import com.example.harudemo.todo.types.Todo
-import com.example.harudemo.utils.API
-import com.example.harudemo.utils.Constants
-import com.example.harudemo.utils.CustomToast
+
+/**
+ * FIXME: 업데이트 상태에서 기간 입력시 날짜 선택 안해도 기존 선택으로 가도록 수정
+ * FIXME: 삭제된 아이템 불러오지 않도록 수정
+ **/
 
 class TodoFragment : Fragment() {
     companion object {
@@ -39,7 +36,7 @@ class TodoFragment : Fragment() {
         val folderListAdapter: TodoFolderListAdapter
             get() {
                 if (_folderListAdapter == null) {
-                    _folderListAdapter = instance.activity?.let { TodoFolderListAdapter(it) }
+                    _folderListAdapter = TodoFolderListAdapter(instance.requireActivity())
                 }
                 return _folderListAdapter!!
             }
@@ -78,33 +75,19 @@ class TodoFragment : Fragment() {
                     binding?.btnAddTodo?.show();
             }
         })
-    }
 
-    override fun onResume() {
-        super.onResume()
-        // DB에서 Data를 불러온다
-        if (TodoData.isEmpty()) {
-            TodoData.API.read("cjeongmin27@gmail.com", {
-                // 데이터를 불러오는데 성공하였을 때
-                for (todo in it) {
-                    TodoData.add(todo)
-                }
-                binding?.rvFolderList?.adapter?.notifyItemInserted(it.size)
-            }, {
-                // 데이터를 불러오는데 실패하였을 때
-                CustomToast.makeText(
-                    this.requireContext(), "todo 목록을 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT
-                ).show()
-            })
-        }
-
-        // Folder Item을 Recycler View에 추가
         binding?.rvFolderList?.adapter = folderListAdapter
         binding?.rvFolderList?.layoutManager = LinearLayoutManager(
             binding?.root?.context,
             LinearLayoutManager.VERTICAL,
             false,
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Folder Item을 Recycler View에 추가
+        folderListAdapter.fetchData()
     }
 
     // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록

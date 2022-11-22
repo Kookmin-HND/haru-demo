@@ -25,9 +25,7 @@ const passportConfig = {
 };
 const passportVerify = (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield app_data_source_1.default
-            .getRepository(user_1.User)
-            .findOneBy({ email: email });
+        const user = yield app_data_source_1.default.getRepository(user_1.User).findOneBy({ email: email });
         if (!user) {
             return done(null, false, { reason: "존재하지 않는 사용자입니다." });
         }
@@ -63,9 +61,7 @@ const JWTVerify = (token, done) => __awaiter(void 0, void 0, void 0, function* (
             console.log("token이 없습니다.");
             return done(null, false, { reason: "token이 없습니다." });
         }
-        const user = yield app_data_source_1.default
-            .getRepository(user_1.User)
-            .findOneBy({ email: token.email });
+        const user = yield app_data_source_1.default.getRepository(user_1.User).findOneBy({ email: token.email });
         if (!user) {
             console.log("token과 맞는 user가 없습니다.");
             return done(null, false, { reason: "token과 맞는 user가 없습니다." });
