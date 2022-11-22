@@ -17,4 +17,5 @@ object API {
     const val POSTS: String = "posts"
     const val COMMENTS: String = "comments"
     const val TODOS: String = "todos"
+    const val USERS: String = "users"
 }
