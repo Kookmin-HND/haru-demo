@@ -1,8 +1,8 @@
 package com.example.harudemo.retrofit
 
-import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
+import android.util.Log
 import retrofit2.Call
 import retrofit2.Response
 
@@ -46,6 +46,7 @@ class AuthRetrofitManager {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 when (response.code()){
                     200 -> {
+                        Log.d("[debug]", "${response.body()}")
                         completion(RESPONSE_STATUS.OKAY, response.body())
                     }
                 }
