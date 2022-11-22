@@ -10,6 +10,7 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import com.example.harudemo.App
 import com.example.harudemo.databinding.ActivityTodoInputBinding
+import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.adapters.NewTodoSectionAdapter
@@ -29,7 +30,7 @@ class TodoInputActivity : AppCompatActivity() {
     private var dayButtons: ArrayList<ToggleButton?> =
         arrayListOf(null) // 일 ~ 토 버튼을 리스트로 가지는 변수
     private var viewMode: Int = -1 // 현재 무슨 형식으로 데이터를 입력받고 있는지 확인하는 변수
-    val days = arrayListOf(false, false, false, false, false, false, false)
+    private val days = arrayListOf(false, false, false, false, false, false, false)
 
     @SuppressLint("NotifyDataSetChanged", "SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -222,6 +223,7 @@ class TodoInputActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 })
+                TodoFragment.folderListAdapter.fetchData()
             }
 
             for (data in datesList) {

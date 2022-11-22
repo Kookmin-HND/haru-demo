@@ -18,7 +18,7 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 
-class NewTodoListAdapter:
+class NewTodoListAdapter :
     ListAdapter<Section, RecyclerView.ViewHolder>(object :
         DiffUtil.ItemCallback<Section>() {
         override fun areItemsTheSame(
