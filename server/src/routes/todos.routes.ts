@@ -20,6 +20,28 @@ router.post(
     // email은 로그인된 사용자의 이메일을 가져오므로 항상 있다고 가정한다.
     const writer = req.params.email;
 
+    // 삭제되지 않은 Todo의 개수를 파악 후 제한에 걸리는지 확인한다.
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      deleted: 0,
+    });
+
+    let todoCount = 0;
+    for (const todo of todos) {
+      const count = await DB.getRepository(TodoLog).countBy({
+        todoId: todo.id,
+        completed: 0,
+      });
+
+      if (count) {
+        todoCount++;
+      }
+    }
+
+    if (todoCount + 1 > 200) {
+      return res.status(406).send("Todo의 개수는 200개를 넘길 수 없습니다.");
+    }
+
     const { folder, content, dates, days } = req.body;
 
     // 혹시 입력으로부터 빠져있는 값이 있는지 확인한다.

@@ -20,8 +20,8 @@ object TodoData {
             dates: List<String>,
             days: List<Boolean>,
             okayCallback: (JsonElement) -> Unit = {},
-            failCallback: (JsonElement) -> Unit = {},
-            noContentCallback: (JsonElement) -> Unit = {}
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {}
         ) {
             TodoRetrofitManager.instance.addTodo(
                 writer,
@@ -32,8 +32,8 @@ object TodoData {
                 completion = { responseStatus, response ->
                     when (responseStatus) {
                         RESPONSE_STATUS.OKAY -> response?.let(okayCallback)
-                        RESPONSE_STATUS.FAIL -> response?.let(failCallback)
-                        RESPONSE_STATUS.NO_CONTENT -> response?.let(noContentCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
                     }
                 })
         }
