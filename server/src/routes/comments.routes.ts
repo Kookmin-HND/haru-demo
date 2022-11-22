@@ -21,9 +21,18 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
   try {
     // postId로 게시물 하나의 데이터를 가져온다
-    const result = await DB.getRepository(Comment).find({
-      where: { post: Equal(postId) },
-    });
+    // const result = await DB.getRepository(Comment).find({
+    //   where: { post: Equal(postId) },
+    // });
+
+    //이미지, 코멘트 정보 조인해서 불러오기
+    const result = await DB.getRepository(Comment)
+      .createQueryBuilder("comment")
+      .where({ post: Equal(postId) })
+      .leftJoinAndSelect("comment.likes", "like.comment")
+      .getMany();
+
+
     return res.json(result);
   } catch {
     return res.status(500).send("댓글을 불러오는데 실패했습니다.");

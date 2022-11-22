@@ -15,18 +15,14 @@ import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivitySnsAddPostBinding
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsPostImagesRecyclerViewAdapter
-import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.Constants.TAG
+import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
-import kotlinx.android.synthetic.main.activity_sns_add_post.*
-import kotlinx.android.synthetic.main.fragment_sns.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-
-import com.example.harudemo.utils.CustomToast
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
@@ -34,7 +30,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
-class SnsAddPostActivity : AppCompatActivity() {
+class SnsAddPostActivity : AppCompatActivity(){
     private lateinit var binding: ActivitySnsAddPostBinding;
 
     //어플리케이션 갤러리 접근 권한 확인
@@ -71,14 +67,19 @@ class SnsAddPostActivity : AppCompatActivity() {
             finish();
         }
 
-
         //이미지 추가 버전
         //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
-            val title =
-                binding.addPostTitle.text.toString()
+            if(binding.snsAddPostSelectTagTextview.text.toString() == "게시글의 주제를 선택해주세요"){
+                CustomToast.makeText(applicationContext, "게시글의 주제를 선택해주세요", Toast.LENGTH_SHORT).show();
+                return@setOnClickListener
+            }
+
+            val category =
+                binding.snsAddPostSelectTagTextview.text.toString()
                     .trim()
                     .toRequestBody("text/plain".toMediaTypeOrNull())
+
             val content =
                 binding.addPostText.text.toString()
                     .trim()
@@ -104,12 +105,9 @@ class SnsAddPostActivity : AppCompatActivity() {
                 )
             }
 
-
-            Log.d(TAG, "SnsAddPostActivity ${imagesMultipartBodyList} - onCreate() called")
-
             SnsRetrofitManager.instance.postPost(
                 "LMJ",
-                title,
+                category,
                 content,
                 imagesMultipartBodyList,
                 completion = { responseStatus, _ ->
@@ -161,6 +159,21 @@ class SnsAddPostActivity : AppCompatActivity() {
                 startActivityForResult(intent, 200)
             }
             true
+        }
+
+
+        //tag 선택하는 텍스트뷰
+        binding.snsAddPostSelectTagTextviewConstraintLayout.setOnClickListener {
+            val snsAddPostBottomSheet = SnsAddPostBottomSheet{
+                when(it){
+                    0 -> binding.snsAddPostSelectTagTextview.text = "운동"
+                    1 -> binding.snsAddPostSelectTagTextview.text = "공부"
+                    2 -> binding.snsAddPostSelectTagTextview.text = "코딩"
+                    3 -> binding.snsAddPostSelectTagTextview.text = "취미"
+                    4 -> binding.snsAddPostSelectTagTextview.text = "일기"
+                }
+            }
+            snsAddPostBottomSheet.show(supportFragmentManager, snsAddPostBottomSheet.tag)
         }
 
     }
@@ -217,4 +230,5 @@ class SnsAddPostActivity : AppCompatActivity() {
         /*  절대 경로를 getGps()에 넘겨주기   */
         return file.getAbsolutePath()
     }
+
 }

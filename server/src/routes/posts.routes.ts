@@ -43,6 +43,7 @@ router.get("/recent/:postId", async (req: Request<PostParams>, res: Response) =>
     .orderBy({ "post.id": "DESC" })
     .leftJoinAndSelect("post.imageFiles", "imageFiles.url")
     .leftJoinAndSelect("post.comments", "comment.post")
+    .leftJoinAndSelect("post.likes", "like.post")
     .take(20)
     .getMany();
 
@@ -82,7 +83,7 @@ router.get("/:postId/images", async (req: Request<PostParams>, res: Response) =>
 router.post("/:email", awsUpload.array("images"), async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
   const writer = req.params.email;
-  const title = req.body.title;
+  const category = req.body.category;
   const content = req.body.content;
 
   //이미지 S3에 저장한 url
@@ -93,7 +94,7 @@ router.post("/:email", awsUpload.array("images"), async (req: Request, res: Resp
   });
 
   const imageFileList: ImageFile[] = [];
-  const post = DB.getRepository(Post).create({ title, content, writer });
+  const post = DB.getRepository(Post).create({ category, content, writer });
   const result = await DB.getRepository(Post).save(post);
 
   locationList.forEach((item) => {
