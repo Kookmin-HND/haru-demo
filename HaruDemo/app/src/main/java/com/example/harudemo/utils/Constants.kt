@@ -21,9 +21,5 @@ object API {
     const val POSTS: String = "posts"
     const val COMMENTS: String = "comments"
     const val TODOS: String = "todos"
-<<<<<<< HEAD
     const val USERS: String = "users"
-=======
-    const val USERS : String = "users"
->>>>>>> d53d0086597f385ec9d2da6109fcd63c901c1a37
 }

@@ -60,6 +60,7 @@ class RetrofitManager {
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    commentNumber = 0,
                                     average = 0,
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
