@@ -14,13 +14,13 @@
         app:liftOnScrollTargetViewId="@id/sns_post_recycler_view">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/sns_top_app_bar"
+            android:id="@+id/statistics_top_app_bar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/sns_top_app_bar_menu"
-            app:title="SNS" />
+            app:menu="@menu/statistics_top_app_bar"
+            app:title="Statistics" />
     </com.google.android.material.appbar.AppBarLayout>
 
 

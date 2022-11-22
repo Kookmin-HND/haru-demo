@@ -43,7 +43,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_sns_add_post.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_sns_add_post2.xml" value="0.4276041666666667" />
-        <entry key="app/src/main/res/layout/activity_sns_direct_message.xml" value="0.4276041666666667" />
+        <entry key="app/src/main/res/layout/activity_sns_direct_message.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_sns_friends.xml" value="0.3581324259440104" />
         <entry key="app/src/main/res/layout/activity_sns_post_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sns_test.xml" value="0.375" />
@@ -80,6 +80,8 @@
         <entry key="app/src/main/res/menu/sample_menu.xml" value="0.346875" />
         <entry key="app/src/main/res/menu/sns_top_app_bar.xml" value="0.4276041666666667" />
         <entry key="app/src/main/res/menu/sns_top_app_bar_menu.xml" value="0.23489583333333333" />
+        <entry key="app/src/main/res/menu/statistics_top_app_bar.xml" value="0.359375" />
+        <entry key="app/src/main/res/menu/todo_top_app_bar_menu.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.21" />
       </map>

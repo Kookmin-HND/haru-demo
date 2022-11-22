@@ -1,7 +1,6 @@
 package com.example.harudemo.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -11,15 +10,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentStatisticsBinding
 import com.example.harudemo.grass.grassAdapter
-import com.example.harudemo.sns.SnsAddPostActivity
-import com.example.harudemo.sns.SnsDirectMessageActivity
-import com.example.harudemo.sns.SnsFriendsActivity
 import kotlinx.android.synthetic.main.fragment_sns.*
 import kotlinx.android.synthetic.main.fragment_statistics.*
-import kotlinx.android.synthetic.main.fragment_statistics.sns_top_app_bar
 import java.util.*
 
 class StatisticsFragment : Fragment() {
@@ -90,34 +84,6 @@ class StatisticsFragment : Fragment() {
             layoutManager = dayListManager
             adapter = dayListAdapter
 
-        }
-
-        //앱바 버튼 조작
-        sns_top_app_bar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.sns_post_add -> {
-                    activity?.let { FragmentActivity ->
-                        val intent = Intent(FragmentActivity, SnsAddPostActivity::class.java)
-                        FragmentActivity.startActivity(intent)
-                    }
-                    true
-                }
-                R.id.sns_friends -> {
-                    activity?.let { FragmentActivity ->
-                        val intent = Intent(FragmentActivity, SnsFriendsActivity::class.java)
-                        FragmentActivity.startActivity(intent)
-                    }
-                    true
-                }
-                R.id.sns_direct_message -> {
-                    activity?.let { FragmentActivity ->
-                        val intent = Intent(FragmentActivity, SnsDirectMessageActivity::class.java)
-                        FragmentActivity.startActivity(intent)
-                    }
-                    true
-                }
-                else -> super.onOptionsItemSelected(it)
-            }
         }
     }
 
