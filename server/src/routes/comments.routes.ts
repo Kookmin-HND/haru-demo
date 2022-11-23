@@ -4,6 +4,7 @@ import DB from "../app-data-source";
 import { Post } from "../entity/post";
 import { Comment } from "../entity/comment";
 import { Equal } from "typeorm";
+import { User } from "../entity/user";
 
 export const path = "/comments";
 export const router = Router();
@@ -30,8 +31,12 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
       .createQueryBuilder("comment")
       .where({ post: Equal(postId) })
       .leftJoinAndSelect("comment.likes", "like.comment")
+      .leftJoin("comment.user", "user")
+      .addSelect("user.id")
+      .addSelect("user.name")
+      .addSelect("user.email")
+      .leftJoinAndSelect("user.images", "image")
       .getMany();
-
 
     return res.json(result);
   } catch {
@@ -40,11 +45,13 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 });
 
 //새 댓글 입력
-router.post("/:email", async (req: Request, res: Response) => {
+router.post("/:userId", async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-  const writer = req.params.email;
+  const userId = Number(req.params.userId);
+  const user = new User();
+  user.id = userId;
 
-  const post = DB.getRepository(Comment).create({ ...req.body, post: req.body.postId, writer });
+  const post = DB.getRepository(Comment).create({ ...req.body, user, post: req.body.postId });
   const result = await DB.getRepository(Comment).save(post);
 
   return res.json(result);

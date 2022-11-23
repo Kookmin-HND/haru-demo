@@ -123,7 +123,7 @@ class SnsAddPostActivity : AppCompatActivity() {
                                 try {
                                     Files.delete(Paths.get(filePath))
                                 } catch (e: IOException) {
-                                    CustomToast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
+//                                    CustomToast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             finish()

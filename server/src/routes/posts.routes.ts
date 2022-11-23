@@ -181,3 +181,8 @@ router.get("/profile/:userId", async (req: Request, res: Response) => {
   }
   return res.json(result.images);
 });
+
+
+router.use((error:Error, req:Request, res:Response, next:NextFunction) => {
+  res.send("posts router error");
+})

@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { Post } from "./post";
+import { Comment } from "./comment";
 import { ProfileImageFile } from "./profileImageFile";
 
 // user 스키마 생성
@@ -32,6 +33,8 @@ export class User {
   createAt: Date;
 
 
+
+  //sns와 user정보 연동
   //사진과 이미지 연결
   @OneToMany(() => ProfileImageFile, (image) => image.user, {
     cascade: true,
@@ -45,4 +48,8 @@ export class User {
   @JoinTable()
   posts: Post[];
 
+  //댓글과 사용자 연결
+  @OneToMany(()=> Comment, (comment)=>comment.user)
+  @JoinTable()
+  comments: Comment[];
 }

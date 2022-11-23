@@ -71,9 +71,9 @@ interface SnsService {
     ): Call<JsonElement>
 
 
-    @POST("${API.COMMENTS}/{email}")
+    @POST("${API.COMMENTS}/{userId}")
     fun postComment(
-        @Path("email") writer: String,
+        @Path("userId") userId: Int,
         @Body requestBodyParams: SnsCommentPostRequestBodyParams
     ): Call<JsonElement>
 

@@ -130,6 +130,7 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         Glide.with(App.instance)
             .load(snsCommentItem.writerPhoto)
             .placeholder(R.drawable.ic_baseline_account_circle_24)
+            .circleCrop()
             .into(snsCommentWriterPhoto)
     }
 }

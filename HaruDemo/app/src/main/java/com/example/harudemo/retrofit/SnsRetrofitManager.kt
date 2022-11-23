@@ -142,7 +142,7 @@ class SnsRetrofitManager {
 
     //SNS에서 댓글을 저장하는 함수
     fun postComment(
-        writer: String,
+        userId: Int,
         postId: Int,
         content: String,
         parentCommentId: Int,
@@ -151,7 +151,7 @@ class SnsRetrofitManager {
 
         val call =
             snsService?.postComment(
-                writer,
+                userId,
                 SnsCommentPostRequestBodyParams(postId, content, parentCommentId)
             ) ?: return
 
@@ -200,7 +200,9 @@ class SnsRetrofitManager {
                             // 데이터가 있다면
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
-                                val writer = resultItemObject.get("writer").asString
+                                val userObject = resultItemObject.get("user").asJsonObject
+
+                                val writer = userObject.get("name").asString
                                 val parentCommentId = resultItemObject.get("parentCommentId").asInt
                                 val content = resultItemObject.get("content").asString
                                 val id = resultItemObject.get("id").asInt
@@ -208,12 +210,17 @@ class SnsRetrofitManager {
 
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
-
                                 val commentLikeList = ArrayList<String>()
 
                                 commentLikeListJson.forEach { item ->
                                     commentLikeList.add(item.asJsonObject.get("user").asString)
                                 }
+
+                                //댓글 단 사람 프로필 사진
+                                val userProfileImagesArray = userObject.get("images").asJsonArray
+                                var userProfileImage = ""
+                                if (!userProfileImagesArray.isEmpty)
+                                    userProfileImage = userProfileImagesArray[0].asJsonObject.get("url").asString
 
                                 val snsCommentItem = SnsComment(
                                     id,
@@ -224,7 +231,7 @@ class SnsRetrofitManager {
                                     createdAt,
                                     updatedAt,
                                     commentLikeList,
-                                    writerPhoto = "",
+                                    writerPhoto = userProfileImage,
                                 )
                                 parsedSnsCommentDataArray.add(snsCommentItem)
                             }

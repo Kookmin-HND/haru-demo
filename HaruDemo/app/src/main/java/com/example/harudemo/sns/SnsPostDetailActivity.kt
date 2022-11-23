@@ -154,7 +154,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
             val comment = binding.etWriteComment.text.trim().toString()
             SnsRetrofitManager.instance.postComment(
-                User.info!!.name,
+                User.info!!.id,
                 snsPostId,
                 comment,
                 -1,
