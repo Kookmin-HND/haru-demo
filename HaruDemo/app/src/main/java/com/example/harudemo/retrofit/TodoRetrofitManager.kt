@@ -406,6 +406,36 @@ class TodoRetrofitManager {
         })
     }
 
+    // 사용자가 작성한 todo 데이터의 폴더 명과 데이터 수를 반환한다.
+    fun getFoldersAndCount(
+        writer: String,
+        completion: (RESPONSE_STATUS, ArrayList<Pair<String, Int>>?) -> Unit
+    ) {
+        val call = todoService?.getFoldersAndCount(writer) ?: return
+        call.enqueue(object : retrofit2.Callback<JsonObject> {
+            override fun onResponse(
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val responseBody = response.body() ?: return
+                        val result: ArrayList<Pair<String, Int>> = arrayListOf()
+                        for (title in responseBody.keySet()) {
+                            result.add(Pair(title, responseBody.get(title).asInt))
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d("[debug]", t.toString())
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+        })
+    }
+
     // DB에서 TodoData를 업데이트한다.
     fun updateTodo(
         id: Number,

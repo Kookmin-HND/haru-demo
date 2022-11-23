@@ -123,6 +123,13 @@ interface TodoService {
     ): Call<JsonObject>
     // Pair<ArrayList<Todo>, ArrayList<TodoLog>>
 
+    // 사용자가 작성한 todo 데이터의 폴더 명과 데이터 수를 반환한다.
+    @GET("${API.TODOS}/{email}/folder-title")
+    fun getFoldersAndCount(
+        @Path("email") writer: String,
+    ): Call<JsonObject>
+    // ArrayList<Pair<String, Int>>
+
     // 사용자로부터 입력받은 데이터(folder, content, dates, days)를 해당하는 todo를 id값을 기준으로 찾아 변경한다.
     // 그리고 todo-logs에 접근하여 해당 데이터를 삭제, 추가한다.
     @PATCH("${API.TODOS}/")

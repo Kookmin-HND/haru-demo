@@ -106,6 +106,7 @@ router.get(
     // 이 사용자가 작성한 모든 todo를 가져온다.
     const todos = await DB.getRepository(Todo).findBy({
       writer,
+      deleted: 0,
     });
 
     // completed의 값이 일치하는 todo를 가져온다.
@@ -172,6 +173,7 @@ router.get(
 
     const todos = await DB.getRepository(Todo).findBy({
       writer,
+      deleted: 0,
     });
 
     const result: { [key: string]: { todos: Todo[]; logs: TodoLog[][] } } = {};
@@ -212,6 +214,7 @@ router.get(
     const todos = await DB.getRepository(Todo).findBy({
       writer,
       folder,
+      deleted: 0,
     });
 
     const result: { todos: Todo[]; logs: TodoLog[][] } = {
@@ -246,6 +249,7 @@ router.get(
     const result: { [key: string]: { todos: Todo[]; logs: TodoLog[] } } = {};
     const todos = await DB.getRepository(Todo).findBy({
       writer,
+      deleted: 0,
     });
     for (const todo of todos) {
       const logs = await DB.getRepository(TodoLog).findBy({
@@ -295,6 +299,7 @@ router.get(
         const todo = await DB.getRepository(Todo).findOneBy({
           writer,
           id: log.todoId,
+          deleted: 0,
         });
         if (todo) result[date].todos.push(todo);
       }
@@ -321,7 +326,8 @@ router.get(
     const { completed } = req.query;
 
     const todos = await DB.getRepository(Todo).findBy({
-      writer: writer,
+      writer,
+      deleted: 0,
     });
 
     const result: { todos: Todo[]; logs: TodoLog[] } = { todos: [], logs: [] };
@@ -337,6 +343,42 @@ router.get(
       }
     }
 
+    return res.json(result);
+  }
+);
+
+// 사용자가 작성한 todo 데이터의 폴더 명과 데이터 수를 반환한다.
+router.get(
+  "/:email/folder-title",
+  async (
+    req: Request<{ email: string }>,
+    res: Response<{ [key: string]: number }>
+  ) => {
+    const { email: writer } = req.params;
+
+    const result: { [key: string]: number } = {};
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      deleted: 0,
+    });
+
+    for (const todo of todos) {
+      const { id, folder } = todo;
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: id,
+        completed: 0,
+      });
+
+      // 모든 일이 완료되지 않음.
+      if (logs.length) {
+        if (folder in result) {
+          result[folder]++;
+        } else {
+          result[folder] = 1;
+        }
+      }
+    }
     return res.json(result);
   }
 );

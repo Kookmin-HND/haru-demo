@@ -19,6 +19,7 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.adapters.NewTodoListAdapter
 import com.example.harudemo.todo.types.Section
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import java.time.LocalDate
 import kotlin.collections.ArrayList
 
@@ -104,7 +105,7 @@ class TodoListFragment : Fragment() {
             "today" -> {
                 val today = LocalDate.now().toString()
                 TodoData.API.getTodosByDate(
-                    "cjeongmin27@gmail.com",
+                    User.info?.email!!,
                     today,
                     false,
                     {
@@ -133,7 +134,7 @@ class TodoListFragment : Fragment() {
                     dates.add(today.toString())
                     today = today.plusDays(1)
                 }
-                TodoData.API.getTodosByDateInDates("cjeongmin27@gmail.com", dates, false, { it ->
+                TodoData.API.getTodosByDateInDates(User.info?.email!!, dates, false, { it ->
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
                         if (section.value.first.isEmpty()) continue
@@ -168,7 +169,7 @@ class TodoListFragment : Fragment() {
 
             }
             "all" -> {
-                TodoData.API.getAllTodosByFolder("cjeongmin27@gmail.com", false, {
+                TodoData.API.getAllTodosByFolder(User.info?.email!!, false, {
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
                         if (section.value.first.isEmpty()) continue
@@ -185,7 +186,7 @@ class TodoListFragment : Fragment() {
                 })
             }
             "completed" -> {
-                TodoData.API.getAllTodosByDate("cjeongmin27@gmail.com", true, {
+                TodoData.API.getAllTodosByDate(User.info?.email!!, true, {
                     val result: ArrayList<Section> = arrayListOf()
                     for (section in it) {
                         if (section.value.first.isEmpty()) continue
@@ -226,7 +227,7 @@ class TodoListFragment : Fragment() {
             }
             "folder" -> {
                 val folderTitle = arguments?.getString("folder-title") as String
-                TodoData.API.getTodosByFolder("cjeongmin27@gmail.com", folderTitle, false, {
+                TodoData.API.getTodosByFolder(User.info?.email!!, folderTitle, false, {
                     if (it.first.isEmpty()) return@getTodosByFolder
                     todoListAdapter.isDateSection = false
                     todoListAdapter.submitList(listOf(Section(folderTitle, it.first, it.second)))

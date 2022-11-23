@@ -148,6 +148,25 @@ object TodoData {
             )
         }
 
+        // 사용자가 작성한 todo 데이터의 폴더 명과 데이터 수를 반환한다.
+        fun getFoldersAndCount(
+            writer: String,
+            okayCallback: (ArrayList<Pair<String, Int>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getFoldersAndCount(
+                writer,
+                completion = { responseStatus, pairs ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> pairs?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
         // 사용자가 작성한 todo 중 date가 일치하는 모든 todo를 반환한다.
         // completed 값에 따라 완료여부를 필터링한다.
         fun getTodosByDate(
