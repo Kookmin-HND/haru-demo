@@ -104,7 +104,7 @@ class EtcFragment : Fragment() {
             when (responseStatus) {
                 //API 호출 성공
                 RESPONSE_STATUS.OKAY -> {
-                    Log.d(TAG, "onViewCreated: ${responseDataArrayList!![responseDataArrayList.size - 1]}")
+
                     //API를 통해 불러온 이미지로 프로필 이미지 표시
                     if (responseDataArrayList!!.isNotEmpty()) {
                         Glide.with(App.instance)

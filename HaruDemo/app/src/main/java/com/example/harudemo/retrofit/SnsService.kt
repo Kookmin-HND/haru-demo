@@ -62,9 +62,9 @@ interface SnsService {
 
     // 이미지 추가 버전
     @Multipart
-    @POST("${API.POSTS}/{email}")
+    @POST("${API.POSTS}/{userId}")
     fun postPost(
-        @Path("email") writer: String,
+        @Path("userId") userId: Int,
         @Part("category") category: RequestBody,
         @Part("content") content: RequestBody,
         @Part images: List<MultipartBody.Part>?

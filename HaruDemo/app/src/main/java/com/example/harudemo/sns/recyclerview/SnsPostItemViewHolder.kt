@@ -127,6 +127,7 @@ class SnsPostItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         Glide.with(App.instance)
             .load(snsPostItem.writerPhoto)
             .placeholder(R.drawable.ic_baseline_account_circle_24)
+            .centerCrop()
             .into(snsPostWriterPhoto)
     }
 }

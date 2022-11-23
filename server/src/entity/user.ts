@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   OneToMany,
   JoinTable,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
+import { Post } from "./post";
 import { ProfileImageFile } from "./profileImageFile";
 
 // user 스키마 생성
@@ -29,10 +32,17 @@ export class User {
   createAt: Date;
 
 
-  //좋아요와 일대다 연결, 댓글이 삭제되면 좋아요도 삭제되도록 cascade
+  //사진과 이미지 연결
   @OneToMany(() => ProfileImageFile, (image) => image.user, {
     cascade: true,
   })
   @JoinTable()
   images: ProfileImageFile[];
+
+
+  //게시물과 사용자 연결
+  @OneToMany(()=> Post, (post)=>post.user)
+  @JoinTable()
+  posts: Post[];
+
 }

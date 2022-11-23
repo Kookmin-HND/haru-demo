@@ -47,15 +47,23 @@ class SnsRetrofitManager {
                             // 데이터가 있다면
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
+                                val userObject = resultItemObject.get("user").asJsonObject
                                 val postId = resultItemObject.get("id").asInt
                                 val category = resultItemObject.get("category").asString
-                                val writer = resultItemObject.get("writer").asString
+                                val writer = userObject.get("name").asString
                                 val content =
                                     resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
                                 val postImageFiles = resultItemObject.get("imageFiles").asJsonArray
                                 val postLikeListJson = resultItemObject.get("likes").asJsonArray
+
+                                val userProfileImagesArray = userObject.get("images").asJsonArray
+
+
+                                var userProfileImage = ""
+                                if (!userProfileImagesArray.isEmpty)
+                                    userProfileImage = userProfileImagesArray[0].asJsonObject.get("url").asString
 
                                 // 댓글 개수 받기
                                 val commentNumber =
@@ -81,7 +89,7 @@ class SnsRetrofitManager {
                                     content = content,
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
-                                    writerPhoto = "",
+                                    writerPhoto = userProfileImage,
                                     average = 0,
                                     commentNumber = commentNumber,
                                     postLikeList = postLikeList,
@@ -101,7 +109,7 @@ class SnsRetrofitManager {
     //이미지 추가버전
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
-        writer: String,
+        userId: Int,
         category: RequestBody,
         content: RequestBody,
         images: ArrayList<MultipartBody.Part>?,
@@ -109,7 +117,7 @@ class SnsRetrofitManager {
     ) {
 
         val call =
-            snsService?.postPost(writer, category, content, images) ?: return
+            snsService?.postPost(userId, category, content, images) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {

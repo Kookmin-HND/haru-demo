@@ -31,7 +31,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 // SNS 프래그먼트에서 게시물을 추가할 수 있는 액티비티
-class SnsAddPostActivity : AppCompatActivity(){
+class SnsAddPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsAddPostBinding;
 
     //어플리케이션 갤러리 접근 권한 확인
@@ -71,7 +71,7 @@ class SnsAddPostActivity : AppCompatActivity(){
         //이미지 추가 버전
         //글 작성 버튼 클릭시
         binding.addApply.setOnClickListener {
-            if(binding.snsAddPostSelectTagTextview.text.toString() == "게시글의 주제를 선택해주세요"){
+            if (binding.snsAddPostSelectTagTextview.text.toString() == "게시글의 주제를 선택해주세요") {
                 CustomToast.makeText(applicationContext, "게시글의 주제를 선택해주세요", Toast.LENGTH_SHORT).show();
                 return@setOnClickListener
             }
@@ -90,7 +90,7 @@ class SnsAddPostActivity : AppCompatActivity(){
 
             for (imageUri in imagesList) {
                 val realPath = createCopyAndReturnRealPath(imageUri)
-                if(realPath.isEmpty()) return@setOnClickListener
+                if (realPath.isEmpty()) return@setOnClickListener
                 val file = File(realPath)
 
                 //임시파일을 삭제하기 위해 리스트에 저장
@@ -107,7 +107,7 @@ class SnsAddPostActivity : AppCompatActivity(){
             }
 
             SnsRetrofitManager.instance.postPost(
-                User.info!!.name,
+                User.info!!.id,
                 category,
                 content,
                 imagesMultipartBodyList,
@@ -119,10 +119,10 @@ class SnsAddPostActivity : AppCompatActivity(){
                             CustomToast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
                             //사진을 업로드하면서 생기는 임시 캐시 파일 삭제
-                            for(filePath in tmpFileList){
-                                try{
+                            for (filePath in tmpFileList) {
+                                try {
                                     Files.delete(Paths.get(filePath))
-                                } catch (e: IOException){
+                                } catch (e: IOException) {
                                     CustomToast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -139,10 +139,6 @@ class SnsAddPostActivity : AppCompatActivity(){
                         }
                     }
                 })
-
-
-
-
         }
 
         binding.addPolicy.setOnClickListener {
@@ -151,7 +147,7 @@ class SnsAddPostActivity : AppCompatActivity(){
 
         // 바텀 메뉴를 클릭해서 갤러리로 이동
         binding.snsAddBottomNav.setOnItemSelectedListener {
-            if(it.itemId == R.id.sns_add_image_nav_menu){
+            if (it.itemId == R.id.sns_add_image_nav_menu) {
                 checkPermission.launch(permissionList)
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -165,8 +161,8 @@ class SnsAddPostActivity : AppCompatActivity(){
 
         //tag 선택하는 텍스트뷰
         binding.snsAddPostSelectTagTextviewConstraintLayout.setOnClickListener {
-            val snsAddPostBottomSheet = SnsAddPostBottomSheet{
-                when(it){
+            val snsAddPostBottomSheet = SnsAddPostBottomSheet {
+                when (it) {
                     0 -> binding.snsAddPostSelectTagTextview.text = "운동"
                     1 -> binding.snsAddPostSelectTagTextview.text = "공부"
                     2 -> binding.snsAddPostSelectTagTextview.text = "코딩"
@@ -231,5 +227,4 @@ class SnsAddPostActivity : AppCompatActivity(){
         /*  절대 경로를 getGps()에 넘겨주기   */
         return file.getAbsolutePath()
     }
-
 }

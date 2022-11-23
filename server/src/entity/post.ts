@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Generated, UpdateDateColumn, OneToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Generated, UpdateDateColumn, OneToMany, JoinTable, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Comment } from "./comment";
 import { ImageFile } from "./imageFile";
 import { PostLike } from "./postLike";
+import { User } from "./user";
 
 //필요한 데이터베이스 스키마 entity에 생성
 
@@ -11,8 +12,9 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  writer: string;
+  @ManyToOne(()=> User, (user)=>user.posts)
+  @JoinColumn()
+  user: User;
 
   @Column({ nullable: false })
   category: string;

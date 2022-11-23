@@ -43,6 +43,11 @@ router.get("/recent/:postId", async (req: Request<PostParams>, res: Response) =>
     .createQueryBuilder("post")
     .where("post.id <= :id", { id: readedPostId })
     .orderBy({ "post.id": "DESC" })
+    .leftJoin("post.user", "user")
+    .addSelect("user.id")
+    .addSelect("user.name")
+    .addSelect("user.email")
+    .leftJoinAndSelect("user.images", "image")
     .leftJoinAndSelect("post.imageFiles", "imageFiles.url")
     .leftJoinAndSelect("post.comments", "comment.post")
     .leftJoinAndSelect("post.likes", "like.post")
@@ -82,9 +87,9 @@ router.get("/:postId/images", async (req: Request<PostParams>, res: Response) =>
 });
 
 //게시물 입력 이미지 추가
-router.post("/:email", awsUpload.array("images"), async (req: Request, res: Response) => {
+router.post("/:userId", awsUpload.array("images"), async (req: Request, res: Response) => {
   //req.body에 있는 정보를 바탕으로 새로운 게시물 데이터를 생성한다.
-  const writer = req.params.email;
+  const userId = Number(req.params.userId);
   const category = req.body.category;
   const content = req.body.content;
 
@@ -95,8 +100,12 @@ router.post("/:email", awsUpload.array("images"), async (req: Request, res: Resp
     locationList.push(file.location);
   });
 
+
+  const user = new User()
+  user.id = userId
+
   const imageFileList: ImageFile[] = [];
-  const post = DB.getRepository(Post).create({ category, content, writer });
+  const post = DB.getRepository(Post).create({ user, category, content});
   const result = await DB.getRepository(Post).save(post);
 
   locationList.forEach((item) => {
@@ -144,14 +153,12 @@ router.post("/profile/:userId", awsUpload.array("images"), async (req: Request, 
     locationList.push(file.location);
   });
 
+  const user = new User()
+  user.id = userId
   const imageFileList: ProfileImageFile[] = [];
 
-  const user = await DB.getRepository(User).findOne({
-    where: { id: userId },
-  }) as User
-
   locationList.forEach((item) => {
-    imageFileList.push(DB.getRepository(ProfileImageFile).create({ user, url: item }));
+    imageFileList.push(DB.getRepository(ProfileImageFile).create({user, url: item}));
   });
   await DB.getRepository(ProfileImageFile).save(imageFileList);
   // 업로드한 이미지 파일 url 전달
