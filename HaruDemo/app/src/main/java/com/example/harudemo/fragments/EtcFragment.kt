@@ -98,19 +98,46 @@ class EtcFragment : Fragment() {
 
         //프로필 정보
         //----------
+
+        //프로필 이미지 정보 불러오기
+        SnsRetrofitManager.instance.getProfile(User.info!!.id, completion = { responseStatus, responseDataArrayList ->
+            when (responseStatus) {
+                //API 호출 성공
+                RESPONSE_STATUS.OKAY -> {
+                    Log.d(TAG, "onViewCreated: ${responseDataArrayList!![responseDataArrayList.size - 1]}")
+                    //API를 통해 불러온 이미지로 프로필 이미지 표시
+                    if (responseDataArrayList!!.isNotEmpty()) {
+                        Glide.with(App.instance)
+                            .load(responseDataArrayList[responseDataArrayList.size - 1])
+                            .placeholder(R.drawable.ic_baseline_account_circle_24)
+                            .circleCrop()
+                            .into(etc_profile_image_view)
+                    }
+                }
+                RESPONSE_STATUS.FAIL -> {
+                    CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                RESPONSE_STATUS.NO_CONTENT -> {
+                    CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        })
+
+
+
         etc_profile_image_view.setOnClickListener {
             CustomToast.makeText(App.instance, "프로필 이미지를 선택합니다.", Toast.LENGTH_SHORT).show()
             checkPermission.launch(permissionList)
             val intent = Intent(Intent.ACTION_PICK)
             intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-//            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(intent, 200)
         }
 
-
-
         etc_profile_name_text_view.text = User.info!!.name;
+
         // ---------
 
         logoutBtn.setOnClickListener {

@@ -442,5 +442,39 @@ class SnsRetrofitManager {
         })
     }
 
+    //프로필 사진 불러오기
+    fun getProfile(
+        userId: Int,
+        completion: (RESPONSE_STATUS, ArrayList<String>?) -> Unit
+    ) {
+        val call =
+            snsService?.getProfile(userId) ?: return
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
 
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            val parsedProfileImageUrl = ArrayList<String>()
+                            val results = it.asJsonArray
+
+                            // 데이터가 있다면
+                            results.forEach { resultItem ->
+                                val resultItemObject = resultItem.asJsonObject
+                                val url = resultItemObject.get("url").asString
+                                parsedProfileImageUrl.add(url)
+                            }
+                            completion(RESPONSE_STATUS.OKAY, parsedProfileImageUrl)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
 }

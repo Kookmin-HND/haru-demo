@@ -158,3 +158,19 @@ router.post("/profile/:userId", awsUpload.array("images"), async (req: Request, 
   return res.json({ locationList });
 });
 
+//유저 id에 해당하는 profile image url들 리턴
+router.get("/profile/:userId", async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+
+  //user, profile image 정보 조인해서 불러오기
+  const result = await DB.getRepository(User)
+    .createQueryBuilder("user")
+    .where("user.id = :id", { id: userId })
+    .leftJoinAndSelect("user.images", "images.url")
+    .getOne()
+
+  if (result == null) {
+    return res.send("해당 사용자가 존재하지 않습니다.")
+  }
+  return res.json(result.images);
+});

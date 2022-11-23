@@ -117,13 +117,19 @@ interface SnsService {
     ): Call<JsonElement>
 
 
-
-    // 이미지 추가 버전
+    // 프로필 이미지 등록
     @Multipart
     @POST("${API.POSTS}/profile/{userId}")
     fun postProfile(
         @Path("userId") userId: Int,
         @Part images: List<MultipartBody.Part>?
+    ): Call<JsonElement>
+
+
+    // 한 유저에 대한 프로필 이미지 모두 불러오기
+    @GET("${API.POSTS}/profile/{userId}")
+    fun getProfile(
+        @Path("userId") userId: Int,
     ): Call<JsonElement>
 
 
