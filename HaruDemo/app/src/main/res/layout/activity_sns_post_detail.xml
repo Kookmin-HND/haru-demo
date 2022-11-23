@@ -74,7 +74,7 @@
                         >
 
                         <ImageView
-                            android:id="@+id/sns_comment_writer_photo"
+                            android:id="@+id/sns_post_writer_photo_image_view"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:contentDescription="user profile"

@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.harudemo.App
+import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivitySnsPostDetailBinding
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
@@ -51,6 +53,16 @@ class SnsPostDetailActivity : AppCompatActivity() {
         val snsPostWriter = intent.getStringExtra("sns_post_writer")
         val snsPostContent = intent.getStringExtra("sns_post_content")
         val snsPostLikeList = intent.getStringArrayListExtra("sns_post_like_list")
+        val snsPostWriterPhoto = intent.getStringExtra("sns_post_writer_photo")
+
+
+        //user profile image 연결
+        //프로필 이미지 생성
+        Glide.with(App.instance)
+            .load(snsPostWriterPhoto)
+            .placeholder(R.drawable.ic_baseline_account_circle_24)
+            .circleCrop()
+            .into(binding.snsPostWriterPhotoImageView)
 
         binding.snsPostDetailWriter.text = snsPostWriter
         binding.snsPostDetailBody.text = snsPostContent
