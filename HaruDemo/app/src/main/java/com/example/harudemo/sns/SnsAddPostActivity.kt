@@ -18,6 +18,7 @@ import com.example.harudemo.sns.recyclerview.SnsPostImagesRecyclerViewAdapter
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.example.harudemo.utils.User
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -106,7 +107,7 @@ class SnsAddPostActivity : AppCompatActivity(){
             }
 
             SnsRetrofitManager.instance.postPost(
-                "LMJ",
+                User.info!!.name,
                 category,
                 content,
                 imagesMultipartBodyList,

@@ -18,6 +18,7 @@ import com.example.harudemo.sns.recyclerview.SnsPostImageViewPagerAdpater
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.example.harudemo.utils.User
 
 class SnsPostDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsPostDetailBinding;
@@ -87,7 +88,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
 
         //좋아요가 이미 있다면
-        if(snsPostLikeList!!.contains("LMJ")){
+        if(snsPostLikeList!!.contains(User.info!!.name)){
             isLiked = true
             binding.snsPostLottieHeart.progress = 0.5f
         }
@@ -111,7 +112,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.postPostLike(
                     snsPostId,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
 
@@ -128,7 +129,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.deletePostLike(
                     snsPostId,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
             }
@@ -141,7 +142,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
             val comment = binding.etWriteComment.text.trim().toString()
             SnsRetrofitManager.instance.postComment(
-                "LMJ",
+                User.info!!.name,
                 snsPostId,
                 comment,
                 -1,

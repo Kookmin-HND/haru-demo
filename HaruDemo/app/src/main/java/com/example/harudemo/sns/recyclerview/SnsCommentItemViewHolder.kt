@@ -11,6 +11,7 @@ import com.example.harudemo.R
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import com.example.harudemo.utils.getTimeDifference
 import kotlinx.android.synthetic.main.sns_comment_item.view.*
 
@@ -46,7 +47,7 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         //댓글 좋아요 갯수 지정
         snsCommentLikeNumber = snsCommentItem.commentLikeList!!.size
 
-        if (snsCommentItem.commentLikeList!!.contains("LMJ")) {
+        if (snsCommentItem.commentLikeList!!.contains(User.info!!.name)) {
             isLiked = true
             snsCommentLottieHeart.progress = 0.5f
         }
@@ -84,7 +85,7 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.postCommentLike(
                     snsCommentItem.id,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
 
@@ -111,7 +112,7 @@ class SnsCommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.deleteCommentLike(
                     snsCommentItem.id,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
             }
