@@ -18,15 +18,18 @@ import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.login_layout.*
+import okhttp3.Cookie
+import okhttp3.CookieJar
 import org.json.JSONObject
 
 
 //로그인 액티비티
 class LoginActivity : AppCompatActivity() {
-    companion object{
-        lateinit var prefs : PreferenceUtil
+    companion object {
+        lateinit var prefs: PreferenceUtil
     }
-    val TAG = "LoginActivity : "
+
+    val TAG = "[debug]"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)  // preference
@@ -37,58 +40,82 @@ class LoginActivity : AppCompatActivity() {
 
         if (currentUser != null) {
             val json = JSONObject(currentUser)
-            User.info = UserInfo(json.getInt("id"),
+            User.info = UserInfo(
+                json.getInt("id"),
                 json.getString("email"),
                 json.getString("name"),
                 json.getString("createAt"),
-                json.getString("token"))
+                json.getString("token")
+            )
+
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
 
         // 회원가입 버튼 클릭 기능
-        signUpBtn.setOnClickListener{
+        signUpBtn.setOnClickListener {
             Log.d(TAG, "sign up btn click")
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
 
         // 로그인 버튼 클릭
-        loginBtn.setOnClickListener{
+        loginBtn.setOnClickListener {
             val email = userEmailEdit.text.toString()  // 변수에 입력한 e-mail 저장
             val password = userPwEdit.text.toString()        // 변수에 입력한 pw 저장
 
-            AuthRetrofitManager.instance.loginUser(email, password, completion = { responseStatus, jsonElement ->
-                when(responseStatus){
-                    RESPONSE_STATUS.OKAY -> {
-                        Log.d(TAG, "success Login")
-                        Log.d(TAG, "${jsonElement}")
+            AuthRetrofitManager.instance.loginUser(
+                email,
+                password,
+                completion = { responseStatus, pair ->
+                    val errMessage = pair.first
+                    val jsonElement = pair.second
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> {
+                            Log.d(TAG, "success Login")
 
-                        val json = JSONObject(jsonElement.toString())
-                        User.info = UserInfo(json.getInt("id"),
-                            json.getString("email"),
-                            json.getString("name"),
-                            json.getString("createAt"),
-                            json.getString("token"))
-                        prefs.setString("currentUser", json.toString())
-                        CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                            val json = JSONObject(jsonElement.toString())
+                            User.info = UserInfo(
+                                json.getInt("id"),
+                                json.getString("email"),
+                                json.getString("name"),
+                                json.getString("createAt"),
+                                json.getString("token")
+                            )
+                            prefs.setString("currentUser", json.toString())
+                            CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        RESPONSE_STATUS.FAIL -> {
+                            Log.d(TAG, "${responseStatus} called")
+                            Log.d(TAG, "${errMessage}")
+                            when (errMessage) {
+                                "Bad Request" -> {
+                                    CustomToast.makeText(
+                                        this,
+                                        "비밀번호를 다시 입력해주세요.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                "Not Found" -> {
+                                    CustomToast.makeText(
+                                        this,
+                                        "존재하지 않는 이메일 입니다.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                        RESPONSE_STATUS.NO_CONTENT -> {
+                            Log.d(TAG, "${responseStatus} called")
+                            Log.d(TAG, "${jsonElement}")
+                            CustomToast.makeText(this, "NO_CONTENT", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    RESPONSE_STATUS.FAIL ->{
-                        Log.d(TAG, "${responseStatus} called")
-                        Log.d(TAG, "${jsonElement}")
-                        CustomToast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
-                    }
-                    RESPONSE_STATUS.NO_CONTENT -> {
-                        Log.d(TAG, "${responseStatus} called")
-                        Log.d(TAG, "${jsonElement}")
-                        CustomToast.makeText(this, "NO_CONTENT", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+                })
         }
 
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -101,7 +128,8 @@ class LoginActivity : AppCompatActivity() {
                         CustomToast.makeText(this, "유효하지 않은 앱", Toast.LENGTH_SHORT).show()
                     }
                     error.toString() == AuthErrorCause.InvalidGrant.toString() -> {
-                        CustomToast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     error.toString() == AuthErrorCause.InvalidRequest.toString() -> {
                         CustomToast.makeText(this, "요청 파라미터 오류", Toast.LENGTH_SHORT).show()
@@ -110,7 +138,11 @@ class LoginActivity : AppCompatActivity() {
                         CustomToast.makeText(this, "유효하지 않은 scope ID", Toast.LENGTH_SHORT).show()
                     }
                     error.toString() == AuthErrorCause.Misconfigured.toString() -> {
-                        CustomToast.makeText(this, "설정이 올바르지 않음(android key hash)", Toast.LENGTH_SHORT).show()
+                        CustomToast.makeText(
+                            this,
+                            "설정이 올바르지 않음(android key hash)",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     error.toString() == AuthErrorCause.ServerError.toString() -> {
                         CustomToast.makeText(this, "서버 내부 에러", Toast.LENGTH_SHORT).show()
@@ -122,20 +154,21 @@ class LoginActivity : AppCompatActivity() {
                         CustomToast.makeText(this, "기타 에러", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
-            else if (token != null) {
+            } else if (token != null) {
                 CustomToast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                Log.d("[debug]", "${UserApiClient.instance.toString()}")
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
+
         }
 
 
         kakaoLoginBtn.setOnClickListener {
-            if(UserApiClient.instance.isKakaoTalkLoginAvailable(this)){
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
                 UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
-            }else{
+            } else {
                 UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
         }

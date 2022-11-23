@@ -47,7 +47,13 @@ router.post("/login", async (req: Request, res: Response) => {
       console.log(authError, user, info);
       // 인증 실패 또는 user 정보 없을시 에러 발생
       if (authError || !user) {
-        return res.status(400).json(info.reason);
+        if (info.reason == "올바르지 않은 비밀번호 입니다.") {
+          console.log(400);
+          return res.status(400).json(info.reason);
+        } else if (info.reason == "존재하지 않는 사용자입니다.") {
+          console.log(404);
+          return res.status(404).json(info.reason);
+        }
       }
 
       const token = jwt.sign(

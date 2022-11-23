@@ -18,16 +18,15 @@ const passportVerify = async (email: string, password: string, done: any) => {
 
     if (!user) {
       console.log("존재하지 않는 사용자");
-      return done(null, false, { reason: "존재하지 않는 사용자입니다." });
-    }
+      done(null, false, { reason: "존재하지 않는 사용자입니다." });
+    } else {
+      const result = await bcrypt.compare(password, user.password);
 
-    const result = await bcrypt.compare(password, user.password);
-
-    if (!result) {
-      console.log("올바르지 않은 비밀번호");
-      return done(null, false, { reason: "올바르지 않은 비밀번호 입니다." });
+      if (!result) {
+        console.log("올바르지 않은 비밀번호");
+        done(null, false, { reason: "올바르지 않은 비밀번호 입니다." });
+      } else done(null, user);
     }
-    done(null, user);
   } catch (error) {
     console.error(error);
     done(error);
