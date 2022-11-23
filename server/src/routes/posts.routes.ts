@@ -5,6 +5,8 @@ import { Post } from "../entity/post";
 import { Equal, LessThan, MoreThan } from "typeorm";
 import { awsUpload } from "../../config/multerConfig";
 import { ImageFile } from "../entity/imageFile";
+import { ProfileImageFile } from "../entity/profileImageFile";
+import { User } from "../entity/user";
 
 export const path = "/posts";
 export const router = Router();
@@ -128,3 +130,31 @@ router.patch("/:postId", async (req: Request<PostParams>, res: Response) => {
   if (!result.affected) return res.status(400).send("게시물 수정에 실패했습니다.");
   return res.json(result);
 });
+
+
+
+//프로필 이미지 입력 추가
+router.post("/profile/:userId", awsUpload.array("images"), async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+
+  //이미지 S3에 저장한 url
+  const locationList: Array<string> = [];
+  const filesList: MulterS3File[] = req.files as MulterS3File[];
+  filesList.forEach((file) => {
+    locationList.push(file.location);
+  });
+
+  const imageFileList: ProfileImageFile[] = [];
+
+  const user = await DB.getRepository(User).findOne({
+    where: { id: userId },
+  }) as User
+
+  locationList.forEach((item) => {
+    imageFileList.push(DB.getRepository(ProfileImageFile).create({ user, url: item }));
+  });
+  await DB.getRepository(ProfileImageFile).save(imageFileList);
+  // 업로드한 이미지 파일 url 전달
+  return res.json({ locationList });
+});
+

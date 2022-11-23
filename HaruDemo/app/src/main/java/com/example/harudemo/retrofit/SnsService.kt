@@ -116,4 +116,15 @@ interface SnsService {
         @Path("user") user: String,
     ): Call<JsonElement>
 
+
+
+    // 이미지 추가 버전
+    @Multipart
+    @POST("${API.POSTS}/profile/{userId}")
+    fun postProfile(
+        @Path("userId") userId: Int,
+        @Part images: List<MultipartBody.Part>?
+    ): Call<JsonElement>
+
+
 }

@@ -40,7 +40,7 @@ class SnsAddPostActivity : AppCompatActivity(){
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
             result.forEach {
                 if (!it.value) {
-                    Toast.makeText(
+                    CustomToast.makeText(
                         applicationContext,
                         "권한 동의후 사진을 업로드할 수 있습니다.",
                         Toast.LENGTH_SHORT
@@ -116,25 +116,25 @@ class SnsAddPostActivity : AppCompatActivity(){
                         //API 호출 성공
                         RESPONSE_STATUS.OKAY -> {
                             Log.d("로그", "SnsAddPostActivity - onCreate() called")
-                            Toast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "글 작성에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
                             //사진을 업로드하면서 생기는 임시 캐시 파일 삭제
                             for(filePath in tmpFileList){
                                 try{
                                     Files.delete(Paths.get(filePath))
                                 } catch (e: IOException){
-                                    Toast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
+                                    CustomToast.makeText(this, "cache delete Error", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             finish()
                         }
                         RESPONSE_STATUS.FAIL -> {
                             Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                            Toast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            CustomToast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                         RESPONSE_STATUS.NO_CONTENT -> {
                             Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
-                            Toast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
+                            CustomToast.makeText(App.instance, "더이상 게시물이 없습니다.", Toast.LENGTH_SHORT)
                                 .show()
                         }
                     }
@@ -207,7 +207,7 @@ class SnsAddPostActivity : AppCompatActivity(){
     }
 
     // 이미지 uri를 절대 경로로 바꾸고 return
-    fun createCopyAndReturnRealPath(uri: Uri): String {
+    private fun createCopyAndReturnRealPath(uri: Uri): String {
         val context = applicationContext
         val contentResolver = context.contentResolver ?: return ""
 

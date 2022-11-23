@@ -69,7 +69,7 @@ class SnsRetrofitManager {
                                     postImageList.add(imageFile.asJsonObject.get("url").asString)
                                 }
 
-                                postLikeListJson.forEach{ item ->
+                                postLikeListJson.forEach { item ->
                                     postLikeList.add(item.asJsonObject.get("user").asString)
                                 }
 
@@ -203,7 +203,7 @@ class SnsRetrofitManager {
 
                                 val commentLikeList = ArrayList<String>()
 
-                                commentLikeListJson.forEach{ item ->
+                                commentLikeListJson.forEach { item ->
                                     commentLikeList.add(item.asJsonObject.get("user").asString)
                                 }
 
@@ -410,4 +410,37 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+    //프로필 사진 추가
+    fun postProfile(
+        userId: Int,
+        images: ArrayList<MultipartBody.Part>?,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postProfile(userId, images) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
 }
