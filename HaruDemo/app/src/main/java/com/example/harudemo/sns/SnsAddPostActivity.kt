@@ -76,6 +76,8 @@ class SnsAddPostActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            binding.addApply.isClickable = false
+
             val category =
                 binding.snsAddPostSelectTagTextview.text.toString()
                     .trim()
@@ -131,6 +133,7 @@ class SnsAddPostActivity : AppCompatActivity() {
                         RESPONSE_STATUS.FAIL -> {
                             Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
                             CustomToast.makeText(App.instance, "글 쓰기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            binding.addApply.isClickable = true
                         }
                         RESPONSE_STATUS.NO_CONTENT -> {
                             Log.d(TAG, "SnsAddPostActivity - onCreate() ${responseStatus} called")
