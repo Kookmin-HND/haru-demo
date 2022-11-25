@@ -20,6 +20,9 @@ const passportVerify = async (email: string, password: string, done: any) => {
       console.log("존재하지 않는 사용자");
       done(null, false, { reason: "존재하지 않는 사용자입니다." });
     } else {
+      if (!user.password) {
+        return;
+      }
       const result = await bcrypt.compare(password, user.password);
 
       if (!result) {

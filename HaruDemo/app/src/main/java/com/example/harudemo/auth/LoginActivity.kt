@@ -155,11 +155,50 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             } else if (token != null) {
-                CustomToast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
-                Log.d("[debug]", "${UserApiClient.instance.toString()}")
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+//                CustomToast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                Log.d("[debug]", "${token.accessToken}")
+                AuthRetrofitManager.instance.loginKakao(token.accessToken, completion = {responseStatus, jsonElement ->
+                    when(responseStatus){
+                        RESPONSE_STATUS.FAIL -> {
+                            Log.d("[debug]", "false")
+                        }
+                        RESPONSE_STATUS.OKAY -> {
+                            Log.d("[debug]", "success")
+
+                            val json = JSONObject(jsonElement.toString())
+                            User.info = UserInfo(
+                                json.getInt("id"),
+                                json.getString("email"),
+                                json.getString("name"),
+                                json.getString("createAt"),
+                                json.getString("token")
+                            )
+                            prefs.setString("currentUser", json.toString())
+                            CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        RESPONSE_STATUS.NO_CONTENT -> {
+                            Log.d("[debug]", "no content")
+                        }
+                    }
+                })
+//                1. 받은 토큰을 백으로 넘긴다.
+//                2. 서버에서는 받은 토큰은 카카오 서버에 넘겨 인증이 유효한지 확인
+//                3. 유효하면 유저 이메일하고 이름을 같이 받는다
+//                4. 받은 이메일과 이름을 기반으로 DB에 업데이트 한다.
+//                5. 업데이트한 유저 정보를 기반으로 JWT를 만들어 프론트로 보낸다.
+//                6. 프로트에서 사용
+
+
+//                UserApiClient.instance.me { user, error ->
+//                    if (error != null){
+//                        Log.e(TAG, "사용자 정보 요청 실패", error)
+//                    }else{
+//
+//                    }
+//                }
             }
 
         }

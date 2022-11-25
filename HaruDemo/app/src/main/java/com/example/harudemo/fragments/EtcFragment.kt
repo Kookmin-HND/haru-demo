@@ -19,6 +19,7 @@ import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.PreferenceUtil
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.example.harudemo.utils.User
+import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.fragment_etc.*
 
 class EtcFragment: Fragment() {
@@ -64,6 +65,13 @@ class EtcFragment: Fragment() {
 
         logoutBtn.setOnClickListener {
             Log.d(TAG, "Logout button Clicked")
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Log.d(TAG, "로그아웃 실패", error)
+                }else{
+                    Log.d(TAG, "kakao 로그아웃 성공")
+                }
+            }
 
             AuthRetrofitManager.instance.logoutUser { responseStatus, jsonElement ->
                 when(responseStatus){

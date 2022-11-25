@@ -66,6 +66,33 @@ class AuthRetrofitManager {
         })
     }
 
+    fun loginKakao(token : String, completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
+        val call = authService?.postKakao(Kakaotoken(token)) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement>{
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()){
+                    200 -> {
+                        Log.d("[debug]", "${response.body()}")
+                        completion(RESPONSE_STATUS.OKAY, response.body())
+                    }
+//                    400 -> {
+//                        Log.d("[debug]", "${response.message() is String}")
+//                        completion(RESPONSE_STATUS.FAIL, Pair(response.message(), null))
+//                    }
+//                    404 -> {
+//                        Log.d("[debug]","${response.message()}")
+//                        completion(RESPONSE_STATUS.FAIL, Pair(response.message(), null))
+//                    }
+                }
+            }
+        })
+    }
+
     // token을 기반으로 정보 검색
     fun getInfo(completion: (RESPONSE_STATUS, JsonElement?) -> Unit){
         val call = authService?.getInfo() ?:return
