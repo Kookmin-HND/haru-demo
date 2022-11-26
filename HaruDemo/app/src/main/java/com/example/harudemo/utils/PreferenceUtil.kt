@@ -15,6 +15,8 @@ class PreferenceUtil(context: Context) {
     }
 
     fun clearUser(){
-        prefs.edit().clear().commit()
+        val edit = prefs.edit()
+        edit.clear()
+        edit.commit()
     }
 }

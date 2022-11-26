@@ -38,20 +38,22 @@ class LoginActivity : AppCompatActivity() {
 
         var currentUser = prefs.getString("currentUser")
 
+
         if (currentUser != null) {
             val json = JSONObject(currentUser)
-            User.info = UserInfo(
-                json.getInt("id"),
-                json.getString("email"),
-                json.getString("name"),
-                json.getString("createAt"),
-                json.getString("token")
-            )
+            User.info.id = json.getInt("id")
+            User.info.email = json.getString("email")
+            User.info.name = json.getString("name")
+            User.info.createdAt = json.getString("createdAt")
+            User.info.token = json.getString("token")
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
+        } else {
+            User.info = UserInfo()
         }
+        Log.d("[debug]", "token : ${User.info.token}")
 
         // 회원가입 버튼 클릭 기능
         signUpBtn.setOnClickListener {
@@ -157,33 +159,35 @@ class LoginActivity : AppCompatActivity() {
             } else if (token != null) {
 //                CustomToast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
                 Log.d("[debug]", "${token.accessToken}")
-                AuthRetrofitManager.instance.loginKakao(token.accessToken, completion = {responseStatus, jsonElement ->
-                    when(responseStatus){
-                        RESPONSE_STATUS.FAIL -> {
-                            Log.d("[debug]", "false")
-                        }
-                        RESPONSE_STATUS.OKAY -> {
-                            Log.d("[debug]", "success")
+                AuthRetrofitManager.instance.loginKakao(
+                    token.accessToken,
+                    completion = { responseStatus, jsonElement ->
+                        when (responseStatus) {
+                            RESPONSE_STATUS.FAIL -> {
+                                Log.d("[debug]", "false")
+                            }
+                            RESPONSE_STATUS.OKAY -> {
+                                Log.d("[debug]", "success")
 
-                            val json = JSONObject(jsonElement.toString())
-                            User.info = UserInfo(
-                                json.getInt("id"),
-                                json.getString("email"),
-                                json.getString("name"),
-                                json.getString("createAt"),
-                                json.getString("token")
-                            )
-                            prefs.setString("currentUser", json.toString())
-                            CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
+                                val json = JSONObject(jsonElement.toString())
+                                User.info = UserInfo(
+                                    json.getInt("id"),
+                                    json.getString("email"),
+                                    json.getString("name"),
+                                    json.getString("createAt"),
+                                    json.getString("token")
+                                )
+                                prefs.setString("currentUser", json.toString())
+                                CustomToast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            RESPONSE_STATUS.NO_CONTENT -> {
+                                Log.d("[debug]", "no content")
+                            }
                         }
-                        RESPONSE_STATUS.NO_CONTENT -> {
-                            Log.d("[debug]", "no content")
-                        }
-                    }
-                })
+                    })
 //                1. 받은 토큰을 백으로 넘긴다.
 //                2. 서버에서는 받은 토큰은 카카오 서버에 넘겨 인증이 유효한지 확인
 //                3. 유효하면 유저 이메일하고 이름을 같이 받는다
