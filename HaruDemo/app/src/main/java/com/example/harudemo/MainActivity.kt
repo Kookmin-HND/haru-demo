@@ -71,9 +71,10 @@ class MainActivity : AppCompatActivity() {
 
     //db 데이터 가져와서 maindata에 저장
     fun getData(){
+        maindata.contents = Array(30){Array(13){Array(32){""} }}
+        maindata.successrate = Array(30){Array(13){Array(32){0} }}
+
         TodoData.API.getAllTodosByFolder(User.info?.email!!, false, {
-            maindata.contents = Array(30){Array(13){Array(32){""} }}
-            maindata.successrate = Array(30){Array(13){Array(32){0} }}
 
             val result: ArrayList<Section> = arrayListOf()
             for (section in it) {
@@ -93,9 +94,47 @@ class MainActivity : AppCompatActivity() {
                             if(k.todoId == w.id) {
                                 Log.d("todo 날짜", (year-2022).toString()+"-"+(month-1).toString()+"-"+day.toString())
                                 Log.d("todo 내용", w.content)
+                                Log.d("todo completed", k.completed.toString())
+                                Log.d("todo", "미시행")
                                 maindata.contents[year - 2022][month - 1][day] = w.content
+                            }
+                        }
+                    }
+                }
+            }
 
-                                if(k.completed) maindata.successrate[year-2022][month - 1][day] += 1
+        }, {
+            CustomToast.makeText(
+                this,
+                "모든 목록을 불러오는데 실패하였습니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+        })
+
+        TodoData.API.getAllTodosByFolder(User.info?.email!!, true, {
+
+            val result: ArrayList<Section> = arrayListOf()
+            for (section in it) {
+                if (section.value.first.isEmpty()) continue
+                result.add(Section(section.key, section.value.first, section.value.second))
+            }
+
+            for (i in result){
+                for(w in i.todos){
+                    for(j in i.logs){
+                        for(k in j){
+                            val date = k.date.split("-").map { it -> it.toString().toInt() }
+                            val year = date[0]
+                            val month = date[1]
+                            val day = date[2]
+
+                            if(k.todoId == w.id) {
+                                Log.d("todo 날짜", (year-2022).toString()+"-"+(month-1).toString()+"-"+day.toString())
+                                Log.d("todo 내용", w.content)
+                                Log.d("todo completed", k.completed.toString())
+                                Log.d("todo", "시행")
+                                maindata.contents[year - 2022][month - 1][day] = w.content
+                                maindata.successrate[year-2022][month - 1][day] += 1
                             }
                         }
                     }

@@ -28,12 +28,12 @@ class grassAdapter(): RecyclerView.Adapter<grassAdapter.GrassView>() {
         val month = calendar.get(Calendar.MONTH)
 
         if(position+1 <  32) {
-            val successrate = maindata.successrate[year - 2022][month - 1][position + 1]
+            val successrate = maindata.successrate[year - 2022][month][position + 1]
             var count = 0
             if(maindata.contents[year - 2022][month][position + 1] != "") {
                 count = maindata.contents[year - 2022][month][position + 1].split("\n").size
             }
-            val rate = ((100-abs(count-successrate)).toDouble()/100.0*256.0).toInt()
+            val rate = ((100-abs(count-successrate)).toDouble()/100.0*256.0).toInt() -1
 
             Log.d("날짜",(year-2022).toString()+"-"+month.toString()+"-"+(position+1).toString())
             Log.d("successrate", successrate.toString())

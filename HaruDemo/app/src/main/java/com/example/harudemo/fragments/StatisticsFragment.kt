@@ -15,6 +15,7 @@ import com.example.harudemo.grass.grassAdapter
 import kotlinx.android.synthetic.main.fragment_sns.*
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
+import kotlin.math.abs
 
 class StatisticsFragment : Fragment() {
     companion object {
@@ -61,18 +62,36 @@ class StatisticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "기록"
 
-        val calendar = Calendar.getInstance()
+//        val calendar = Calendar.getInstance()
+//        val year = calendar.get(Calendar.YEAR)
+//        val month = calendar.get(Calendar.MONTH)
+//        val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//        val successrate = maindata.successrate[year - 2022][month - 1][day]
+//        var count = 0
+//
+//        if(maindata.contents[year - 2022][month][day] != "") {
+//            count = maindata.contents[year - 2022][month][day].split("\n").size
+//        }
+//
+//        var rate = 0
+//
+//        if(count > 0){
+//            rate = (successrate.toDouble()/count.toDouble()*100.0).toInt()
+//        }
 
         binding.todayBar.progress = 70 //오늘 프로그래스 바 퍼센트
         binding.todayText.text = "70%" //오늘 퍼센트 텍스트
+
+        //calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
         binding.weekBar.progress = 60 //이번주 프로그래스 바 퍼센트
         binding.weekText.text = "60%" //이번주 퍼센트 텍스트
         binding.monthBar.progress = 15 //이번달 프로그래스 바 퍼센트
         binding.monthText.text = "15%" //이번달 퍼센트 텍스트
         //프로그래스바 값 수정
 
-        calendar.time = Date()
-        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
+//        calendar.time = Date()
+//        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
         val dayListManager = GridLayoutManager(this.context, 7)
         val dayListAdapter = grassAdapter()
 
