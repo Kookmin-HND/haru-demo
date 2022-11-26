@@ -92,11 +92,7 @@ class MainActivity : AppCompatActivity() {
                             val day = date[2]
 
                             if(k.todoId == w.id) {
-                                Log.d("todo 날짜", (year-2022).toString()+"-"+(month-1).toString()+"-"+day.toString())
-                                Log.d("todo 내용", w.content)
-                                Log.d("todo completed", k.completed.toString())
-                                Log.d("todo", "미시행")
-                                maindata.contents[year - 2022][month - 1][day] = w.content
+                                maindata.contents[year - 2022][month - 1][day] += w.content+"\n"
                             }
                         }
                     }
@@ -129,11 +125,7 @@ class MainActivity : AppCompatActivity() {
                             val day = date[2]
 
                             if(k.todoId == w.id) {
-                                Log.d("todo 날짜", (year-2022).toString()+"-"+(month-1).toString()+"-"+day.toString())
-                                Log.d("todo 내용", w.content)
-                                Log.d("todo completed", k.completed.toString())
-                                Log.d("todo", "시행")
-                                maindata.contents[year - 2022][month - 1][day] = w.content
+                                maindata.contents[year - 2022][month - 1][day] += w.content + "\n"
                                 maindata.successrate[year-2022][month - 1][day] += 1
                             }
                         }

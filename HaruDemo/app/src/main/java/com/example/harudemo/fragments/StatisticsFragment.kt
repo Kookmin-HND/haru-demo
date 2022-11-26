@@ -62,36 +62,88 @@ class StatisticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "기록"
 
-//        val calendar = Calendar.getInstance()
-//        val year = calendar.get(Calendar.YEAR)
-//        val month = calendar.get(Calendar.MONTH)
-//        val day = calendar.get(Calendar.DAY_OF_MONTH)
-//
-//        val successrate = maindata.successrate[year - 2022][month - 1][day]
-//        var count = 0
-//
-//        if(maindata.contents[year - 2022][month][day] != "") {
-//            count = maindata.contents[year - 2022][month][day].split("\n").size
-//        }
-//
-//        var rate = 0
-//
-//        if(count > 0){
-//            rate = (successrate.toDouble()/count.toDouble()*100.0).toInt()
-//        }
+        // 오늘 날짜 진행도 구하기
+        var calendar = Calendar.getInstance()
+        var year = calendar.get(Calendar.YEAR)
+        var month = calendar.get(Calendar.MONTH)
+        var day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        binding.todayBar.progress = 70 //오늘 프로그래스 바 퍼센트
-        binding.todayText.text = "70%" //오늘 퍼센트 텍스트
+        var successrate = maindata.successrate[year - 2022][month][day]
+        var count = 0
 
-        //calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        binding.weekBar.progress = 60 //이번주 프로그래스 바 퍼센트
-        binding.weekText.text = "60%" //이번주 퍼센트 텍스트
-        binding.monthBar.progress = 15 //이번달 프로그래스 바 퍼센트
-        binding.monthText.text = "15%" //이번달 퍼센트 텍스트
+        if(maindata.contents[year - 2022][month][day] != "") {
+            count = maindata.contents[year - 2022][month][day].split("\n").size - 1
+        }
+
+        var rate = 0
+
+        if(count > 0){
+            rate = (successrate.toDouble()/count.toDouble()*100.0).toInt()
+        }
+
+        binding.todayBar.progress = rate //오늘 프로그래스 바 퍼센트
+        binding.todayText.text = rate.toString()+"%" //오늘 퍼센트 텍스트
+
+
+        //이번 주 진행도 구하기
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+        year = calendar.get(Calendar.YEAR)
+
+        successrate = 0
+        count = 0
+
+        for (i in 0..6) {
+            month = calendar.get(Calendar.MONTH)
+            day = calendar.get(Calendar.DAY_OF_MONTH)
+            if (maindata.contents[year - 2022][month][day] != "") {
+                count += maindata.contents[year - 2022][month][day].split("\n").size - 1
+                successrate += maindata.successrate[year - 2022][month][day]
+            }
+
+            calendar.add(Calendar.DATE,1)
+        }
+
+        rate = 0
+
+        if(count > 0){
+            rate = (successrate.toDouble()/count.toDouble()*100.0).toInt()
+        }
+        binding.weekBar.progress = rate //이번주 프로그래스 바 퍼센트
+        binding.weekText.text = rate.toString()+"%" //이번주 퍼센트 텍스트
+
+
+        //이번 달 진행도 구하기
+        calendar.time = Date()
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+
+        val tempmonth = calendar.get(Calendar.MONTH)
+
+        year = calendar.get(Calendar.YEAR)
+        month = calendar.get(Calendar.MONTH)
+        day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        successrate = 0
+        count = 0
+
+        while (calendar.get(Calendar.MONTH) == tempmonth) {
+            if (maindata.contents[year - 2022][month][day] != "") {
+                count += maindata.contents[year - 2022][month][day].split("\n").size - 1
+                successrate += maindata.successrate[year - 2022][month][day]
+            }
+
+            day += 1
+            calendar.add(Calendar.DATE, 1)
+        }
+
+        rate = 0
+
+        if(count > 0){
+            rate = (successrate.toDouble()/count.toDouble()*100.0).toInt()
+        }
+        binding.monthBar.progress = rate //이번달 프로그래스 바 퍼센트
+        binding.monthText.text = rate.toString()+"%" //이번달 퍼센트 텍스트
         //프로그래스바 값 수정
 
-//        calendar.time = Date()
-//        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
         val dayListManager = GridLayoutManager(this.context, 7)
         val dayListAdapter = grassAdapter()
 

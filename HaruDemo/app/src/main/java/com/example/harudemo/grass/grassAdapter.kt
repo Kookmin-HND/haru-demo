@@ -35,12 +35,6 @@ class grassAdapter(): RecyclerView.Adapter<grassAdapter.GrassView>() {
             }
             val rate = ((100-abs(count-successrate)).toDouble()/100.0*256.0).toInt() -1
 
-            Log.d("날짜",(year-2022).toString()+"-"+month.toString()+"-"+(position+1).toString())
-            Log.d("successrate", successrate.toString())
-            Log.d("count", count.toString())
-            Log.d("rate",rate.toString())
-            Log.d("16진수 rate", Integer.toHexString(rate))
-
             if (successrate > 0) {
                 // 이 FF값을 maindata.successrate의 값에 따라 조절할 예정
                 // 현재 정해진 데이터가 없기 때문에 기능만 구현해 놓은 상태
