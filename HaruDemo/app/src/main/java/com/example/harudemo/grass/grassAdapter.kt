@@ -22,13 +22,13 @@ class grassAdapter(val tempMonth: Int): RecyclerView.Adapter<grassAdapter.GrassV
 
     override fun onBindViewHolder(holder: GrassView, position: Int) {
         Log.d("로그",tempMonth.toString())
-        val successrate = maindata.successrate[tempMonth][position]
+        /*val successrate = maindata.successrate[tempMonth][position]
 
         if(successrate == 1) {
             // 이 FF값을 maindata.successrate의 값에 따라 조절할 예정
             // 현재 정해진 데이터가 없기 때문에 기능만 구현해 놓은 상태
             holder.layout.bglayout.setBackgroundColor(Color.parseColor("#ACE7AE"))
-        }
+        }*/
     }
 
     override fun getItemCount(): Int {

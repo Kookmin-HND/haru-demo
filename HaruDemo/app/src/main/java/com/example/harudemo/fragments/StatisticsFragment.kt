@@ -69,10 +69,6 @@ class StatisticsFragment : Fragment() {
         binding.monthText.text = "15%" //이번달 퍼센트 텍스트
         //프로그래스바 값 수정
 
-        maindata.successrate[10][15] = 1
-        maindata.successrate[10][19] = 1
-        maindata.successrate[10][23] = 1
-        maindata.successrate[10][30] = 1
         val calendar = Calendar.getInstance()
         calendar.time = Date()
         calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)

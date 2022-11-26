@@ -9,13 +9,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.harudemo.R
 import com.example.harudemo.MainActivity
+import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.fragments.maindata
 import com.example.harudemo.service.Constant.Companion.CHANNEL_ID
 import com.example.harudemo.service.Constant.Companion.NOTIFICATION_ID
 import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.types.Section
+import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import java.util.*
 
 class MyReceiver : BroadcastReceiver() {
@@ -27,11 +32,11 @@ class MyReceiver : BroadcastReceiver() {
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        createNotificationChannel()
+        createNotificationChannel(context)
         deliverNotification(context)
     }
 
-    fun createNotificationChannel(){
+    fun createNotificationChannel(context: Context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 CHANNEL_ID, // 채널의 아이디
@@ -44,20 +49,6 @@ class MyReceiver : BroadcastReceiver() {
                 4. IMPORTANCE_MIN = 알림음 없고 상태줄 표시 X
                  */
             )
-
-//            var sectiondata = TodoData.getTodos()
-
-//            for (section in sectiondata){
-//                for(todo in section.todoList){
-//                    var content = todo.content
-//                    var date = todo.date
-//                    var splitdate = date.split("-")
-//                    val year = splitdate[0].toInt()
-//                    val month = splitdate[1].toInt()
-//                    val day = splitdate[2].toInt()
-//                    maindata.contents[year-2022][month-1][day] += content+"\n"
-//                }
-//            }
 
             var calendar = Calendar.getInstance()
 
