@@ -64,7 +64,7 @@ object RetrofitClient {
             // 오리지널 리퀘스트
             val originalRequest =
                 chain.request()
-                    .newBuilder().addHeader("Cookie", "token=${User.info?.token}").build()
+                    .newBuilder().addHeader("Cookie", "token=${User.info.token}").build()
             //                // 쿼리 파라미터 추가하기 추후 API KET 추가 용도
             //                val addedUrl =
             //                    originalRequest.url.newBuilder().addQueryParameter("client_id", API.API_KEY)
@@ -103,7 +103,7 @@ object RetrofitClient {
 
         // 레트로핏 빌더를 통해 인스턴스 생성
         if (retrofitClient == null) {
-            retrofitClient = Retrofit.Builder().baseUrl("http://192.168.0.48:8000/api/")
+            retrofitClient = Retrofit.Builder().baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
 
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
