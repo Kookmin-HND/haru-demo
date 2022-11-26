@@ -10,9 +10,10 @@ import com.example.harudemo.R
 import com.example.harudemo.fragments.maindata
 import kotlinx.android.synthetic.main.grass_item.view.*
 import java.util.*
+import kotlin.math.abs
 
 //월간 달력 어뎁터
-class grassAdapter(val tempMonth: Int): RecyclerView.Adapter<grassAdapter.GrassView>() {
+class grassAdapter(): RecyclerView.Adapter<grassAdapter.GrassView>() {
     inner class GrassView(val layout: View): RecyclerView.ViewHolder(layout)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GrassView {
@@ -21,14 +22,31 @@ class grassAdapter(val tempMonth: Int): RecyclerView.Adapter<grassAdapter.GrassV
     }
 
     override fun onBindViewHolder(holder: GrassView, position: Int) {
-        Log.d("로그",tempMonth.toString())
-        /*val successrate = maindata.successrate[tempMonth][position]
+        val calendar = Calendar.getInstance()
 
-        if(successrate == 1) {
-            // 이 FF값을 maindata.successrate의 값에 따라 조절할 예정
-            // 현재 정해진 데이터가 없기 때문에 기능만 구현해 놓은 상태
-            holder.layout.bglayout.setBackgroundColor(Color.parseColor("#ACE7AE"))
-        }*/
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+
+        if(position+1 <  32) {
+            val successrate = maindata.successrate[year - 2022][month - 1][position + 1]
+            var count = 0
+            if(maindata.contents[year - 2022][month][position + 1] != "") {
+                count = maindata.contents[year - 2022][month][position + 1].split("\n").size
+            }
+            val rate = ((100-abs(count-successrate)).toDouble()/100.0*256.0).toInt()
+
+            Log.d("날짜",(year-2022).toString()+"-"+month.toString()+"-"+(position+1).toString())
+            Log.d("successrate", successrate.toString())
+            Log.d("count", count.toString())
+            Log.d("rate",rate.toString())
+            Log.d("16진수 rate", Integer.toHexString(rate))
+
+            if (successrate > 0) {
+                // 이 FF값을 maindata.successrate의 값에 따라 조절할 예정
+                // 현재 정해진 데이터가 없기 때문에 기능만 구현해 놓은 상태
+                holder.layout.bglayout.setBackgroundColor(Color.parseColor("#"+Integer.toHexString(rate)+"ACE7AE"))
+            }
+        }
     }
 
     override fun getItemCount(): Int {

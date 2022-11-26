@@ -61,6 +61,8 @@ class StatisticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "기록"
 
+        val calendar = Calendar.getInstance()
+
         binding.todayBar.progress = 70 //오늘 프로그래스 바 퍼센트
         binding.todayText.text = "70%" //오늘 퍼센트 텍스트
         binding.weekBar.progress = 60 //이번주 프로그래스 바 퍼센트
@@ -69,12 +71,10 @@ class StatisticsFragment : Fragment() {
         binding.monthText.text = "15%" //이번달 퍼센트 텍스트
         //프로그래스바 값 수정
 
-        val calendar = Calendar.getInstance()
         calendar.time = Date()
         calendar.set(java.util.Calendar.DAY_OF_MONTH, 1)
-        val tempMonth = calendar.get(Calendar.MONTH)
         val dayListManager = GridLayoutManager(this.context, 7)
-        val dayListAdapter = grassAdapter(tempMonth)
+        val dayListAdapter = grassAdapter()
 
         statistic_vp.apply {
             layoutManager = dayListManager
