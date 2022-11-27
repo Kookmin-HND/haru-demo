@@ -9,13 +9,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.harudemo.R
 import com.example.harudemo.MainActivity
+import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.fragments.maindata
 import com.example.harudemo.service.Constant.Companion.CHANNEL_ID
 import com.example.harudemo.service.Constant.Companion.NOTIFICATION_ID
 import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.types.Section
+import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import java.util.*
 
 class MyReceiver : BroadcastReceiver() {
@@ -27,11 +32,11 @@ class MyReceiver : BroadcastReceiver() {
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        createNotificationChannel()
+        createNotificationChannel(context)
         deliverNotification(context)
     }
 
-    fun createNotificationChannel(){
+    fun createNotificationChannel(context: Context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 CHANNEL_ID, // 채널의 아이디
@@ -45,20 +50,6 @@ class MyReceiver : BroadcastReceiver() {
                  */
             )
 
-//            var sectiondata = TodoData.getTodos()
-
-//            for (section in sectiondata){
-//                for(todo in section.todoList){
-//                    var content = todo.content
-//                    var date = todo.date
-//                    var splitdate = date.split("-")
-//                    val year = splitdate[0].toInt()
-//                    val month = splitdate[1].toInt()
-//                    val day = splitdate[2].toInt()
-//                    maindata.contents[year-2022][month-1][day] += content+"\n"
-//                }
-//            }
-
             var calendar = Calendar.getInstance()
 
             val y = calendar.get(Calendar.YEAR)
@@ -68,7 +59,7 @@ class MyReceiver : BroadcastReceiver() {
             notificationChannel.enableLights(true) // 불빛
             notificationChannel.lightColor = Color.RED // 색상
             notificationChannel.enableVibration(true) // 진동 여부
-            notificationChannel.description = maindata.contents[y-2022][m-1][d] //채널정보
+            notificationChannel.description = "하루" //채널정보
             
             notificationManager.createNotificationChannel(
                 notificationChannel)
@@ -84,10 +75,16 @@ class MyReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        var calendar = Calendar.getInstance()
+
+        val y = calendar.get(Calendar.YEAR)
+        val m = calendar.get(Calendar.MONTH)
+        val d = calendar.get(Calendar.DAY_OF_MONTH)
+
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher) // 아이콘
-            .setContentTitle("하루 알람") // 제목
-            .setContentText("오늘의 일정입니다.") // 내용
+            .setContentTitle("오늘의 일정") // 제목
+            .setContentText(maindata.contents[y-2022][m][d]) // 내용
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
