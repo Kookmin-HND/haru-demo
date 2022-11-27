@@ -59,7 +59,7 @@ class MyReceiver : BroadcastReceiver() {
             notificationChannel.enableLights(true) // 불빛
             notificationChannel.lightColor = Color.RED // 색상
             notificationChannel.enableVibration(true) // 진동 여부
-            notificationChannel.description = maindata.contents[y-2022][m-1][d] //채널정보
+            notificationChannel.description = "하루" //채널정보
             
             notificationManager.createNotificationChannel(
                 notificationChannel)
@@ -75,10 +75,16 @@ class MyReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        var calendar = Calendar.getInstance()
+
+        val y = calendar.get(Calendar.YEAR)
+        val m = calendar.get(Calendar.MONTH)
+        val d = calendar.get(Calendar.DAY_OF_MONTH)
+
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher) // 아이콘
-            .setContentTitle("하루 알람") // 제목
-            .setContentText("오늘의 일정입니다.") // 내용
+            .setContentTitle("오늘의 일정") // 제목
+            .setContentText(maindata.contents[y-2022][m][d]) // 내용
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
