@@ -150,7 +150,11 @@ class NewTodoSectionAdapter(private val sectionIndex: Int, private val isDateSec
     fun removeItem(position: Int) {
         val newList = currentList.toMutableList()
         newList.removeAt(position)
+        if (newList.isEmpty()) {
+            TodoListFragment.instance.todoListAdapter.removeItem(sectionIndex)
+        }
         submitList(newList)
+
     }
 
     fun updateItem(position: Int, pair: Pair<Todo, List<TodoLog>>) {

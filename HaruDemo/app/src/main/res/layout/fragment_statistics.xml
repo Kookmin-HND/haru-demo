@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/sns_post_recycler_view">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/statistics_top_app_bar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:menu="@menu/statistics_top_app_bar"
+            app:title="Statistics" />
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <LinearLayout
-        android:layout_width="400dp"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:background="@drawable/statistics_wrapbox"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_margin="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/statistic_vp"
@@ -25,11 +43,12 @@
         android:layout_marginVertical="20dp" />
 
     <LinearLayout
-        android:layout_width="400dp"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:background="@drawable/statistics_wrapbox"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="20dp"
+        android:layout_margin="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,7 +91,7 @@
                         android:backgroundTint="#00000000"
                         android:indeterminate="false"
                         android:max="100"
-                        android:progress="70"
+                        android:progress="10"
                         android:progressDrawable="@drawable/circular_progress_bar" />
 
                     <TextView
@@ -80,7 +99,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="70%"
+                        android:text="10%"
                         android:textSize="26dp"
                         android:textStyle="italic" />
                 </FrameLayout>

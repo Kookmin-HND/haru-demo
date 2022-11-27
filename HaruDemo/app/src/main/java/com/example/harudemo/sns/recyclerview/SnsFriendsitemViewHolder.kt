@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.model.SnsPost
-import kotlinx.android.synthetic.main.layout_sns_post_item.view.*
+import kotlinx.android.synthetic.main.sns_post_recyclerview_item.view.*
 
 class SnsFriendsitemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val snsFriendsWriterPhoto = itemView.sns_post_writer_photo
@@ -15,7 +15,7 @@ class SnsFriendsitemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
     fun bindWidthView(snsFriendsItem : SnsPost){
         snsFriendsWriterName.text = snsFriendsItem.writer
-        snsFriendsAverage.text = snsFriendsItem.average
+        snsFriendsAverage.text = snsFriendsItem.average.toString()
 
         //이미지 생성
         Glide.with(App.instance)

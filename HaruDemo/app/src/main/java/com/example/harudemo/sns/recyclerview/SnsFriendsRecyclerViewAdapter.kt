@@ -4,27 +4,35 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
+import com.example.harudemo.databinding.LayoutSnsFriendsItemBinding
 import com.example.harudemo.model.SnsPost
 import com.example.harudemo.sns.SnsPostDetailActivity
+import kotlinx.android.synthetic.main.sns_post_recyclerview_item.view.*
 
-class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsitemViewHolder>(){
+class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsRecyclerViewAdapter.SnsFriendsitemViewHolder>(){
 
-    private var snsFriendsList = ArrayList<SnsPost>()
+    var snsFriendsList = ArrayList<SnsPost>()
 
-    var onItemClick: ((SnsPost) -> Unit)? = null
+    inner class SnsFriendsitemViewHolder(private val binding: LayoutSnsFriendsItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsFriendsitemViewHolder {
-        return SnsFriendsitemViewHolder(
-            LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.layout_sns_friends_item, parent, false)
-        )
+        fun bind(postData:SnsPost){
+            binding.snsFiriendsWriterName.text = postData.writer
+            binding.snsFriendsAverage.text = postData.average.toString()
+
+            Glide.with(App.instance)
+                .load(postData.writerPhoto)
+                .placeholder(R.drawable.ic_baseline_account_circle_24)
+                .into(binding.snsFriendsImage)
+        }
     }
 
-    override fun onBindViewHolder(holder: SnsFriendsitemViewHolder, position: Int) {
-        holder.bindWidthView(this.snsFriendsList[position])
+    //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsFriendsitemViewHolder {
+        val binding = LayoutSnsFriendsItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return SnsFriendsitemViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -35,4 +43,7 @@ class SnsFriendsRecyclerViewAdapter : RecyclerView.Adapter<SnsFriendsitemViewHol
         this.snsFriendsList = snsFriendsList
     }
 
+    override fun onBindViewHolder(holder: SnsFriendsitemViewHolder, position: Int) {
+        holder.bind(snsFriendsList[position])
+    }
 }

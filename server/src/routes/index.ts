@@ -4,6 +4,7 @@ import * as todos from "./todos.routes";
 import * as posts from "./posts.routes";
 import * as users from "./users.routes";
 import * as comments from "./comments.routes";
+import * as likes from "./likes.routes";
 
 const router = Router();
 // router.use(example.path, example.router);
@@ -13,5 +14,6 @@ router.use(users.path, users.router);
 router.use(todos.path, todos.router);
 router.use(posts.path, posts.router);
 router.use(comments.path, comments.router);
+router.use(likes.path, likes.router);
 
 export default router;

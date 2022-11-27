@@ -4,6 +4,6 @@ data class UserInfo(
     var id : Int = 0,
     var email : String = "",
     var name : String = "",
-    var createdAt : String = "",
+    var createAt : String = "",
     var token : String = ""
 )

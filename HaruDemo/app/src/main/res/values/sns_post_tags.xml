@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sns_post_tags">
+        <item>운동</item>
+        <item>공부</item>
+        <item>코딩</item>
+        <item>취미</item>
+        <item>일기</item>
+    </string-array>
+</resources>

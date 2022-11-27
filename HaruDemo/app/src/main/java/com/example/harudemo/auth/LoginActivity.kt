@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
             User.info.id = json.getInt("id")
             User.info.email = json.getString("email")
             User.info.name = json.getString("name")
-            User.info.createdAt = json.getString("createdAt")
+            User.info.createAt = json.getString("createAt")
             User.info.token = json.getString("token")
 
             val intent = Intent(this, MainActivity::class.java)

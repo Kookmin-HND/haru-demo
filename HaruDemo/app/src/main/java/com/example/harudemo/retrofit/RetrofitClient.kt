@@ -7,15 +7,13 @@ import android.widget.Toast
 import com.example.harudemo.App
 import com.example.harudemo.utils.*
 import com.example.harudemo.utils.Constants.TAG
+import com.example.harudemo.utils.CustomToast
 import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
@@ -29,7 +27,6 @@ object RetrofitClient {
         val client = OkHttpClient.Builder()
 
         val okHttpClient = client.cookieJar(JavaNetCookieJar(CookieManager()))
-
 
         // 로그를 찍기 위해 로깅 인터셉터 추가 - 테스트 용도
         val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {

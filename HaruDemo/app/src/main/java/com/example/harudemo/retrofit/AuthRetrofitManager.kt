@@ -1,12 +1,10 @@
 package com.example.harudemo.retrofit
 
-import android.util.Log
-import com.example.harudemo.utils.API
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import okhttp3.CookieJar
+import android.util.Log
 import retrofit2.Call
 import retrofit2.Response
 

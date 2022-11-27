@@ -24,4 +24,7 @@ export class User {
 
   @CreateDateColumn()
   createAt: Date;
+
+
+  
 }

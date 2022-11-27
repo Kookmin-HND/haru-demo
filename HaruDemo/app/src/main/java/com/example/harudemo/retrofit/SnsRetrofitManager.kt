@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
 import com.example.harudemo.model.SnsPost
-import com.example.harudemo.utils.API
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.RESPONSE_STATUS
 import com.google.gson.JsonElement
@@ -49,34 +48,44 @@ class SnsRetrofitManager {
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
                                 val postId = resultItemObject.get("id").asInt
+                                val category = resultItemObject.get("category").asString
                                 val writer = resultItemObject.get("writer").asString
                                 val content =
                                     resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
                                 val postImageFiles = resultItemObject.get("imageFiles").asJsonArray
+                                val postLikeListJson = resultItemObject.get("likes").asJsonArray
 
                                 // 댓글 개수 받기
                                 val commentNumber =
                                     resultItemObject.get("comments").asJsonArray.size()
 
                                 val postImageList = ArrayList<String>()
+                                val postLikeList = ArrayList<String>()
 
                                 //이미지 url을 배열에 넣기
                                 postImageFiles.forEach { imageFile ->
                                     postImageList.add(imageFile.asJsonObject.get("url").asString)
                                 }
 
+                                postLikeListJson.forEach{ item ->
+                                    postLikeList.add(item.asJsonObject.get("user").asString)
+                                }
+
+
                                 val snsPostItem = SnsPost(
                                     id = postId,
                                     writer = writer,
+                                    category = category,
                                     content = content,
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
                                     writerPhoto = "",
+                                    average = 0,
                                     commentNumber = commentNumber,
+                                    postLikeList = postLikeList,
                                     postImageList = postImageList,
-                                    average = ""
                                 )
                                 parsedSnsPostDataArray.add(snsPostItem)
                             }
@@ -93,14 +102,14 @@ class SnsRetrofitManager {
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
         writer: String,
-        title: RequestBody,
+        category: RequestBody,
         content: RequestBody,
         images: ArrayList<MultipartBody.Part>?,
         completion: (RESPONSE_STATUS, JsonElement?) -> Unit
     ) {
 
         val call =
-            snsService?.postPost(writer, title, content, images) ?: return
+            snsService?.postPost(writer, category, content, images) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -187,8 +196,16 @@ class SnsRetrofitManager {
                                 val parentCommentId = resultItemObject.get("parentCommentId").asInt
                                 val content = resultItemObject.get("content").asString
                                 val id = resultItemObject.get("id").asInt
+                                val commentLikeListJson = resultItemObject.get("likes").asJsonArray
+
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
+
+                                val commentLikeList = ArrayList<String>()
+
+                                commentLikeListJson.forEach{ item ->
+                                    commentLikeList.add(item.asJsonObject.get("user").asString)
+                                }
 
                                 val snsCommentItem = SnsComment(
                                     id,
@@ -198,6 +215,7 @@ class SnsRetrofitManager {
                                     content,
                                     createdAt,
                                     updatedAt,
+                                    commentLikeList,
                                     writerPhoto = "",
                                 )
                                 parsedSnsCommentDataArray.add(snsCommentItem)
@@ -261,4 +279,135 @@ class SnsRetrofitManager {
         })
     }
 
+
+    //SNS에서 포스트에 해당하는 좋아요를 저장하는 함수
+    fun postPostLike(
+        postId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postPostLike(
+                SnsPostLikeRequestBodyParams(postId, user),
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    fun deletePostLike(
+        postId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.deletePostLike(
+                postId,
+                user
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    //SNS에서 포스트에 해당하는 좋아요를 저장하는 함수
+    fun postCommentLike(
+        commentId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postCommentLike(
+                SnsCommentLikeRequestBodyParams(commentId, user),
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    fun deleteCommentLike(
+        commentId: Int,
+        user: String,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.deleteCommentLike(
+                commentId,
+                user
+            ) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
 }

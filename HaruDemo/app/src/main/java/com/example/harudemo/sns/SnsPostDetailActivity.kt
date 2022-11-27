@@ -1,30 +1,23 @@
 package com.example.harudemo.sns
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.harudemo.App
-import com.example.harudemo.R
-import com.example.harudemo.databinding.ActivitySnsAddPostBinding
 import com.example.harudemo.databinding.ActivitySnsPostDetailBinding
-import com.example.harudemo.databinding.FragmentSnsBinding
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
-import com.example.harudemo.model.SnsPost
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.sns.recyclerview.SnsCommentRecyclerViewAdapter
 import com.example.harudemo.sns.recyclerview.SnsPostImageViewPagerAdpater
-import com.example.harudemo.sns.recyclerview.SnsPostRecyclerViewAdapter
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
-import kotlinx.android.synthetic.main.activity_sns_post_detail.*
-import kotlinx.android.synthetic.main.fragment_sns.*
 
 class SnsPostDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsPostDetailBinding;
@@ -39,6 +32,9 @@ class SnsPostDetailActivity : AppCompatActivity() {
     private val MIN_SCALE = 1f // 뷰가 몇퍼센트로 줄어들 것인지
     private val MIN_ALPHA = 0.97f // 어두워지는 정도
 
+    //lottie heart
+    private var isLiked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySnsPostDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -50,11 +46,15 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
         val intent = getIntent();
         val snsPostId = intent.getIntExtra("sns_post_id", -1)
+        val snsPostCategory = intent.getStringExtra("sns_post_category")
         val snsPostWriter = intent.getStringExtra("sns_post_writer")
         val snsPostContent = intent.getStringExtra("sns_post_content")
+        val snsPostLikeList = intent.getStringArrayListExtra("sns_post_like_list")
 
-        sns_post_detail_writer.text = snsPostWriter
-        sns_post_detail_body.text = snsPostContent
+        binding.snsPostDetailWriter.text = snsPostWriter
+        binding.snsPostDetailBody.text = snsPostContent
+        binding.snsPostDetailCategoryTextview.text = snsPostCategory
+        binding.snsPostDetailLikeNumber.text = snsPostLikeList?.size.toString()
 
         //comment adapter 연결
         binding.snsPostCommentsRecyclerview.adapter = SnsCommentRecyclerViewAdapter()
@@ -81,9 +81,59 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsImageViewpager.setPageTransformer(ZoomOutPageTransformer()) //애니메이션 적용
 
 
-        sns_post_detail_cancel_button.setOnClickListener {
+        binding.snsPostDetailCancelButton.setOnClickListener {
             finish()
         }
+
+
+        //좋아요가 이미 있다면
+        if(snsPostLikeList!!.contains("LMJ")){
+            isLiked = true
+            binding.snsPostLottieHeart.progress = 0.5f
+        }
+
+
+        //post heart click event
+        // heart click event listener
+        binding.snsPostLottieHeart.setOnClickListener {
+            if (!isLiked) {
+                // Custom animation speed or duration.
+                val animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(1000)
+                animator.addUpdateListener { animation ->
+                    binding.snsPostLottieHeart.setProgress(animation.getAnimatedValue() as Float)
+                }
+                animator.start()
+                isLiked = true
+                //좋아요 개수 업데이트
+                binding.snsPostDetailLikeNumber.text =
+                    (Integer.parseInt(binding.snsPostDetailLikeNumber.text.toString()) + 1).toString()
+
+                //좋아요 api 호출
+                SnsRetrofitManager.instance.postPostLike(
+                    snsPostId,
+                    "LMJ",
+                    completion = { responseStatus, responseDataArrayList ->
+                    })
+
+            } else {
+                val animator = ValueAnimator.ofFloat(0.5f, 0f).setDuration(1000)
+                animator.addUpdateListener { animation ->
+                    binding.snsPostLottieHeart.setProgress(animation.getAnimatedValue() as Float)
+                }
+                animator.start()
+                isLiked = false
+                binding.snsPostDetailLikeNumber.text = (Integer.parseInt(binding.snsPostDetailLikeNumber.text.toString()) - 1).toString()
+
+
+                //좋아요 api 호출
+                SnsRetrofitManager.instance.deletePostLike(
+                    snsPostId,
+                    "LMJ",
+                    completion = { responseStatus, responseDataArrayList ->
+                    })
+            }
+        }
+
 
         //일반 댓글 입력
         binding.btnSendComment.setOnClickListener {
@@ -105,7 +155,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             //API 재호출
                             commentApiCall(snsPostId)
                             binding.etWriteComment.setText("")
-                            binding.snsPostCommentsRecyclerview.smoothScrollToPosition(100)
+                            binding.snsPostDetailNestedScrollView.fullScroll(View.FOCUS_DOWN)
                         }
                         RESPONSE_STATUS.FAIL -> {
                             CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
@@ -131,7 +181,10 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         responseDataArrayList!!.forEach {
                             this.snsCommentList.add(it)
                         }
-                        binding.snsPostCommentsRecyclerview.adapter?.notifyItemInserted(this.snsCommentList.size)
+                        binding.snsPostCommentsRecyclerview.adapter?.notifyDataSetChanged()
+
+                        binding.snsPostDetailCommentNumber.text =
+                            this.snsCommentList.size.toString()
                     }
                     RESPONSE_STATUS.FAIL -> {
                         CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
