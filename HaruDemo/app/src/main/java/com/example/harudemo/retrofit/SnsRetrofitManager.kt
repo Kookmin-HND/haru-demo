@@ -63,7 +63,7 @@ class SnsRetrofitManager {
 
                                 var userProfileImage = ""
                                 if (!userProfileImagesArray.isEmpty)
-                                    userProfileImage = userProfileImagesArray[0].asJsonObject.get("url").asString
+                                    userProfileImage = userProfileImagesArray[userProfileImagesArray.size()-1].asJsonObject.get("url").asString
 
                                 // 댓글 개수 받기
                                 val commentNumber =
