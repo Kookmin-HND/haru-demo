@@ -210,8 +210,24 @@ class SnsPostDetailActivity : AppCompatActivity() {
                             return@setOnMenuItemClickListener true
                         }
                         R.id.sns_post_detail_etc_delete_writer_menu -> {
-                            CustomToast.makeText(App.instance, "삭제", Toast.LENGTH_SHORT)
-                                .show()
+                            SnsRetrofitManager.instance.deletePost(snsPostId, completion = { responseStatus ->
+                                when (responseStatus) {
+                                    //API 호출 성공
+                                    RESPONSE_STATUS.OKAY -> {
+                                        CustomToast.makeText(App.instance, "게시물을 삭제했습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                        finish()
+                                    }
+                                    RESPONSE_STATUS.FAIL -> {
+                                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                    RESPONSE_STATUS.NO_CONTENT -> {
+                                        CustomToast.makeText(App.instance, "게시글이 존재하지 않습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+                            })
                             return@setOnMenuItemClickListener true
                         }
                         else -> {

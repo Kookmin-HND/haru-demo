@@ -133,4 +133,9 @@ interface SnsService {
     ): Call<JsonElement>
 
 
+    @DELETE("${API.POSTS}/{postId}")
+    fun deletePost(
+        @Path("postId") postId: Int,
+    ): Call<JsonElement>
+
 }

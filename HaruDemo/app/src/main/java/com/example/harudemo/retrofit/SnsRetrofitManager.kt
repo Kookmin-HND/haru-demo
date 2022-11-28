@@ -68,7 +68,7 @@ class SnsRetrofitManager {
 
                                 var userProfileImage = ""
                                 if (!userProfileImagesArray.isEmpty)
-                                    userProfileImage = userProfileImagesArray[userProfileImagesArray.size()-1].asJsonObject.get("url").asString
+                                    userProfileImage = userProfileImagesArray[userProfileImagesArray.size() - 1].asJsonObject.get("url").asString
 
                                 // 댓글 개수 받기
                                 val commentNumber =
@@ -498,4 +498,32 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+    //게시물 삭제하기
+    fun deletePost(
+        postId: Int,
+        completion: (RESPONSE_STATUS) -> Unit
+    ) {
+        val call =
+            snsService?.deletePost(postId) ?: return
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL)
+            }
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        Log.d("[debug]", response.body().toString())
+                        completion(RESPONSE_STATUS.OKAY)
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                        completion(RESPONSE_STATUS.FAIL)
+                    }
+                }
+            }
+        })
+    }
+
 }
