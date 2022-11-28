@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/contv"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
             android:text="텍스트"
             android:textAlignment="center"
             android:textColor="#000000" />

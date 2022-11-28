@@ -5,7 +5,7 @@ class maindata {
     companion object {
         var wom : Boolean = false
         var contents = Array(30){Array(13){Array(32){""} }}
-        var successrate = Array(13){Array(42){0} }
+        var successrate = Array(30){Array(13){Array(32){0} }}
         var week_content = 0
     }
 }
