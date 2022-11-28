@@ -24,6 +24,11 @@ data class LoginRequestBodyParams(
     val password : String
 )
 
+data class Kakaotoken(
+    @SerializedName("token")
+    val token : String
+)
+
 interface AuthService {
     @POST("${API.USERS}/signup")
     fun postSignUp(@Body requestBodyParams: SignUpRequestBodyParams) : Call<JsonElement>
@@ -36,5 +41,8 @@ interface AuthService {
 
     @POST("${API.USERS}/logout")
     fun postLogout() : Call<JsonElement>
+
+    @POST("${API.USERS}/kakao")
+    fun postKakao(@Body requestBodyParams : Kakaotoken) : Call<JsonElement>
 }
 

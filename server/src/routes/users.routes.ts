@@ -1,5 +1,6 @@
 import { Router } from "express";
 import express, { Request, Response, NextFunction } from "express";
+import request from "request";
 import DB from "../app-data-source";
 import { User } from "../entity/user";
 import { Equal } from "typeorm";
@@ -12,6 +13,10 @@ export const router = Router();
 
 interface UserParams {
   email: string;
+}
+
+interface KakaoToken {
+  token: string;
 }
 
 interface UserSignBody {
@@ -47,7 +52,13 @@ router.post("/login", async (req: Request, res: Response) => {
       console.log(authError, user, info);
       // 인증 실패 또는 user 정보 없을시 에러 발생
       if (authError || !user) {
-        return res.status(400).json(info.reason);
+        if (info.reason == "올바르지 않은 비밀번호 입니다.") {
+          console.log(400);
+          return res.status(400).json(info.reason);
+        } else if (info.reason == "존재하지 않는 사용자입니다.") {
+          console.log(404);
+          return res.status(404).json(info.reason);
+        }
       }
 
       const token = jwt.sign(
@@ -63,6 +74,62 @@ router.post("/login", async (req: Request, res: Response) => {
     console.error(error);
   }
 });
+
+router.post(
+  "/kakao",
+  async (req: Request<{}, {}, KakaoToken>, res: Response) => {
+    try {
+      let token = req.body.token;
+      console.log(token);
+      const profile: string = await new Promise((resolve, reject) => {
+        request(
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+            },
+            url: "https://kapi.kakao.com/v2/user/me",
+            method: "GET",
+          },
+          (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+              resolve(body);
+            }
+            reject(error);
+          }
+        );
+      });
+      console.log(profile);
+
+      const kakaoUser = JSON.parse(profile);
+      console.log(kakaoUser);
+      const email = kakaoUser.kakao_account.email;
+      const name = kakaoUser.kakao_account.profile.nickname;
+
+      let user = await DB.getRepository(User).findOneBy({ email: email });
+
+      if (!user) {
+        const result = DB.getRepository(User).create({
+          email: email,
+          password: "",
+          name: name,
+        });
+        await DB.getRepository(User).save(result);
+        console.log("kakao 첫 로그인시 회원가입 성공");
+        user = result;
+      }
+      token = jwt.sign({ email: email }, process.env.JWT_KEY as Secret);
+      const result: User & { token: string } = { ...user, token };
+      delete result.password;
+      console.log(result);
+      return res.cookie("token", token, { httpOnly: true }).json(result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// router.get()
 
 // user 회원가입
 router.post(
