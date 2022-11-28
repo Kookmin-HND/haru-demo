@@ -62,18 +62,18 @@ interface SnsService {
 
     // 이미지 추가 버전
     @Multipart
-    @POST("${API.POSTS}/{email}")
+    @POST("${API.POSTS}/{userId}")
     fun postPost(
-        @Path("email") writer: String,
+        @Path("userId") userId: Int,
         @Part("category") category: RequestBody,
         @Part("content") content: RequestBody,
         @Part images: List<MultipartBody.Part>?
     ): Call<JsonElement>
 
 
-    @POST("${API.COMMENTS}/{email}")
+    @POST("${API.COMMENTS}/{userId}")
     fun postComment(
-        @Path("email") writer: String,
+        @Path("userId") userId: Int,
         @Body requestBodyParams: SnsCommentPostRequestBodyParams
     ): Call<JsonElement>
 
@@ -114,6 +114,28 @@ interface SnsService {
     fun deleteCommentLike(
         @Path("commentId") commentId: Int,
         @Path("user") user: String,
+    ): Call<JsonElement>
+
+
+    // 프로필 이미지 등록
+    @Multipart
+    @POST("${API.POSTS}/profile/{userId}")
+    fun postProfile(
+        @Path("userId") userId: Int,
+        @Part images: List<MultipartBody.Part>?
+    ): Call<JsonElement>
+
+
+    // 한 유저에 대한 프로필 이미지 모두 불러오기
+    @GET("${API.POSTS}/profile/{userId}")
+    fun getProfile(
+        @Path("userId") userId: Int,
+    ): Call<JsonElement>
+
+
+    @DELETE("${API.POSTS}/{postId}")
+    fun deletePost(
+        @Path("postId") postId: Int,
     ): Call<JsonElement>
 
 }

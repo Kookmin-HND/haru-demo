@@ -47,15 +47,28 @@ class SnsRetrofitManager {
                             // 데이터가 있다면
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
+                                val userObject = resultItemObject.get("user").asJsonObject
                                 val postId = resultItemObject.get("id").asInt
                                 val category = resultItemObject.get("category").asString
-                                val writer = resultItemObject.get("writer").asString
+
+                                //user 정보 파싱
+                                val writer = userObject.get("name").asString
+                                val writerId = userObject.get("id").asInt
+
+                                //content 정보 파싱
                                 val content =
                                     resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
                                 val postImageFiles = resultItemObject.get("imageFiles").asJsonArray
                                 val postLikeListJson = resultItemObject.get("likes").asJsonArray
+
+                                val userProfileImagesArray = userObject.get("images").asJsonArray
+
+
+                                var userProfileImage = ""
+                                if (!userProfileImagesArray.isEmpty)
+                                    userProfileImage = userProfileImagesArray[userProfileImagesArray.size() - 1].asJsonObject.get("url").asString
 
                                 // 댓글 개수 받기
                                 val commentNumber =
@@ -69,19 +82,20 @@ class SnsRetrofitManager {
                                     postImageList.add(imageFile.asJsonObject.get("url").asString)
                                 }
 
-                                postLikeListJson.forEach{ item ->
+                                postLikeListJson.forEach { item ->
                                     postLikeList.add(item.asJsonObject.get("user").asString)
                                 }
 
 
                                 val snsPostItem = SnsPost(
                                     id = postId,
+                                    writerId = writerId,
                                     writer = writer,
                                     category = category,
                                     content = content,
                                     createdAt = createdAt,
                                     updatedAt = updatedAt,
-                                    writerPhoto = "",
+                                    writerPhoto = userProfileImage,
                                     average = 0,
                                     commentNumber = commentNumber,
                                     postLikeList = postLikeList,
@@ -101,7 +115,7 @@ class SnsRetrofitManager {
     //이미지 추가버전
     //SNS에서 글쓰기를 저장하는 함수
     fun postPost(
-        writer: String,
+        userId: Int,
         category: RequestBody,
         content: RequestBody,
         images: ArrayList<MultipartBody.Part>?,
@@ -109,7 +123,7 @@ class SnsRetrofitManager {
     ) {
 
         val call =
-            snsService?.postPost(writer, category, content, images) ?: return
+            snsService?.postPost(userId, category, content, images) ?: return
 
         call.enqueue(object : retrofit2.Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -134,7 +148,7 @@ class SnsRetrofitManager {
 
     //SNS에서 댓글을 저장하는 함수
     fun postComment(
-        writer: String,
+        userId: Int,
         postId: Int,
         content: String,
         parentCommentId: Int,
@@ -143,7 +157,7 @@ class SnsRetrofitManager {
 
         val call =
             snsService?.postComment(
-                writer,
+                userId,
                 SnsCommentPostRequestBodyParams(postId, content, parentCommentId)
             ) ?: return
 
@@ -192,7 +206,9 @@ class SnsRetrofitManager {
                             // 데이터가 있다면
                             results.forEach { resultItem ->
                                 val resultItemObject = resultItem.asJsonObject
-                                val writer = resultItemObject.get("writer").asString
+                                val userObject = resultItemObject.get("user").asJsonObject
+
+                                val writer = userObject.get("name").asString
                                 val parentCommentId = resultItemObject.get("parentCommentId").asInt
                                 val content = resultItemObject.get("content").asString
                                 val id = resultItemObject.get("id").asInt
@@ -200,12 +216,17 @@ class SnsRetrofitManager {
 
                                 val createdAt = resultItemObject.get("createdAt").asString
                                 val updatedAt = resultItemObject.get("updatedAt").asString
-
                                 val commentLikeList = ArrayList<String>()
 
-                                commentLikeListJson.forEach{ item ->
+                                commentLikeListJson.forEach { item ->
                                     commentLikeList.add(item.asJsonObject.get("user").asString)
                                 }
+
+                                //댓글 단 사람 프로필 사진
+                                val userProfileImagesArray = userObject.get("images").asJsonArray
+                                var userProfileImage = ""
+                                if (!userProfileImagesArray.isEmpty)
+                                    userProfileImage = userProfileImagesArray[0].asJsonObject.get("url").asString
 
                                 val snsCommentItem = SnsComment(
                                     id,
@@ -216,7 +237,7 @@ class SnsRetrofitManager {
                                     createdAt,
                                     updatedAt,
                                     commentLikeList,
-                                    writerPhoto = "",
+                                    writerPhoto = userProfileImage,
                                 )
                                 parsedSnsCommentDataArray.add(snsCommentItem)
                             }
@@ -410,4 +431,99 @@ class SnsRetrofitManager {
             }
         })
     }
+
+
+    //프로필 사진 추가
+    fun postProfile(
+        userId: Int,
+        images: ArrayList<MultipartBody.Part>?,
+        completion: (RESPONSE_STATUS, JsonElement?) -> Unit
+    ) {
+
+        val call =
+            snsService?.postProfile(userId, images) ?: return
+
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            completion(RESPONSE_STATUS.OKAY, it)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+    //프로필 사진 불러오기
+    fun getProfile(
+        userId: Int,
+        completion: (RESPONSE_STATUS, ArrayList<String>?) -> Unit
+    ) {
+        val call =
+            snsService?.getProfile(userId) ?: return
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        response.body()?.let {
+                            val parsedProfileImageUrl = ArrayList<String>()
+                            val results = it.asJsonArray
+
+                            // 데이터가 있다면
+                            results.forEach { resultItem ->
+                                val resultItemObject = resultItem.asJsonObject
+                                val url = resultItemObject.get("url").asString
+                                parsedProfileImageUrl.add(url)
+                            }
+                            completion(RESPONSE_STATUS.OKAY, parsedProfileImageUrl)
+                        }
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    //게시물 삭제하기
+    fun deletePost(
+        postId: Int,
+        completion: (RESPONSE_STATUS) -> Unit
+    ) {
+        val call =
+            snsService?.deletePost(postId) ?: return
+        call.enqueue(object : retrofit2.Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                completion(RESPONSE_STATUS.FAIL)
+            }
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                when (response.code()) {
+                    200 -> {
+                        Log.d("[debug]", response.body().toString())
+                        completion(RESPONSE_STATUS.OKAY)
+                    }
+                    400 -> {
+                        Log.d("[debug]", response.body().toString())
+                        completion(RESPONSE_STATUS.FAIL)
+                    }
+                }
+            }
+        })
+    }
+
 }
