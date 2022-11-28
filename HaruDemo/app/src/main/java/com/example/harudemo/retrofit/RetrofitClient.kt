@@ -5,7 +5,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.example.harudemo.App
-import com.example.harudemo.utils.API
+import com.example.harudemo.utils.*
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import okhttp3.Interceptor
@@ -59,7 +59,9 @@ object RetrofitClient {
         val baseParameterInterceptor: Interceptor = (Interceptor { chain ->
             Log.d(TAG, "RetrofitClient - intercept() called")
             // 오리지널 리퀘스트
-            val originalRequest = chain.request()
+            val originalRequest =
+                chain.request()
+                    .newBuilder().addHeader("Cookie", "token=${User.info.token}").build()
             //                // 쿼리 파라미터 추가하기 추후 API KET 추가 용도
             //                val addedUrl =
             //                    originalRequest.url.newBuilder().addQueryParameter("client_id", API.API_KEY)
@@ -74,15 +76,15 @@ object RetrofitClient {
             Log.d("[debug]", originalRequest.toString())
             val response = chain.proceed(originalRequest)
             Log.d("[debug]", response.toString())
-            Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
-            Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
-            if (response.code != 200) {
-                Handler(Looper.getMainLooper()).post {
-                    CustomToast.makeText(
-                        App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+//            Log.d(TAG, "RetrofitClient - intercept() called response code : ${response.code}")
+//            Log.d(TAG, "RetrofitClient - intercept() called response : ${response.body}")
+//            if (response.code != 200) {
+//                Handler(Looper.getMainLooper()).post {
+//                    CustomToast.makeText(
+//                        App.instance, "${response.code} 에러 입니다.", Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
             response
         })
 
@@ -100,6 +102,7 @@ object RetrofitClient {
         if (retrofitClient == null) {
             retrofitClient = Retrofit.Builder().baseUrl(API.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+
                 // 위에서 설정한 클라이언트로 레트로핏 클라이언트를 설정한다.
                 .client(okHttpClient.build()).build()
 //            client.build()

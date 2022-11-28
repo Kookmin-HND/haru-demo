@@ -3,8 +3,10 @@ package com.example.harudemo
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +15,11 @@ import com.example.harudemo.fragments.*
 import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.service.Constant
 import com.example.harudemo.service.MyReceiver
+import com.example.harudemo.todo.TodoData
+import com.example.harudemo.todo.types.Section
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.example.harudemo.utils.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -63,10 +68,86 @@ class MainActivity : AppCompatActivity() {
         if(alarmManager != null && pendingIntent != null) alarmManager!!.cancel(pendingIntent)
     }
 
+
+    //db 데이터 가져와서 maindata에 저장
+    fun getData(){
+        maindata.contents = Array(30){Array(13){Array(32){""} }}
+        maindata.successrate = Array(30){Array(13){Array(32){0} }}
+
+        TodoData.API.getAllTodosByFolder(User.info?.email!!, false, {
+
+            val result: ArrayList<Section> = arrayListOf()
+            for (section in it) {
+                if (section.value.first.isEmpty()) continue
+                result.add(Section(section.key, section.value.first, section.value.second))
+            }
+
+            for (i in result){
+                for(w in i.todos){
+                    for(j in i.logs){
+                        for(k in j){
+                            val date = k.date.split("-").map { it -> it.toString().toInt() }
+                            val year = date[0]
+                            val month = date[1]
+                            val day = date[2]
+
+                            if(k.todoId == w.id) {
+                                maindata.contents[year - 2022][month - 1][day] += w.content+"\n"
+                            }
+                        }
+                    }
+                }
+            }
+
+        }, {
+            CustomToast.makeText(
+                this,
+                "모든 목록을 불러오는데 실패하였습니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+        })
+
+        TodoData.API.getAllTodosByFolder(User.info?.email!!, true, {
+
+            val result: ArrayList<Section> = arrayListOf()
+            for (section in it) {
+                if (section.value.first.isEmpty()) continue
+                result.add(Section(section.key, section.value.first, section.value.second))
+            }
+
+            for (i in result){
+                for(w in i.todos){
+                    for(j in i.logs){
+                        for(k in j){
+                            val date = k.date.split("-").map { it -> it.toString().toInt() }
+                            val year = date[0]
+                            val month = date[1]
+                            val day = date[2]
+
+                            if(k.todoId == w.id) {
+                                maindata.contents[year - 2022][month - 1][day] += w.content + "\n"
+                                maindata.successrate[year-2022][month - 1][day] += 1
+                            }
+                        }
+                    }
+                }
+            }
+
+        }, {
+            CustomToast.makeText(
+                this,
+                "모든 목록을 불러오는데 실패하였습니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+        })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        getData()
 
         bottom_nav.setOnNavigationItemSelectedListener(onBottomNavItemSelectedListener)
         bottom_nav.menu.getItem(2).isChecked = true

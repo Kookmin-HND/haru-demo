@@ -9,7 +9,10 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import com.example.harudemo.App
+import com.example.harudemo.MainActivity
 import com.example.harudemo.databinding.ActivityTodoInputBinding
+import com.example.harudemo.fragments.TodoFragment
+import com.example.harudemo.fragments.maindata
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.adapters.NewTodoSectionAdapter
@@ -17,9 +20,11 @@ import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
 import com.example.harudemo.utils.CustomToast
+import com.example.harudemo.utils.User
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.*
 import kotlin.collections.ArrayList
 
 class TodoInputActivity : AppCompatActivity() {
@@ -29,7 +34,7 @@ class TodoInputActivity : AppCompatActivity() {
     private var dayButtons: ArrayList<ToggleButton?> =
         arrayListOf(null) // 일 ~ 토 버튼을 리스트로 가지는 변수
     private var viewMode: Int = -1 // 현재 무슨 형식으로 데이터를 입력받고 있는지 확인하는 변수
-    val days = arrayListOf(false, false, false, false, false, false, false)
+    private val days = arrayListOf(false, false, false, false, false, false, false)
 
     @SuppressLint("NotifyDataSetChanged", "SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -214,7 +219,8 @@ class TodoInputActivity : AppCompatActivity() {
                 TodoData.API.update(todo.id, folder, content, datesList, days)
             } else {
                 // DB에 데이터 추가
-                TodoData.API.create("cjeongmin27@gmail.com", folder, content, datesList, days, {
+                TodoData.API.create(User.info?.email!!, folder, content, datesList, days, {
+                    TodoFragment.folderListAdapter.fetchData()
                 }, {
                     CustomToast.makeText(
                         App.instance.applicationContext,
@@ -226,18 +232,19 @@ class TodoInputActivity : AppCompatActivity() {
 
             for (data in datesList) {
                 var splitdata = data.split("-")
+                maindata.contents[splitdata[0].toInt()-2022][splitdata[1].toInt()-1][splitdata[2].toInt()] += content+"\n"
 
-//                val calendar: Calendar = Calendar.getInstance().apply { // 1
-//                    timeInMillis = System.currentTimeMillis()
-//                    set(Calendar.YEAR, splitdata[0].toInt())
-//                    set(Calendar.MONTH, splitdata[1].toInt()-1)
-//                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
-//                    set(Calendar.AM_PM, Calendar.AM)
-//                    set(Calendar.HOUR_OF_DAY, 9)
-//                    set(Calendar.MINUTE, 0)
-//                }
-//
-//                MainActivity.getInstance()?.addAlarm(calendar)
+                val calendar: Calendar = Calendar.getInstance().apply { // 1
+                    timeInMillis = System.currentTimeMillis()
+                    set(Calendar.YEAR, splitdata[0].toInt())
+                    set(Calendar.MONTH, splitdata[1].toInt()-1)
+                    set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
+                    set(Calendar.AM_PM, Calendar.AM)
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                }
+
+                MainActivity.getInstance()?.addAlarm(calendar)
             }
 
             // 입력이 정상적으로 되었다고 판단. Activity 종료

@@ -20,11 +20,11 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column() // hashing된 비밀번호
-  password: string;
+  @Column({ nullable: true }) // hashing된 비밀번호
+  password?: string;
 
   @Column()
   name: string;
