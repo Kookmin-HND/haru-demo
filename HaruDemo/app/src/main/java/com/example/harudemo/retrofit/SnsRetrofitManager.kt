@@ -50,7 +50,12 @@ class SnsRetrofitManager {
                                 val userObject = resultItemObject.get("user").asJsonObject
                                 val postId = resultItemObject.get("id").asInt
                                 val category = resultItemObject.get("category").asString
+
+                                //user 정보 파싱
                                 val writer = userObject.get("name").asString
+                                val writerId = userObject.get("id").asInt
+
+                                //content 정보 파싱
                                 val content =
                                     resultItemObject.get("content").asString
                                 val createdAt = resultItemObject.get("createdAt").asString
@@ -84,6 +89,7 @@ class SnsRetrofitManager {
 
                                 val snsPostItem = SnsPost(
                                     id = postId,
+                                    writerId = writerId,
                                     writer = writer,
                                     category = category,
                                     content = content,

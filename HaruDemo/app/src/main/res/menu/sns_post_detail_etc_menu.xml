@@ -2,22 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sns_post_detail_etc_redirect_menu"
-        android:title="새로고침"
-        />
-    <item
-        android:id="@+id/sns_post_detail_etc_update_menu"
-        android:title="수정"
-        />
-    <item
-        android:id="@+id/sns_post_detail_etc_delete_menu"
-        android:title="삭제"
-        />
+        android:title="새로고침" />
     <item
         android:id="@+id/sns_post_detail_etc_police_menu"
-        android:title="신고"
-        />
+        android:title="신고" />
     <item
         android:id="@+id/sns_post_detail_etc_message_menu"
-        android:title="메시지"
-        />
+        android:title="메시지" />
 </menu>
