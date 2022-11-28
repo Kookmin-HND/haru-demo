@@ -75,6 +75,20 @@ router.get("/:postId", async (req: Request<PostParams>, res: Response) => {
 });
 
 
+//게시물 삭제
+router.delete("/:postId", async (req: Request, res: Response) => {
+  const postId = Number(req.params.postId);
+  try {
+    //postId로 게시물 하나의 데이터를 가져온다
+    const result = await DB.getRepository(Post).delete(postId);
+    return res.json(result);
+  } catch {
+    return res.status(400).send("게시물이 존재하지 않습니다.");
+  }
+});
+
+
+
 //게시물 하나가 갖고 있는 이미지 url 조회
 router.get("/:postId/images", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
