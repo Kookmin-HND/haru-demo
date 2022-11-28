@@ -88,7 +88,6 @@ router.delete("/:postId", async (req: Request, res: Response) => {
 });
 
 
-
 //게시물 하나가 갖고 있는 이미지 url 조회
 router.get("/:postId/images", async (req: Request<PostParams>, res: Response) => {
   const postId = Number(req.params.postId);
@@ -113,7 +112,6 @@ router.post("/:userId", awsUpload.array("images"), async (req: Request, res: Res
   filesList.forEach((file) => {
     locationList.push(file.location);
   });
-
 
   const user = new User()
   user.id = userId
