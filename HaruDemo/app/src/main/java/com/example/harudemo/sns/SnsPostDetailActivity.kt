@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -100,7 +101,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
 
         //좋아요가 이미 있다면
-        if(snsPostLikeList!!.contains(User.info!!.name)){
+        if (snsPostLikeList!!.contains(User.info!!.name)) {
             isLiked = true
             binding.snsPostLottieHeart.progress = 0.5f
         }
@@ -181,6 +182,51 @@ class SnsPostDetailActivity : AppCompatActivity() {
                     }
                 })
         }
+
+
+        //상단의 etc 버튼 클릭
+        binding.snsPostDetailEtcBtn.setOnClickListener {
+            CustomToast.makeText(App.instance, "버튼 클릭", Toast.LENGTH_SHORT)
+                .show()
+            val popupMenu = PopupMenu(this, it)
+            menuInflater?.inflate(R.menu.sns_post_detail_etc_menu, popupMenu.menu)
+            popupMenu.show()
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.sns_post_detail_etc_redirect_menu -> {
+                        CustomToast.makeText(App.instance, "새로고침", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    R.id.sns_post_detail_etc_update_menu -> {
+                        CustomToast.makeText(App.instance, "수정", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    R.id.sns_post_detail_etc_delete_menu -> {
+                        CustomToast.makeText(App.instance, "삭제", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    R.id.sns_post_detail_etc_police_menu -> {
+                        CustomToast.makeText(App.instance, "신고", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    R.id.sns_post_detail_etc_message_menu -> {
+                        CustomToast.makeText(App.instance, "신고", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    else -> {
+                        return@setOnMenuItemClickListener false
+                    }
+                }
+
+            }
+        }
+
+
     }
 
     private fun commentApiCall(postId: Int) {
