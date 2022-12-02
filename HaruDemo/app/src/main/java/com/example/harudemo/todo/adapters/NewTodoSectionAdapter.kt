@@ -87,7 +87,13 @@ class NewTodoSectionAdapter(private val sectionIndex: Int, private val isDateSec
                 it.context.startActivity(intent)
             }
 
+            var isChecked = false
             binding.btnCheckTodo.setOnClickListener {
+                if (isChecked) {
+                    return@setOnClickListener
+                }
+                isChecked = true
+
                 if (pair.second.first().completed && pair.second.first().date != LocalDate.now()
                         .toString()
                 ) {
