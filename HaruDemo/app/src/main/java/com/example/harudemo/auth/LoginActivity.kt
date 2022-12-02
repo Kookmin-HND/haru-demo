@@ -15,11 +15,8 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import com.example.harudemo.utils.User
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.login_layout.*
-import okhttp3.Cookie
-import okhttp3.CookieJar
 import org.json.JSONObject
 
 
@@ -35,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
         prefs = PreferenceUtil(applicationContext)  // preference
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
+
 
         var currentUser = prefs.getString("currentUser")
 
@@ -121,6 +119,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            Log.d(TAG, "onCreate: 카카오 ${error}")
             if (error != null) {
                 when {
                     error.toString() == AuthErrorCause.AccessDenied.toString() -> {
