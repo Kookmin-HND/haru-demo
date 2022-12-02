@@ -27,9 +27,62 @@
             android:textStyle="bold"
             />
     </LinearLayout>
-    <Button
-        android:id="@+id/logoutBtn"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그아웃"/>
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/logoutBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/gray"
+                android:text="로그아웃" />
+
+            <Button
+                android:id="@+id/getInfoBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/gray"
+                android:layout_marginStart="8dp"
+                android:text="정보조회(예정)" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/changeInfoBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/gray"
+                android:text="회원정보 변경(예정)" />
+
+            <Button
+                android:id="@+id/withdrawalBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/gray"
+                android:layout_marginStart="8dp"
+                android:text="회원탈퇴(예정)" />
+        </TableRow>
+
+    </TableLayout>
 </LinearLayout>
