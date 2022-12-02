@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.auth.LoginActivity
+import com.example.harudemo.databinding.FragmentEtcBinding
 import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.utils.*
@@ -44,7 +45,6 @@ class EtcFragment : Fragment() {
         }
     }
 
-
     //어플리케이션 갤러리 접근 권한 확인
     private val permissionList = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     private val checkPermission =
@@ -69,8 +69,6 @@ class EtcFragment : Fragment() {
         act = context as Activity
         prefs = PreferenceUtil(act)
         super.onCreate(savedInstanceState)
-        etc_profile_name_text_view.text = "${User.info.email}"
-        Log.d(TAG, "Ranking - on Create() called")
     }
 
 
@@ -97,7 +95,8 @@ class EtcFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "더보기"
 
-
+        etc_profile_name_text_view.text = User.info.email
+        Log.d("[debug]", "${User.info.email}")
         //프로필 정보
         //----------
 
@@ -137,8 +136,6 @@ class EtcFragment : Fragment() {
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(intent, 200)
         }
-
-        etc_profile_name_text_view.text = User.info!!.name;
 
         // ---------
 
