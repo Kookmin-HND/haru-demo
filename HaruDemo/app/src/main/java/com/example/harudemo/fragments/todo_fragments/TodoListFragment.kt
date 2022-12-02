@@ -2,7 +2,6 @@ package com.example.harudemo.fragments.todo_fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoListBinding
 import com.example.harudemo.fragments.TodoFragment
@@ -21,7 +19,6 @@ import com.example.harudemo.todo.types.Section
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.User
 import java.time.LocalDate
-import kotlin.collections.ArrayList
 
 class TodoListFragment : Fragment() {
     // UI Update를 위해 Instance 접근 가능하게끔하고,
@@ -109,7 +106,10 @@ class TodoListFragment : Fragment() {
                     today,
                     false,
                     {
-                        if (it.first.isEmpty()) return@getTodosByDate
+                        if (it.first.isEmpty()) {
+                            decideView(listOf())
+                            return@getTodosByDate
+                        }
                         todoListAdapter.isDateSection = true
                         todoListAdapter.submitList(listOf(
                             Section(

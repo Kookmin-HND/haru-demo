@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { Post } from "./post";
 import { CommentLike } from "./commentLike";
+import { User } from "./user";
 
 //필요한 데이터베이스 스키마 entity에 생성
 @Entity()
@@ -28,8 +29,9 @@ export class Comment {
   @JoinColumn()
   post: Post;
 
-  @Column({ nullable: false })
-  writer: string;
+  @ManyToOne(()=> User, (user)=>user.comments)
+  @JoinColumn()
+  user: User;
 
   @Column({ nullable: false })
   content: string;

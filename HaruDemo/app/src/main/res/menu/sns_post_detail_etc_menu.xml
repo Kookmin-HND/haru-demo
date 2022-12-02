@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sns_post_detail_etc_redirect_menu"
+        android:title="새로고침" />
+    <item
+        android:id="@+id/sns_post_detail_etc_police_menu"
+        android:title="신고" />
+    <item
+        android:id="@+id/sns_post_detail_etc_message_menu"
+        android:title="메시지" />
+</menu>

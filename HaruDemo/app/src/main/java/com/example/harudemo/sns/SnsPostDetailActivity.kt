@@ -4,11 +4,14 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.harudemo.App
+import com.example.harudemo.R
 import com.example.harudemo.databinding.ActivitySnsPostDetailBinding
 import com.example.harudemo.model.SnsComment
 import com.example.harudemo.model.SnsImage
@@ -18,6 +21,7 @@ import com.example.harudemo.sns.recyclerview.SnsPostImageViewPagerAdpater
 import com.example.harudemo.utils.Constants.TAG
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
+import com.example.harudemo.utils.User
 
 class SnsPostDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySnsPostDetailBinding;
@@ -43,13 +47,24 @@ class SnsPostDetailActivity : AppCompatActivity() {
         binding.snsPostDetailCancelButton.setOnClickListener {
             finish()
         }
-
         val intent = getIntent();
         val snsPostId = intent.getIntExtra("sns_post_id", -1)
         val snsPostCategory = intent.getStringExtra("sns_post_category")
-        val snsPostWriter = intent.getStringExtra("sns_post_writer")
         val snsPostContent = intent.getStringExtra("sns_post_content")
         val snsPostLikeList = intent.getStringArrayListExtra("sns_post_like_list")
+
+        //writer 정보
+        val snsPostWriter = intent.getStringExtra("sns_post_writer")
+        val snsPostWriterId = intent.getIntExtra("sns_post_writer_id", 0)
+        val snsPostWriterPhoto = intent.getStringExtra("sns_post_writer_photo")
+
+        //user profile image 연결
+        //프로필 이미지 생성
+        Glide.with(App.instance)
+            .load(snsPostWriterPhoto)
+            .placeholder(R.drawable.ic_baseline_account_circle_24)
+            .circleCrop()
+            .into(binding.snsPostWriterPhotoImageView)
 
         binding.snsPostDetailWriter.text = snsPostWriter
         binding.snsPostDetailBody.text = snsPostContent
@@ -87,7 +102,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
 
         //좋아요가 이미 있다면
-        if(snsPostLikeList!!.contains("LMJ")){
+        if (snsPostLikeList!!.contains(User.info!!.name)) {
             isLiked = true
             binding.snsPostLottieHeart.progress = 0.5f
         }
@@ -111,7 +126,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.postPostLike(
                     snsPostId,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
 
@@ -128,7 +143,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
                 //좋아요 api 호출
                 SnsRetrofitManager.instance.deletePostLike(
                     snsPostId,
-                    "LMJ",
+                    User.info!!.name,
                     completion = { responseStatus, responseDataArrayList ->
                     })
             }
@@ -141,7 +156,7 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
             val comment = binding.etWriteComment.text.trim().toString()
             SnsRetrofitManager.instance.postComment(
-                "LMJ",
+                User.info!!.id,
                 snsPostId,
                 comment,
                 -1,
@@ -167,6 +182,88 @@ class SnsPostDetailActivity : AppCompatActivity() {
                         }
                     }
                 })
+        }
+
+
+        //상단의 etc 버튼 클릭 할때 pop up menu 띄어주기
+        binding.snsPostDetailEtcBtn.setOnClickListener {
+            CustomToast.makeText(App.instance, "버튼 클릭", Toast.LENGTH_SHORT)
+                .show()
+
+            //자신이 글 작성자인 경우
+            if (snsPostWriterId == User.info!!.id) {
+                val inflateMenu = R.menu.sns_post_detail_etc_writer_menu
+                val popupMenu = PopupMenu(this, it)
+
+                menuInflater?.inflate(inflateMenu, popupMenu.menu)
+                popupMenu.show()
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.sns_post_detail_etc_redirect_writer_menu -> {
+                            CustomToast.makeText(App.instance, "새로고침", Toast.LENGTH_SHORT)
+                                .show()
+                            return@setOnMenuItemClickListener true
+                        }
+                        R.id.sns_post_detail_etc_update_writer_menu -> {
+                            CustomToast.makeText(App.instance, "수정", Toast.LENGTH_SHORT)
+                                .show()
+                            return@setOnMenuItemClickListener true
+                        }
+                        R.id.sns_post_detail_etc_delete_writer_menu -> {
+                            SnsRetrofitManager.instance.deletePost(snsPostId, completion = { responseStatus ->
+                                when (responseStatus) {
+                                    //API 호출 성공
+                                    RESPONSE_STATUS.OKAY -> {
+                                        CustomToast.makeText(App.instance, "게시물을 삭제했습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                        finish()
+                                    }
+                                    RESPONSE_STATUS.FAIL -> {
+                                        CustomToast.makeText(App.instance, "api 호출 에러입니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                    RESPONSE_STATUS.NO_CONTENT -> {
+                                        CustomToast.makeText(App.instance, "게시글이 존재하지 않습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+                            })
+                            return@setOnMenuItemClickListener true
+                        }
+                        else -> {
+                            return@setOnMenuItemClickListener false
+                        }
+                    }
+                }
+            } else {//다른사람이 쓴 글인 경우
+                val inflateMenu = R.menu.sns_post_detail_etc_menu
+                val popupMenu = PopupMenu(this, it)
+
+                menuInflater?.inflate(inflateMenu, popupMenu.menu)
+                popupMenu.show()
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.sns_post_detail_etc_redirect_menu -> {
+                            CustomToast.makeText(App.instance, "새로고침", Toast.LENGTH_SHORT)
+                                .show()
+                            return@setOnMenuItemClickListener true
+                        }
+                        R.id.sns_post_detail_etc_police_menu -> {
+                            CustomToast.makeText(App.instance, "신고", Toast.LENGTH_SHORT)
+                                .show()
+                            return@setOnMenuItemClickListener true
+                        }
+                        R.id.sns_post_detail_etc_message_menu -> {
+                            CustomToast.makeText(App.instance, "신고", Toast.LENGTH_SHORT)
+                                .show()
+                            return@setOnMenuItemClickListener true
+                        }
+                        else -> {
+                            return@setOnMenuItemClickListener false
+                        }
+                    }
+                }
+            }
         }
     }
 

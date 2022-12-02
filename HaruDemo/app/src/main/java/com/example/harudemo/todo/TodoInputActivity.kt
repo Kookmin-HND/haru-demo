@@ -1,31 +1,26 @@
 package com.example.harudemo.todo
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AppCompatActivity
 import com.example.harudemo.App
 import com.example.harudemo.MainActivity
 import com.example.harudemo.databinding.ActivityTodoInputBinding
 import com.example.harudemo.fragments.TodoFragment
 import com.example.harudemo.fragments.maindata
 import com.example.harudemo.fragments.todo_fragments.DatePickerFragment
-import com.example.harudemo.fragments.todo_fragments.TodoListFragment
-import com.example.harudemo.todo.adapters.NewTodoSectionAdapter
 import com.example.harudemo.todo.types.Todo
 import com.example.harudemo.todo.types.TodoLog
 import com.example.harudemo.todo.types.ViewMode
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.User
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TodoInputActivity : AppCompatActivity() {
     private var binding: ActivityTodoInputBinding? = null
@@ -163,7 +158,8 @@ class TodoInputActivity : AppCompatActivity() {
                 val dates = binding?.calendar?.selectedDates
                 // 모든 날짜를 datesList에 추가한다.
                 for (date in dates!!) {
-                    datesList.add("${date.year}-${date.month + 1}-${date.day}")
+                    val day = if (date.day < 10) "0${date.day}" else "${date.day}"
+                    datesList.add("${date.year}-${date.month + 1}-${day}")
                 }
 
                 for (i in 0 until days.size) {
@@ -232,12 +228,12 @@ class TodoInputActivity : AppCompatActivity() {
 
             for (data in datesList) {
                 var splitdata = data.split("-")
-                maindata.contents[splitdata[0].toInt()-2022][splitdata[1].toInt()-1][splitdata[2].toInt()] += content+"\n"
+                maindata.contents[splitdata[0].toInt() - 2022][splitdata[1].toInt() - 1][splitdata[2].toInt()] += content + "\n"
 
                 val calendar: Calendar = Calendar.getInstance().apply { // 1
                     timeInMillis = System.currentTimeMillis()
                     set(Calendar.YEAR, splitdata[0].toInt())
-                    set(Calendar.MONTH, splitdata[1].toInt()-1)
+                    set(Calendar.MONTH, splitdata[1].toInt() - 1)
                     set(Calendar.DAY_OF_YEAR, splitdata[2].toInt())
                     set(Calendar.AM_PM, Calendar.AM)
                     set(Calendar.HOUR_OF_DAY, 9)
