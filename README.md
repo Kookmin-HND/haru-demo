@@ -89,7 +89,7 @@ BUCKET_NAME=s3haruimage
 ```
 
 # Feature
-<details>
+<details open>
 <summary>
 
 ### SNS
@@ -109,7 +109,7 @@ BUCKET_NAME=s3haruimage
   
 </details>
 
-<details>
+<details open>
 <summary>
 
 ### Sign-Up
@@ -141,7 +141,7 @@ BUCKET_NAME=s3haruimage
   
 </details>
 
-<details>
+<details open>
 <summary>
 
 ### Sign-In
@@ -197,7 +197,7 @@ BUCKET_NAME=s3haruimage
     
 </details>
 
-<details>
+<details open>
 <summary>
 
 ### Todo-List
@@ -211,7 +211,7 @@ BUCKET_NAME=s3haruimage
 </details>
 
 
-<details>
+<details open>
 <summary>
 
 ### Calendar
@@ -232,7 +232,7 @@ BUCKET_NAME=s3haruimage
   
 </details>
 
-<details>
+<details open>
 <summary>
 
 ### Statistics
@@ -247,10 +247,12 @@ BUCKET_NAME=s3haruimage
 
 </details>
 
-<details>
+   
+   
+# Database Schema
+<details open>
 <summary>
-
-### Database Schema
+전체 데이터베이스 스키마 구조도입니다.
 
 </summary>
 
