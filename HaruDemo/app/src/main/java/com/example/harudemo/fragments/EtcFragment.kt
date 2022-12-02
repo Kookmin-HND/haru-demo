@@ -14,12 +14,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.harudemo.App
 import com.example.harudemo.R
 import com.example.harudemo.auth.LoginActivity
-import com.example.harudemo.databinding.FragmentEtcBinding
 import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.retrofit.SnsRetrofitManager
 import com.example.harudemo.utils.*
@@ -145,6 +145,7 @@ class EtcFragment : Fragment() {
                 if (error != null) {
                     Log.d(TAG, "로그아웃 실패", error)
                 } else {
+
                     Log.d(TAG, "kakao 로그아웃 성공")
                 }
             }
@@ -157,6 +158,7 @@ class EtcFragment : Fragment() {
                         prefs.clearUser()
                         CustomToast.makeText(act, "로그아웃 성공", Toast.LENGTH_SHORT).show()
                         val intent = Intent(act, LoginActivity::class.java)
+                        ActivityCompat.finishAffinity(act);
                         startActivity(intent)
                     }
                     RESPONSE_STATUS.FAIL -> {
