@@ -22,12 +22,12 @@ import com.example.harudemo.utils.User
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.fragment_etc.*
 
-class EtcFragment: Fragment() {
-    companion object{
-        const val TAG : String = "로그"
-        lateinit var prefs : PreferenceUtil
-        lateinit var act : Activity
-        fun newInstance() : EtcFragment {
+class EtcFragment : Fragment() {
+    companion object {
+        const val TAG: String = "로그"
+        lateinit var prefs: PreferenceUtil
+        lateinit var act: Activity
+        fun newInstance(): EtcFragment {
             return EtcFragment()
         }
     }
@@ -36,7 +36,8 @@ class EtcFragment: Fragment() {
         act = context as Activity
         prefs = PreferenceUtil(act)
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Ranking - on Create() called" )
+        idView.text = "${User.info.email}"
+        Log.d(TAG, "Ranking - on Create() called")
     }
 
 
@@ -68,13 +69,13 @@ class EtcFragment: Fragment() {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
                     Log.d(TAG, "로그아웃 실패", error)
-                }else{
+                } else {
                     Log.d(TAG, "kakao 로그아웃 성공")
                 }
             }
 
             AuthRetrofitManager.instance.logoutUser { responseStatus, jsonElement ->
-                when(responseStatus){
+                when (responseStatus) {
                     RESPONSE_STATUS.OKAY -> {
                         Log.d(TAG, "success Logout")
                         Log.d(TAG, "${jsonElement}")
@@ -83,7 +84,7 @@ class EtcFragment: Fragment() {
                         val intent = Intent(act, LoginActivity::class.java)
                         startActivity(intent)
                     }
-                    RESPONSE_STATUS.FAIL ->{
+                    RESPONSE_STATUS.FAIL -> {
                         Log.d(TAG, "fail Logout")
                         Log.d(TAG, "${jsonElement}")
                         CustomToast.makeText(act, "로그아웃 실패", Toast.LENGTH_SHORT).show()
