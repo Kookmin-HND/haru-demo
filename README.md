@@ -79,14 +79,6 @@ Java 11
   안드로이드 스튜디오 실행 후 에뮬레이터 또는 안드로이드 기기로 앱 빌드 및 실행
 - Server 최상위 폴더에서 .env 파일 생성
 
-```
-// .env
-DB_PASSWORD={MySQL 비밀번호}
-JWT_KEY=Kn’Tv_?fjbg6Br>
-S3_ACCESS_KEY=AKIAQVPWRU5BPJMN55ST
-S3_SECRET_KEY=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
-BUCKET_NAME=s3haruimage
-```
 
 # Feature
 <details open>
