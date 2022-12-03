@@ -14,7 +14,7 @@ import com.example.harudemo.R
 import com.example.harudemo.databinding.FragmentTodoBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoInputActivity
-import com.example.harudemo.todo.adapters.TodoFolderListAdapter
+import com.example.harudemo.todo.adapters.NewFolderListAdapter
 
 /**
  * FIXME: 업데이트 상태에서 기간 입력시 날짜 선택 안해도 기존 선택으로 가도록 수정
@@ -32,11 +32,11 @@ class TodoFragment : Fragment() {
                 return _instance!!
             }
 
-        private var _folderListAdapter: TodoFolderListAdapter? = null
-        val folderListAdapter: TodoFolderListAdapter
+        private var _folderListAdapter: NewFolderListAdapter? = null
+        val folderListAdapter: NewFolderListAdapter
             get() {
                 if (_folderListAdapter == null) {
-                    _folderListAdapter = TodoFolderListAdapter(instance.requireActivity())
+                    _folderListAdapter = NewFolderListAdapter(instance.requireActivity())
                 }
                 return _folderListAdapter!!
             }
