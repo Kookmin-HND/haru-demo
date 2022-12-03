@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.harudemo.MainActivity
 import com.example.harudemo.databinding.FragmentTodoListItemBinding
 import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoData
@@ -121,6 +122,8 @@ class NewTodoSectionAdapter(private val sectionIndex: Int, private val isDateSec
                         }
                     }
                 )
+
+                MainActivity.getInstance()?.getData()
             }
 
             binding.btnDelete.setOnClickListener {
