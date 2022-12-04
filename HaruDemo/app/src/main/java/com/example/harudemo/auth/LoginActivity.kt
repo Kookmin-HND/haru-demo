@@ -65,6 +65,11 @@ class LoginActivity : AppCompatActivity() {
             val email = userEmailEdit.text.toString()  // 변수에 입력한 e-mail 저장
             val password = userPwEdit.text.toString()        // 변수에 입력한 pw 저장
 
+            if (email == "" || password == ""){
+                CustomToast.makeText(this, "이메일과 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             AuthRetrofitManager.instance.loginUser(
                 email,
                 password,
