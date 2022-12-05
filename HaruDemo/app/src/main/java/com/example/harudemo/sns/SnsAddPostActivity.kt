@@ -76,6 +76,15 @@ class SnsAddPostActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val contentChecker =
+                binding.addPostText.text.toString()
+                    .trim()
+
+            if(contentChecker.isEmpty()){
+                CustomToast.makeText(applicationContext, "게시물 내용을 입력해주세요", Toast.LENGTH_SHORT).show();
+                return@setOnClickListener
+            }
+
             binding.addApply.isClickable = false
 
             val category =
