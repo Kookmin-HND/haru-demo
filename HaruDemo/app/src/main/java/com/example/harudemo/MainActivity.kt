@@ -36,18 +36,18 @@ class MainActivity : AppCompatActivity() {
 
     //todoinputactivty에서 메인엑티비티의 함수를 다루기 위한
     //instance 생성
-    init{
+    init {
         instance = this
     }
 
-    companion object{
-        private var instance:MainActivity? = null
+    companion object {
+        private var instance: MainActivity? = null
         fun getInstance(): MainActivity? {
             return instance
         }
     }
 
-    fun addAlarm(calendar: Calendar){
+    fun addAlarm(calendar: Calendar) {
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(this, MyReceiver::class.java)
@@ -64,8 +64,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //알람 취소 기능 나중에 필요할시 사용할 것
-    fun cancelAlarm(){
-        if(alarmManager != null && pendingIntent != null) alarmManager!!.cancel(pendingIntent)
+    fun cancelAlarm() {
+        if (alarmManager != null && pendingIntent != null) alarmManager!!.cancel(pendingIntent)
     }
 
 
@@ -82,17 +82,17 @@ class MainActivity : AppCompatActivity() {
                 result.add(Section(section.key, section.value.first, section.value.second))
             }
 
-            for (i in result){
-                for(w in i.todos){
-                    for(j in i.logs){
-                        for(k in j){
+            for (i in result) {
+                for (w in i.todos) {
+                    for (j in i.logs) {
+                        for (k in j) {
                             val date = k.date.split("-").map { it -> it.toString().toInt() }
                             val year = date[0]
                             val month = date[1]
                             val day = date[2]
 
-                            if(k.todoId == w.id) {
-                                maindata.contents[year - 2022][month - 1][day] += w.content+"\n"
+                            if (k.todoId == w.id) {
+                                maindata.contents[year - 2022][month - 1][day] += w.content + "\n"
                             }
                         }
                     }
@@ -115,18 +115,18 @@ class MainActivity : AppCompatActivity() {
                 result.add(Section(section.key, section.value.first, section.value.second))
             }
 
-            for (i in result){
-                for(w in i.todos){
-                    for(j in i.logs){
-                        for(k in j){
+            for (i in result) {
+                for (w in i.todos) {
+                    for (j in i.logs) {
+                        for (k in j) {
                             val date = k.date.split("-").map { it -> it.toString().toInt() }
                             val year = date[0]
                             val month = date[1]
                             val day = date[2]
 
-                            if(k.todoId == w.id) {
+                            if (k.todoId == w.id) {
                                 maindata.contents[year - 2022][month - 1][day] += w.content + "\n"
-                                maindata.successrate[year-2022][month - 1][day] += 1
+                                maindata.successrate[year - 2022][month - 1][day] += 1
                             }
                         }
                     }
@@ -161,19 +161,24 @@ class MainActivity : AppCompatActivity() {
 
         bottom_nav.setOnNavigationItemSelectedListener(onBottomNavItemSelectedListener)
         bottom_nav.menu.getItem(2).isChecked = true
+
         // TodoFragment를 가장 먼저 실행함
         snsFragment = SnsFragment.newInstance()
         todoFragment = TodoFragment.instance
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, todoFragment!!).commit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        todoFragment = TodoFragment()
+    }
 
 
     //바텀 네비게이션 아이템 클릭 리스너
     private val onBottomNavItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
             // 현재 SNS가 열려있고, 다시 sns 버튼을 누른경우 스크롤을 맨위로 보낸다.
-            if(it.itemId == R.id.menu_home && binding?.fragmentSns?.visibility == View.VISIBLE){
+            if (it.itemId == R.id.menu_home && binding?.fragmentSns?.visibility == View.VISIBLE) {
                 snsFragment?.postScrolltoTop()
             }
 

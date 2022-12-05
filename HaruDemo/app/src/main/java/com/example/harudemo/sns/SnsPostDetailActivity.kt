@@ -155,6 +155,13 @@ class SnsPostDetailActivity : AppCompatActivity() {
             if (snsPostId == -1) return@setOnClickListener
 
             val comment = binding.etWriteComment.text.trim().toString()
+
+            if (comment.isEmpty()) {
+                CustomToast.makeText(App.instance, "댓글을 입력해주세요", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
             SnsRetrofitManager.instance.postComment(
                 User.info!!.id,
                 snsPostId,
