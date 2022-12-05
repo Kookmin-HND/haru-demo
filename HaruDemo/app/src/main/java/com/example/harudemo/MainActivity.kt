@@ -70,9 +70,9 @@ class MainActivity : AppCompatActivity() {
 
 
     //db 데이터 가져와서 maindata에 저장
-    fun getData() {
-        maindata.contents = Array(30) { Array(13) { Array(32) { "" } } }
-        maindata.successrate = Array(30) { Array(13) { Array(32) { 0 } } }
+    fun getData(refresh: Boolean = false){
+        maindata.contents = Array(30){Array(13){Array(32){""} }}
+        maindata.successrate = Array(30){Array(13){Array(32){0} }}
 
         TodoData.API.getAllTodosByFolder(User.info?.email!!, false, {
 
@@ -133,6 +133,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            if(refresh) MainActivity.getInstance()?.refresh()
+
         }, {
             CustomToast.makeText(
                 this,
@@ -140,6 +142,14 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         })
+    }
+
+    fun refresh(){
+        finish()
+        overridePendingTransition(0,0)
+        val intent: Intent = getIntent()
+        startActivity(intent)
+        overridePendingTransition(0,0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
