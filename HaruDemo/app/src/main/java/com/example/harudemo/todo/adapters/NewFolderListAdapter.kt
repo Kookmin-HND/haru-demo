@@ -1,6 +1,7 @@
 package com.example.harudemo.todo.adapters
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -15,7 +16,7 @@ import com.example.harudemo.todo.TodoData
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.User
 
-class NewFolderListAdapter(private val activity: FragmentActivity) :
+class NewFolderListAdapter(var activity: FragmentActivity) :
     ListAdapter<Pair<String, Int>, RecyclerView.ViewHolder>(object :
         DiffUtil.ItemCallback<Pair<String, Int>>() {
         override fun areItemsTheSame(oldItem: Pair<String, Int>, newItem: Pair<String, Int>): Boolean {
@@ -39,6 +40,10 @@ class NewFolderListAdapter(private val activity: FragmentActivity) :
                 val bundle = Bundle()
                 bundle.putString("by", "folder")
                 bundle.putString("folder-title", pair.first)
+
+                if (activity.isDestroyed || activity.supportFragmentManager.isDestroyed ||
+                    activity.supportFragmentManager.isStateSaved
+                ) return@setOnClickListener
 
                 // Folder 클릭시에 TodoList에 폴더로부터 클릭 됬음을 알리면서 Fragment 전환
                 TodoListFragment.instance.arguments = bundle
