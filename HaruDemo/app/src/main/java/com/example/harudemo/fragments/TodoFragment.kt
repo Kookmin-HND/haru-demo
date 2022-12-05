@@ -1,7 +1,9 @@
 package com.example.harudemo.fragments
 
 import android.content.Intent
+import android.icu.text.CaseMap.Fold
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,30 +18,17 @@ import com.example.harudemo.fragments.todo_fragments.TodoListFragment
 import com.example.harudemo.todo.TodoInputActivity
 import com.example.harudemo.todo.adapters.NewFolderListAdapter
 
-/**
- * FIXME: 업데이트 상태에서 기간 입력시 날짜 선택 안해도 기존 선택으로 가도록 수정
- * FIXME: 삭제된 아이템 불러오지 않도록 수정
- **/
-
 class TodoFragment : Fragment() {
     companion object {
-        private var _instance: TodoFragment? = null
-        val instance: TodoFragment
+        var instance: TodoFragment? = null
             get() {
-                if (_instance == null) {
-                    _instance = TodoFragment()
+                if (field == null) {
+                    field = TodoFragment()
                 }
-                return _instance!!
+                return field!!
             }
 
-        private var _folderListAdapter: NewFolderListAdapter? = null
-        val folderListAdapter: NewFolderListAdapter
-            get() {
-                if (_folderListAdapter == null) {
-                    _folderListAdapter = NewFolderListAdapter(instance.requireActivity())
-                }
-                return _folderListAdapter!!
-            }
+        var folderListAdapter: NewFolderListAdapter? = null
     }
 
     private var binding: FragmentTodoBinding? = null
@@ -76,6 +65,7 @@ class TodoFragment : Fragment() {
             }
         })
 
+        folderListAdapter = NewFolderListAdapter(requireActivity())
         binding?.rvFolderList?.adapter = folderListAdapter
         binding?.rvFolderList?.layoutManager = LinearLayoutManager(
             binding?.root?.context,
@@ -87,7 +77,7 @@ class TodoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // Folder Item을 Recycler View에 추가
-        folderListAdapter.fetchData()
+        folderListAdapter?.fetchData()
     }
 
     // 이 함수는 클릭된 버튼에 따라 Fragment에서 어떤 정보를 표시할지 정할 수 있도록
@@ -112,6 +102,11 @@ class TodoFragment : Fragment() {
             else -> {
             }
         }
+
+        if (activity?.isDestroyed == true ||
+            activity?.supportFragmentManager?.isDestroyed == true ||
+            activity?.supportFragmentManager?.isStateSaved == true
+        ) return
 
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fragments_frame, TodoListFragment.instance)?.commit()
