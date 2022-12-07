@@ -9,10 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.example.harudemo.MainActivity
 import com.example.harudemo.R
 import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.calendar.AdapterWeek
@@ -30,6 +29,10 @@ class CalendarFragment: Fragment(){
         }
     }
 
+    fun refresh(){
+        monthListAdapter.notifyDataSetChanged()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ProfileFragmen - on Create() called" )
@@ -44,6 +47,8 @@ class CalendarFragment: Fragment(){
         super.onAttach(context)
         Log.d(TAG, "ProfileFragmen - onAttach() called")
     }
+
+    val monthListAdapter = AdapterMonth()
 
     //뷰가 생성되었을 때
     //프래그먼트와 레이아웃을 연결시켜주는 부분이다.
@@ -71,7 +76,6 @@ class CalendarFragment: Fragment(){
 
         //월간 달력을 나타내게 하기 위한 레이아웃과 adapter 코드를 가져온다
         //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-        val monthListAdapter = AdapterMonth()
 
         //캘린더 즉 리사이클러뷰 레이아웃의 레이아웃 매니저와 adapter를 연결시킨 후에 scrolltoposition을 이용하여
         //터치로 넘겼을 때 다음 레이아웃의 위치를 고정시킨다.
@@ -96,20 +100,20 @@ class CalendarFragment: Fragment(){
 
                 //주간 달력으로 바꿈
                 //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                val monthListAdapter = AdapterWeek()
+                val WeekListAdapter = AdapterWeek()
 
                 val callback: OnPageChangeCallback = object : OnPageChangeCallback() {
                     override fun onPageSelected(pos: Int) {
                         super.onPageSelected(pos)
                         //println("pos:"+pos)
-                        monthListAdapter.notifyDataSetChanged()
+                        WeekListAdapter.notifyDataSetChanged()
                     }
                 }
 
                 calendar.registerOnPageChangeCallback(callback)
 
                 //calendar.layoutManager = layoutmanager
-                calendar.adapter = monthListAdapter
+                calendar.adapter = WeekListAdapter
                 //calendar.scrollToPosition(Int.MAX_VALUE/2)
             }
         }
@@ -122,8 +126,6 @@ class CalendarFragment: Fragment(){
                 monthbtn.setBackgroundResource(R.drawable.month_onxml)
 
                 //월간 달력으로 바꿈
-                //val layoutmanager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                val monthListAdapter = AdapterMonth()
 
                 //calendar.layoutManager = layoutmanager
                 calendar.adapter = monthListAdapter

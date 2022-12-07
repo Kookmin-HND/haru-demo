@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.harudemo.calendar.AdapterMonth
 import com.example.harudemo.databinding.ActivityMainBinding
 import com.example.harudemo.fragments.*
 import com.example.harudemo.retrofit.AuthRetrofitManager
@@ -22,6 +23,9 @@ import com.example.harudemo.utils.RESPONSE_STATUS
 import com.example.harudemo.utils.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_calendar.*
+import kotlinx.android.synthetic.main.fragment_sns.*
+import okhttp3.internal.notifyAll
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -70,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //db 데이터 가져와서 maindata에 저장
-    fun getData(refresh: Boolean = false){
+    fun getData(){
         maindata.contents = Array(30){Array(13){Array(32){""} }}
         maindata.successrate = Array(30){Array(13){Array(32){0} }}
 
@@ -133,7 +137,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            if(refresh) MainActivity.getInstance()?.refresh()
+            if(bottom_nav.menu.getItem(1).isChecked){
+                Log.d("캘린더","체크")
+                calendarFragment?.refresh()
+            }
+
+            //if(refresh) MainActivity.getInstance()?.refresh()
 
         }, {
             CustomToast.makeText(
