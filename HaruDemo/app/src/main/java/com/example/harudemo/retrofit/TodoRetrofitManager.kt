@@ -110,6 +110,68 @@ class TodoRetrofitManager {
         })
     }
 
+    // 캘린더에서 사용하기 위한 모든 데이터 불러오는 함수
+    fun getAllTodos(
+        writer: String,
+        completion: (RESPONSE_STATUS, HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>?) -> Unit
+    ) {
+        val call =
+            todoService?.getAllTodos(writer) ?: return
+        call.enqueue(object :
+            retrofit2.Callback<JsonObject> {
+            override fun onResponse(
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val responseBody = response.body() ?: return
+                        val result: HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>> =
+                            hashMapOf()
+                        for (title in responseBody.keySet()) {
+                            result[title] = Pair(arrayListOf(), arrayListOf())
+                            // todo 추가
+                            for (todoElement in responseBody.get(title).asJsonObject.get("todos").asJsonArray) {
+                                val todoObject = todoElement.asJsonObject
+                                val id = todoObject.get("id").asInt
+                                val writer = todoObject.get("writer").asString
+                                val folder = todoObject.get("folder").asString
+                                val content = todoObject.get("content").asString
+                                val rawDays = todoObject.get("days").asString
+                                val days =
+                                    todoObject.get("days").asString.slice(1 until rawDays.length - 1)
+                                        .split(',').map { it == "true" }
+                                result[title]?.first?.add(Todo(id, writer, folder, content, days))
+                            }
+                            // logs 추가
+                            for (logsElement in responseBody.get(title).asJsonObject.get("logs").asJsonArray) {
+                                val logs = ArrayList<TodoLog>()
+                                for (logElement in logsElement.asJsonArray) {
+                                    val logObject = logElement.asJsonObject
+                                    val id = logObject.get("id").asInt
+                                    val todoId = logObject.get("todoId").asInt
+                                    val date = logObject.get("date").asString
+                                    val completed = logObject.get("completed").asBoolean
+                                    logs.add(TodoLog(id, todoId, date, completed))
+                                }
+                                result[title]?.second?.add(logs)
+                            }
+                        }
+                        completion(RESPONSE_STATUS.OKAY, result)
+                    }
+                }
+            }
+
+            override fun onFailure(
+                call: Call<JsonObject>,
+                t: Throwable
+            ) {
+                Log.d("[debug]", t.toString())
+                completion(RESPONSE_STATUS.FAIL, null)
+            }
+        })
+    }
+
     // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
     fun getAllTodosByFolder(
         writer: String,
