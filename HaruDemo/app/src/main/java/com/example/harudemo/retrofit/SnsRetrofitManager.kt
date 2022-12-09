@@ -226,7 +226,7 @@ class SnsRetrofitManager {
                                 val userProfileImagesArray = userObject.get("images").asJsonArray
                                 var userProfileImage = ""
                                 if (!userProfileImagesArray.isEmpty)
-                                    userProfileImage = userProfileImagesArray[0].asJsonObject.get("url").asString
+                                    userProfileImage = userProfileImagesArray[userProfileImagesArray.size() - 1].asJsonObject.get("url").asString
 
                                 val snsCommentItem = SnsComment(
                                     id,

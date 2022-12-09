@@ -9,7 +9,6 @@ import com.example.harudemo.R
 import com.example.harudemo.retrofit.AuthRetrofitManager
 import com.example.harudemo.utils.CustomToast
 import com.example.harudemo.utils.RESPONSE_STATUS
-import com.google.gson.JsonElement
 import kotlinx.android.synthetic.main.signup_layout.*
 import java.util.regex.Pattern
 
@@ -53,7 +52,7 @@ class SignUpActivity : AppCompatActivity(){
             }
             else if (!Pattern.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}\$", pw)){
                 Log.d(TAG, "wrong password form")
-                CustomToast.makeText(this, "비밀번호 형식이 틀립니다.", Toast.LENGTH_SHORT).show()
+                CustomToast.makeText(this, "비밀번호는 알파벳, 숫자, 특수문자를 포함해 8글자 이상이어야 합니다.", Toast.LENGTH_SHORT).show()
             }
             else if (!Pattern.matches("^[a-zA-Z가-힣 ]+$", name)){
                 Log.d(TAG, "wrong name")

@@ -194,9 +194,6 @@ class SnsPostDetailActivity : AppCompatActivity() {
 
         //상단의 etc 버튼 클릭 할때 pop up menu 띄어주기
         binding.snsPostDetailEtcBtn.setOnClickListener {
-            CustomToast.makeText(App.instance, "버튼 클릭", Toast.LENGTH_SHORT)
-                .show()
-
             //자신이 글 작성자인 경우
             if (snsPostWriterId == User.info!!.id) {
                 val inflateMenu = R.menu.sns_post_detail_etc_writer_menu
