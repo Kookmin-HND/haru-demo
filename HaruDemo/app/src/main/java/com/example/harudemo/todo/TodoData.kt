@@ -60,6 +60,24 @@ object TodoData {
                 })
         }
 
+        fun getAllTodos(
+            writer: String,
+            okayCallback: (HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>) -> Unit = {},
+            failCallback: () -> Unit = {},
+            noContentCallback: () -> Unit = {},
+        ) {
+            TodoRetrofitManager.instance.getAllTodos(
+                writer,
+                completion = { responseStatus, hashMap ->
+                    when (responseStatus) {
+                        RESPONSE_STATUS.OKAY -> hashMap?.let(okayCallback)
+                        RESPONSE_STATUS.FAIL -> failCallback()
+                        RESPONSE_STATUS.NO_CONTENT -> noContentCallback()
+                    }
+                }
+            )
+        }
+
         // 사용자가 가지고 있는 todo를 folder로 구분하여 반환한다.
         fun getAllTodosByFolder(
             writer: String,

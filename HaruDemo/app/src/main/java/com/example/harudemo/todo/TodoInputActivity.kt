@@ -212,11 +212,73 @@ class TodoInputActivity : AppCompatActivity() {
                     intent.getSerializableExtra("todo") as Pair<Todo, List<TodoLog>>
                 val todo = todoPair.first
                 val log = todoPair.second.first()
-                TodoData.API.update(todo.id, folder, content, datesList, days)
+                TodoData.API.update(todo.id, folder, content, datesList, days, {
+                    for (data in datesList) {
+                        var splitdata = data.split("-")
+
+                        val today: Calendar = Calendar.getInstance()
+
+                        val today_year = today.get(Calendar.YEAR)
+                        val today_month = today.get(Calendar.MONTH)
+                        val today_day = today.get(Calendar.DAY_OF_MONTH)
+
+                        val calendar: Calendar = today.apply { // 1
+                            timeInMillis = System.currentTimeMillis()
+                            set(Calendar.YEAR, splitdata[0].toInt())
+                            set(Calendar.MONTH, splitdata[1].toInt() - 1)
+                            set(Calendar.DAY_OF_MONTH, splitdata[2].toInt())
+                            set(Calendar.AM_PM, Calendar.AM)
+                            set(Calendar.HOUR_OF_DAY, 9)
+                            set(Calendar.MINUTE, 0)
+                        }
+
+                        val calendar_year = calendar.get(Calendar.YEAR)
+                        val calendar_month = calendar.get(Calendar.MONTH)
+                        val calendar_day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                        if(today_year != calendar_year || today_month != calendar_month || today_day != calendar_day) {
+                            MainActivity.getInstance()?.addAlarm(calendar)
+                        }
+                    }
+
+                    // 입력이 정상적으로 되었다고 판단. Activity 종료
+                    finish()
+                })
             } else {
                 // DB에 데이터 추가
                 TodoData.API.create(User.info?.email!!, folder, content, datesList, days, {
                     TodoFragment.folderListAdapter?.fetchData()
+
+                    for (data in datesList) {
+                        var splitdata = data.split("-")
+
+                        val today: Calendar = Calendar.getInstance()
+
+                        val today_year = today.get(Calendar.YEAR)
+                        val today_month = today.get(Calendar.MONTH)
+                        val today_day = today.get(Calendar.DAY_OF_MONTH)
+
+                        val calendar: Calendar = today.apply { // 1
+                            timeInMillis = System.currentTimeMillis()
+                            set(Calendar.YEAR, splitdata[0].toInt())
+                            set(Calendar.MONTH, splitdata[1].toInt() - 1)
+                            set(Calendar.DAY_OF_MONTH, splitdata[2].toInt())
+                            set(Calendar.AM_PM, Calendar.AM)
+                            set(Calendar.HOUR_OF_DAY, 9)
+                            set(Calendar.MINUTE, 0)
+                        }
+
+                        val calendar_year = calendar.get(Calendar.YEAR)
+                        val calendar_month = calendar.get(Calendar.MONTH)
+                        val calendar_day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                        if(today_year != calendar_year || today_month != calendar_month || today_day != calendar_day) {
+                            MainActivity.getInstance()?.addAlarm(calendar)
+                        }
+                    }
+
+                    // 입력이 정상적으로 되었다고 판단. Activity 종료
+                    finish()
                 }, {
                     CustomToast.makeText(
                         App.instance.applicationContext,
@@ -225,40 +287,6 @@ class TodoInputActivity : AppCompatActivity() {
                     ).show()
                 })
             }
-
-            MainActivity.getInstance()?.getData()
-
-            for (data in datesList) {
-                var splitdata = data.split("-")
-                maindata.contents[splitdata[0].toInt() - 2022][splitdata[1].toInt() - 1][splitdata[2].toInt()] += content + "\n"
-
-                val today: Calendar = Calendar.getInstance()
-
-                val today_year = today.get(Calendar.YEAR)
-                val today_month = today.get(Calendar.MONTH)
-                val today_day = today.get(Calendar.DAY_OF_MONTH)
-
-                val calendar: Calendar = today.apply { // 1
-                    timeInMillis = System.currentTimeMillis()
-                    set(Calendar.YEAR, splitdata[0].toInt())
-                    set(Calendar.MONTH, splitdata[1].toInt() - 1)
-                    set(Calendar.DAY_OF_MONTH, splitdata[2].toInt())
-                    set(Calendar.AM_PM, Calendar.AM)
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                }
-
-                val calendar_year = calendar.get(Calendar.YEAR)
-                val calendar_month = calendar.get(Calendar.MONTH)
-                val calendar_day = calendar.get(Calendar.DAY_OF_MONTH)
-
-                if(today_year != calendar_year || today_month != calendar_month || today_day != calendar_day) {
-                    MainActivity.getInstance()?.addAlarm(calendar)
-                }
-            }
-
-            // 입력이 정상적으로 되었다고 판단. Activity 종료
-            finish()
         }
     }
 

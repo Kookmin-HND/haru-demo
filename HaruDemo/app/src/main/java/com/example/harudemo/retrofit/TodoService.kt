@@ -83,6 +83,11 @@ interface TodoService {
     ): Call<JsonObject>
     // HashMap<String, Pair<ArrayList<Todo>, ArrayList<ArrayList<TodoLog>>>>
 
+    @GET("${API.TODOS}/{email}/all/calendar")
+    fun getAllTodos(
+        @Path("email") writer: String
+    ): Call<JsonObject>
+
     // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
     // completed 값에 따라 완료여부를 필터링한다.
     @GET("${API.TODOS}/{email}/folder/{folder}")
