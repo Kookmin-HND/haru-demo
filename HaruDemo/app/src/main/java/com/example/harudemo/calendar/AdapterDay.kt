@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.list_item_day.view.*
 import kotlinx.android.synthetic.main.my_dialog.contv
 import java.util.*
 
-class AdapterDay(val tempMonth:Int, val dayList: MutableList<Date>, val contentlist: MutableList<String>): RecyclerView.Adapter<AdapterDay.DayView>() {
+class AdapterDay(val tempMonth:Int = 0, val dayList: MutableList<Date>? = null, val contentlist: MutableList<String>? = null): RecyclerView.Adapter<AdapterDay.DayView>() {
     val ROW = 6
 
     inner class DayView(val layout: View): RecyclerView.ViewHolder(layout)
@@ -26,13 +26,13 @@ class AdapterDay(val tempMonth:Int, val dayList: MutableList<Date>, val contentl
         holder.layout.item_day_layout.setOnClickListener {
             //요일을 클릭할 경우 dialog를 켜준다 데이터는 그 날짜
             val dlg = MyDialog(holder.layout.context)
-            dlg.start("${dayList[position].year+1900}년 ${dayList[position].month+1}월 ${dayList[position].date}일\n\n\n"+holder.layout.item_day_content.text)
+            dlg.start("${dayList!![position].year+1900}년 ${dayList[position].month+1}월 ${dayList[position].date}일\n\n\n"+holder.layout.item_day_content.text)
             //Toast.makeText(holder.layout.context, "${dayList[position]}", Toast.LENGTH_SHORT).show()
         }
 
         //각 날짜의 요일과 데이터 텍스트뷰에 표시
-        holder.layout.item_day_text.text = dayList[position].date.toString()
-        holder.layout.item_day_content.text = contentlist[position]
+        holder.layout.item_day_text.text = dayList!![position].date.toString()
+        holder.layout.item_day_content.text = contentlist!![position]
 
         //일요일 월요일 색깔 바꿈
         holder.layout.item_day_text.setTextColor(when(position % 7) {

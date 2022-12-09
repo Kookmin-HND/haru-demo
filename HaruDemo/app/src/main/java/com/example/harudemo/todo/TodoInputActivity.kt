@@ -226,7 +226,7 @@ class TodoInputActivity : AppCompatActivity() {
                 })
             }
 
-            MainActivity.getInstance()?.getData(true)
+            MainActivity.getInstance()?.getData()
 
             for (data in datesList) {
                 var splitdata = data.split("-")

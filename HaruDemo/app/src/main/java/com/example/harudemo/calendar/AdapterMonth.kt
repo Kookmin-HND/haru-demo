@@ -11,6 +11,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harudemo.R
+import com.example.harudemo.fragments.CalendarFragment
 import com.example.harudemo.fragments.maindata
 import com.example.harudemo.todo.TodoData
 import com.example.harudemo.todo.types.Section
@@ -39,6 +40,8 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         )
         return MonthView(view)
     }
+
+    var dayListAdapter = AdapterDay()
 
     override fun onBindViewHolder(holder: MonthView, position: Int) {
         //캘린더를 월간 단위로 설정
@@ -80,7 +83,7 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         }
 
         val dayListManager = GridLayoutManager(holder.itemView.context, 7)
-        val dayListAdapter = AdapterDay(tempMonth, dayList, contentlist)
+        dayListAdapter = AdapterDay(tempMonth, dayList, contentlist)
 
         holder.day_list.item_month_day_list.apply {
             layoutManager = dayListManager
