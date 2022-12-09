@@ -195,6 +195,38 @@ router.get(
   }
 );
 
+//캘린더에서 사용하기 위한 모든 todo 데이터 반환
+router.get(
+  "/:email/all/calendar",
+  async (
+    req: Request<{ email: string }, {}, {}, {}>,
+    res: Response<{ [key: string]: { todos: Todo[]; logs: TodoLog[][] } }>
+  ) => {
+    const { email: writer } = req.params;
+
+    const todos = await DB.getRepository(Todo).findBy({
+      writer,
+      deleted: 0,
+    });
+
+    const result: { [key: string]: { todos: Todo[]; logs: TodoLog[][] } } = {};
+    for (const todo of todos) {
+      const logs = await DB.getRepository(TodoLog).findBy({
+        todoId: todo.id,
+      });
+      if (logs.length) {
+        if (todo.folder in result) {
+          result[todo.folder].todos.push(todo);
+          result[todo.folder].logs.push(logs);
+        } else {
+          result[todo.folder] = { todos: [todo], logs: [logs] };
+        }
+      }
+    }
+    return res.json(result);
+  }
+);
+
 // 사용자가 작성한 todo 중 folder가 일치하는 todo를 반환한다.
 // completed 값에 따라 완료여부를 필터링한다.
 router.get(

@@ -41,8 +41,6 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         return MonthView(view)
     }
 
-    var dayListAdapter = AdapterDay()
-
     override fun onBindViewHolder(holder: MonthView, position: Int) {
         //캘린더를 월간 단위로 설정
         calendar.time = Date()
@@ -70,12 +68,6 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
 
                     contentlist[i*7+k] = content
 
-                    Log.d((year-2022).toString()+"-"+tempMonth.toString()+"-"+cnt.toString(), content)
-
-                    if(content != ""){
-                        Log.d("내용",content)
-                    }
-
                     cnt += 1
                 }
             }
@@ -83,7 +75,7 @@ class AdapterMonth: RecyclerView.Adapter<AdapterMonth.MonthView>() {
         }
 
         val dayListManager = GridLayoutManager(holder.itemView.context, 7)
-        dayListAdapter = AdapterDay(tempMonth, dayList, contentlist)
+        val dayListAdapter = AdapterDay(tempMonth, dayList, contentlist)
 
         holder.day_list.item_month_day_list.apply {
             layoutManager = dayListManager

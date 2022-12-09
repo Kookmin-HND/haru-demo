@@ -58,8 +58,6 @@ class AdapterWeek(): RecyclerView.Adapter<AdapterWeek.WeekView>() {
     fun changeadapter(holder: WeekView, tempYear: Int, tempMonth: Int, start: Int){
         //리스트의 범위를 넘지 않으면
         if (start+maindata.week_content-1 < 32) {
-            println(maindata.week_content)
-
             //그 날짜의 데이터를 리스트로 가져오고
             var splitdata = maindata.contents[tempYear-2022][tempMonth][start + maindata.week_content].split("\n")
 

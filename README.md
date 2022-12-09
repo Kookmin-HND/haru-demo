@@ -66,11 +66,12 @@ Java 11
 # Usage
 
 - **Server**  
+  - node v19.0.1
   - npm 또는 yarn 설치 후 진행
     - `npm install`
     - `yarn install`
-  - MySQL 설치 및 haru 데이터베이스 추가
-    - MySQL 설치
+  - MySQL(Ver 8.0.31) 설치 및 haru 데이터베이스 추가
+    - MySQL(Ver 8.0.31) 설치
     - `CREATE DATABASE haru;`
   - 실행
     - `npm run start`

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.list_item_day.view.*
 import kotlinx.android.synthetic.main.my_dialog.contv
 import java.util.*
 
-class AdapterDay(val tempMonth:Int = 0, val dayList: MutableList<Date>? = null, val contentlist: MutableList<String>? = null): RecyclerView.Adapter<AdapterDay.DayView>() {
+class AdapterDay(val tempMonth:Int, val dayList: MutableList<Date>, val contentlist: MutableList<String>): RecyclerView.Adapter<AdapterDay.DayView>() {
     val ROW = 6
 
     inner class DayView(val layout: View): RecyclerView.ViewHolder(layout)
