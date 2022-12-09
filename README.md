@@ -66,6 +66,7 @@ Java 11
 # Usage
 
 - **Server**  
+  - node v19.0.1
   - npm 또는 yarn 설치 후 진행
     - `npm install`
     - `yarn install`
